@@ -1,0 +1,241 @@
+.welcome-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 1s ease-in-out;
+    z-index: 2;
+}
+
+.content-slide {
+    position: relative; /* Adjust as per your layout requirements */
+    overflow-y: auto; /* Enable vertical scrolling */
+    min-height: 100vh; /* Ensure it covers the full viewport height */
+    width: 100%; /* Adjust width as needed */
+
+    overflow-y: scroll; 
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF; 
+    height: auto; 
+    align-items: center;
+}
+
+body {
+    background-color: #FFFFFF;
+    transition: background-color 2s ease-in-out;    
+    background-image: url('bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    transition: opacity 2s ease-in-out;
+
+}
+
+.header {
+    text-align: center;
+    padding-top: 256px;
+    padding-bottom: 128px;
+    z-index: 3;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.header-text {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    color: white;
+    font-size: 96px; 
+    margin: 0;
+    z-index: 20;
+}
+
+.subtext {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 32px;
+    font-weight: lighter;
+    color: rgb(190, 190, 190);
+    z-index: 2; /* Set a higher z-index value for the text */
+    margin: 0;
+}
+.content-slide {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit; /* Inherits the background from body */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10; /* Make sure this is above other elements */
+}
+
+.content-slide {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10; 
+}
+.parent-container {
+    position: relative;
+}
+
+
+.icons-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* Set a higher z-index for the icons container */
+    pointer-events: none; /* Disable pointer events for the icons */
+}
+
+.icon {
+    position: absolute;
+    z-index: 2; /* Set a higher z-index value for the icons */
+    pointer-events: none; /* Disable pointer events for the icons */
+}
+
+
+
+/* Adjust the transition for fading to white */
+body {
+    transition: background-color 3s ease-in-out, opacity 3s ease-in-out;
+}
+
+
+.header, #secondScreen {
+    transition: opacity 2s ease-in-out;
+}
+
+/* Updated body CSS */
+body {
+    background-color: #FFFFFF;
+    background-image: url('bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+.projecthead{
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 32px;
+    font-weight: regular;
+    color: rgb(190, 190, 190);
+    z-index: 2;
+    margin: 0;
+}
+
+.head2subtext {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 18px; 
+    font-weight: lighter;
+    color: rgb(190, 190, 190);
+    z-index: 2; 
+    margin-left: 50px;
+    margin-right: 50px;
+    position: relative;
+    text-align: left
+}
+
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    size: 32px;
+    padding: 10px;
+}
+
+.image-container {
+    width: 10%; 
+}
+
+
+.projecthead .project-link {
+    text-decoration: none;
+    color: inherit;    
+    transition: 0.6s;   
+}
+
+.projecthead .project-link:hover {
+    text-shadow:
+        0 0 7px rgb(92, 190, 255),
+        0 0 10px rgba(255, 255, 255, 0.5), 
+        0 0 21px rgba(255, 255, 255, 0.3); 
+}
+
+.projecthead, .head2subtext {
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (max-width: 768px) {
+    .projecthead {
+        font-size: 28px;
+    }
+    .head2subtext {
+        font-size: 18px;
+    }
+    .subtext {
+        font-size: 32px;
+        margin-left: 20px;
+        margin-right: 20px;
+        text-align: center;
+    }
+    .header-text {
+        font-size: 52px;
+        text-align: center;
+    }
+}
+
+@media (min-width: 769px) {
+    .projecthead {
+        font-size: 42px;
+    }
+    .head2subtext {
+        font-size: 28px;
+    }
+    .header-text {
+        font-size: 86px; /* Increased font size for desktop */
+        text-align: center;
+    }
+    .subtext {
+        font-size: 28px; /* Increased font size for desktop */
+        margin-left: 20px;
+        text-align: center;
+        margin-right: 20px;
+    }
+}
