@@ -140,52 +140,43 @@ body {
     color: rgb(255, 238, 201);
     z-index: 2;
 }
+
+
+
+#randomImagesContainer {
+    display: none !important;
+}
+
 @media (min-width: 769px) {
     #randomImagesContainer {
-        display: block; 
+        display: block !important; /* Ensure visibility on desktop */
+        /* The rest of your positioning and styling */
+        position: fixed; /* Fixed position to place it relative to the viewport */
+        top: 20%; /* Adjust this to align with your text or as needed */
+        right: 10%; /* Adjust this to move closer to the right edge if needed */
+        width: 20%; /* Adjust according to the size of the images */
         transition: opacity 1s ease-in-out;
-        position: fixed;
-        top: 20%;
-        right: 10%;
-        text-align: center;
-        opacity: 0;
+        z-index: 100; /* Ensure it is above other content */
+        opacity: 1; /* Ensure it is fully visible when displayed */
+    }
 
+    /* Adjustments to ensure image and text inside the container align well */
     #randomImage {
-        transition: opacity 1.5s ease-in-out; 
-        width: 100%; 
-        height: auto;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        border-radius: 10px;
+        width: 100%; /* Full width of the container */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 20px; /* Optional: Adds rounded corners to your images */
     }
-    
-    #randomImagesContainer {
-        display: block; 
-        opacity: 1; 
-        transition: opacity 1s ease-in-out; 
-    }
-    
-    
 
-    #randomImage:hover {
-        transform: scale(1.05);
-        cursor: pointer;
+    #randomImageText {
+        margin-top: 10px; /* Space between the image and text */
+        text-align: left; /* Center the text below the image */
+        color: rgb(182, 182, 182); /* Light grey text color */
+        font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+        font-size: 16px;
     }
 }
 
-
-    #randomImageText {
-        font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-        font-size: 12px;
-        font-weight: lighter;
-        color: rgb(205, 205, 205);
-        z-index: 2;
-        margin-left: 50px;
-        margin-right: 50px;
-        position: relative;
-        text-align: left;
-        display: flex;
-        justify-content: center;
-        padding-top: 10px;
-    }
+#randomImage:hover {
+    transform: scale(2.15);
+    cursor: pointer;
 }
