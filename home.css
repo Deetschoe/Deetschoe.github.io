@@ -154,7 +154,7 @@ body {
         position: fixed; /* Fixed position to place it relative to the viewport */
         top: 20%; /* Adjust this to align with your text or as needed */
         right: 10%; /* Adjust this to move closer to the right edge if needed */
-        width: 20%; /* Adjust according to the size of the images */
+        width: 23%; /* Adjust according to the size of the images */
         transition: opacity 1s ease-in-out;
         z-index: 100; /* Ensure it is above other content */
         opacity: 1; /* Ensure it is fully visible when displayed */
