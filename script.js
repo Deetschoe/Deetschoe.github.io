@@ -74,22 +74,22 @@ function initiateFadeToWhiteAndRedirect() {
 window.onload = () => {
     console.log("Window loaded.");
     const iconsData = [
-        { localPath: 'public/1.png' },
-        { localPath: 'public/2.png' },
-        { localPath: 'public/3.png' },
-        { localPath: 'public/4.png' },
-        { localPath: 'public/12.png' },
-        { localPath: 'public/11.png' },
-        { localPath: 'public/10.png' },
-        { localPath: 'public/9.png' },
-        { localPath: 'public/8.png' },
-        { localPath: 'public/7.png' },
-        { localPath: 'public/6.png' },
-        { localPath: 'public/5.svg.png' },
-        { localPath: 'public/13.png' },
-        { localPath: 'public/14.png' },
-        { localPath: 'public/16.png' },
-        ];
+        { localPath: '1.png' },
+        { localPath: '2.png' },
+        { localPath: '3.png' },
+        { localPath: '4.png' },
+        { localPath: '12.png' },
+        { localPath: '11.png' },
+        { localPath: '10.png' },
+        { localPath: '9.png' },
+        { localPath: '8.png' },
+        { localPath: '7.png' },
+        { localPath: '6.png' },
+        { localPath: '5.svg.png' },
+        { localPath: '13.png' },
+        { localPath: '14.png' },
+        { localPath: '16.png' },
+    ];
 
     createFloatingIcons(iconsData);
     initiateFadeToWhiteAndRedirect();
