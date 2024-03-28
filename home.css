@@ -1,13 +1,14 @@
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: auto; /* Changed from hidden to auto */
     background-color: #FFFFFF;
     background-image: url('bg2.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+
 
 .icons-container {
     position: relative;
