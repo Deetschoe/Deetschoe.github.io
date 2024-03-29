@@ -94,9 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
             "https://www.instagram.com/p/C2fnDcFgRUo/",
             "https://www.instagram.com/p/C2lgPgZgtS9/",
             "https://www.instagram.com/p/C1mbjvDAIbz/",
+            "https://www.instagram.com/p/C49AkFcAunB/",
             "https://www.youtube.com/watch?v=XTUaXv9hVXE",
+            "https://www.instagram.com/p/C3yZLLAAHuG/",
             "https://www.youtube.com/watch?v=hLCCbJw6Osg",
             "https://www.youtube.com/watch?v=3J1Rz-3N1WQ",
+            "https://www.youtube.com/watch?v=UZEm5lONg7g",
+            "https://www.youtube.com/watch?v=xXIxwV7bQTw&t=1s",
+            
         ];
     
         document.getElementById('randomLink').addEventListener('click', function(event) {

@@ -17,144 +17,116 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
     <title>Deet</title>
-    
+
+
+
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const images = [
-            { "src": "1.jpg", "text": "Did I mention I love boba?" },
-{ "src": "2.JPG", "text": "Photo from the summit a hackathon i filmed videos at with Jack, and Ajith" },
-{ "src": "3.JPG", "text": "Built a human sized microwave with Shawn" },
-{ "src": "4.JPG", "text": "Kyoto has great shrines and food" },
-{ "src": "5.JPG", "text": "One day I want a Shiba, they are so cool" },
-{ "src": "6.JPG", "text": "Brownies." },
-{ "src": "7.JPG", "text": "Call em" },
-{ "src": "8.JPG", "text": "BOBA BOBA" },
-{ "src": "9.JPG", "text": "Hack the north 2023 with Sam and Fayd" },
-{ "src": "10.JPG", "text": "Laptop on planes is a vibe" },
-{ "src": "11.JPG", "text": "build space!" },
-{ "src": "12.JPG", "text": "Funny way of spelling my name" },
-{ "src": "13.JPG", "text": "Tonkatsu ramen >" },
-{ "src": "14.JPG", "text": "Uh Oh" },
-{ "src": "15.JPG", "text": "I LOVE Açaí Bowls" },
-{ "src": "16.jpg", "text": "packed 500 orders in one night with my friends for my brand Minimaru" },
-{ "src": "17.jpg", "text": "Pokemon." },
-{ "src": "18.jpg", "text": "best quote I saw a hackathon" },
-{ "src": "19.jpg", "text": "Aphex twin, Mac Demarco, Odetari, TVGirl, Clairo, J Dilla, and Nujabes are some of my fav artists " },
-{ "src": "21.jpg", "text": "I used to have a 2DS and take a lot of insp from Nintendo" },
-{ "src": "22.JPG", "text": "MHacks16 with Fayd, Thomas, and Sam!" },
-{ "src": "23.jpg", "text": "Tom Preston-Werner's username: mojombo, came from a flan elephant sculpture he made during lunch in college. The more you know" },
-{ "src": "24.jpg", "text": "another group photo!" },
-{ "src": "25.JPG", "text": "I have seen almost every Studio Ghibli film, they are so great. Highly reccomend" },
-{ "src": "26.jpg", "text": "Group photo!" },
-{ "src": "27.JPG", "text": "Photo of me working on this site you are reading while watching the newest One Piece Episode" },
-{ "src": "28.jpg", "text": "Hack Club!" },
-{ "src": "29.JPG", "text": "Walks at night in Vermont are very nice" },
-{ "src": "30.JPG", "text": "Maple water exists in Montreal?" },
-{ "src": "31.jpg", "text": "Package drop off!" },
-{ "src": "32.jpg", "text": "Highest amount of TikTok views i got in 60 days!" },
 
-//oh hi! are you looking through the source code to see all the photos?
-
-            ];
-         
-            let currentImageIndex = 0; // Initialize the index
-
-
-            function displayRandomImage() {
-        // Select a random index for the next image
-        const randomIndex = Math.floor(Math.random() * images.length);
-        const container = document.getElementById('randomImagesContainer');
-        const imageElement = document.getElementById('randomImage');
-        const textElement = document.getElementById('randomImageText');
-
-        // Set the new image and text
-        imageElement.src = images[randomIndex].src;
-        textElement.textContent = images[randomIndex].text;
-
-        // Ensure the container is displayed and fully opaque for the fade-in effect
-        container.style.display = 'block';
-        container.style.opacity = 1;
-
-        // Set timeout for the fade-out effect
-        setTimeout(() => {
-            container.style.opacity = 0; // Start fade-out
-            setTimeout(displayRandomImage, 1000); // After fade-out, load another random image
-        }, 9000); // Image is visible for 9 seconds before starting fade-out
-    }
-    window.addEventListener('resize', function() {
-    var container = document.getElementById('randomImagesContainer');
-    if (window.innerWidth >= 769) {
-    // Only run the display block code for desktop
-    container.style.display = 'block';
-}
-
-});
-
-
-    displayRandomImage(); // Start the display cycle with a random image
-});
-</script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const colors = ['#ffab45', '#FA824C']; // Define the colors you want to use
+        const links = document.querySelectorAll('a'); // Select all link elements
     
+        links.forEach(link => {
+            const randomColor = colors[Math.floor(Math.random() * colors.length)]; // Pick a random color
+            link.style.color = randomColor; // Apply the random color to the link
+        });
+    });
+    </script>
+
+    
+   
+        
+    <script>
+    
+            // Assuming 'randomLink' is an ID for an <a> tag
+            const randomLink = document.getElementById('randomLink');
+            if (randomLink) {
+                randomLink.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const randomIndex = Math.floor(Math.random() * images.length); // Assuming you want to use images array
+                    const selectedURL = images[randomIndex].src; // Using image src as URL, adjust as necessary
+                    window.open(selectedURL, '_blank');
+                });
+            }
+        
+            displayRandomImage(); // Initiate the display cycle
+        });
+        </script>
+        
+<style>
+    .flutter-on-hover:hover {
+        animation: flutterAnimation 0.5s infinite alternate;
+    }
+    
+    @keyframes flutterAnimation {
+        from {
+            text-shadow: 0 0 5px #9cb6ff;
+        }
+        to {
+            text-shadow: 0 0 10px #00d5ff;
+        }
+    }
+    </style>
+    
+<!-- oh hi! are you looking through the source code to see all the photos?? -->
+
 </head>
 <body>
-   
-    
     <h2 class="head1subtext">
-        Welcome traveler! I'm Deet, an 18-year-old based out of Vermont. I created this website to showcase my interests and projects.
-
+        welcome traveler i'm Deet
     </h2>
+ <h2 class="head12subtext">if that doesn't explain everything then i'll tell you more; i'm an 18-year-old based out of Vermont and i make stuff! sometimes on my own or at Hack Club here i create&nbsp;<a href="" class="" target="_blank" id="randomLink">videos</a>. in my free time i build ar/vr games. it has been an interest in my life since 6th grade and i usually create games with Thomas. we both created&nbsp;<a href="https://www.instagram.com/buildingserenidad/" target="_blank">Serenidad</a> in sophomore year high school with the goal in mind to bring serenity and lately that has been through immersive media</h2>
+
+ <br>
+ <h2 class="projecthead2">projects</h2>
+ <ul>
+ <li class="head2subtext">first complete VR game&nbsp;<a href="https://github.com/Deetschoe/lifeofchai" target="_blank"> Life of Chai</a></li>
+ <br>
+ <li class="head2subtext">first ios app to publish, worked with Thomas Penguins&nbsp;<a href="https://apps.apple.com/us/app/penguin-pair-cards/id6446442403" target="_blank"> penguin pair</a></h1></li>
+ <br>
+ <li class="head2subtext">inside out inspired hackathon project&nbsp;<a href="https://www.youtube.com/watch?v=nYBHIlbBDw8" target="_blank">Michigan magic</a></li>
+ <br>
+ <li class="head2subtext">winner of hack the north 2023 (Canada's largest hackathon)!&nbsp;<a href="https://devpost.com/software/hack-the-geese" target="_blank"> hack the geese</a></li>
+ <br>
+ <li class="head2subtext">take photos of &nbsp;<a href="https://sidequestvr.com/app/31539/capybara-beach" target="_blank">capys in VR</a></li>
+ <br>
+ <li class="head2subtext">multiplayer AR Biking game!&nbsp;<a href="https://devpost.com/software/bikstar" target="_blank"> bike with friends</a></li>
+ <br>
+ <li class="head2subtext">built a 7 figure e-commerce business during part of my high school years it's called&nbsp;<a href="https://www.instagram.com/minimaruclothing/" target="_blank">Minimaru</a></li>
+ <br>
+ <li class="head2subtext">entrepreneur advice app I created with Thomas&nbsp;<a href="https://apps.apple.com/us/app/telegrade/id1667140470" target="_blank"> Telegrade</a></li>
+ </ul>
+ 
+ <h2 class="projecthead2">last notes</h2>
+ <ul>
+ <li class="head2subtext">fun fact: I spent a year studying Japanese and forgot most stuff after I graduated high school 💀 - But I can read Japanese (except for Kanji oop)</li>
+ <br>
+ <li class="head2subtext">ask me about <strong>Marketing, Building cool projects, Boba🧋, Japan</strong></li>
+ <br>
+ <li class="head2subtext">if you don't like music you won't like my&nbsp;<a href="https://open.spotify.com/user/deetschoening?si=c1cb9ac8f11147c9&nd=1&dlsi=99e098c0195b48f7">🐶Spotify🎧</a></li>
+ <br>
+ <li class="head2subtext">send me emails if you wanna be cool&nbsp;<strong class="flutter-on-hover" style="color: #ffe3af;">dieter@serenidad.app</strong>
+ </li>
+
+ </ul>
+ </p>
+ 
+    
+
 
 <div id="Home" class="content-slide">
     <br>
 
-    <div id="randomImagesContainer" style="display: none;">
-        <img id="randomImage" src="" alt="Random Image" style="max-width: 45%;">
-        <p id="randomImageText"></p>
-    </div>
 
-        <br>  
-              
-        <h1 class="projecthead2">
-            <a href="https://apps.apple.com/us/app/penguin-pair-cards/id6446442403" class="projecthead2" target="_blank">Penguin Pair</a>
-        </h1>
-        <h2 class="head2subtext">
-            This was me and Thomases first game published on the app store. Built it in 12 hours, Match penguin cards before time runs out!
-        </h2>
-          
-        <h1 class="projecthead">
-            <a href="https://apps.apple.com/us/app/telegrade/id1667140470" class="projecthead3" target="_blank">Telegrade</a>
-        </h1>
-        <h2 class="head2subtext">
-            I gained 100,000,000+ views on TikTok through my business and created an app with Thomas to organize my tips in a fun way!</h2>
-        
-        <h1 class="projecthead">
-            <a href="https://devpost.com/software/hack-the-geese" class="projecthead4" target="_blank">Hack The Geese</a>
-        </h1>
-        <h2 class="head2subtext">
-             Selfie battle game. Won Canada's Largest Hackathon: Hack The North 2023! (Collaborated with Sam and Fayd)
-        </h2>
-        <h1 class="projecthead" id="randomLink">
-            <a href="" class="projecthead5" target="_blank">Hack Club Content</a>
-        </h1>
-        <h2 class="head2subtext">
-            In June 2023, I joined the Hack Club team, leading storytelling through videos. Click above to go to a random video.
- for a random video I made.
-
- <h1 class="projecthead">
-    <a href="https://sidequestvr.com/app/27172/life-of-chai" class="projecthead6" target="_blank">Life Of Chai</a>
-</h1>
-<h2 class="head2subtext">
-   First VR game, super wacky! To win you must do the opposite. Built the game over 4 weekends with Thomas, 20 minutes of gameplay go wild!
-</h2>
-
-<br>
 <br>
 
 <br>
-<h2 class="head1subtext">
-   Wanna chat? reach out <a href="https://twitter.com/DeetSchoe" class="head3subtext" target="_blank">here</a>
 
-</h2>
+ <h2 class="head2subtext">
+    <a href="images.html" target="">You like photos?</a>
+ </h2>
+ 
+
 
 
 </div>

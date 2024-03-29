@@ -1,0 +1,42 @@
+/* Existing styles for body */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000000;
+    background-image: url('hq.jpg');
+    background-size: cover; /* Full screen on mobile */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; /* Center the background image */
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+/* Update for desktop screens */
+@media (min-width: 768px) {
+    body {
+        background-size: contain; /* Show the full image on desktop, might introduce letterboxing */
+        background-position: center top; /* Adjust as needed, e.g., center top to align the image at the top */
+    }
+}
+
+
+#clickableOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10; /* Ensure it's above other content but below text */
+}
+
+#randomImageText {
+    position: fixed;
+    bottom: 20px; /* Adjust as needed */
+    width: 100%;
+    text-align: center;
+    z-index: 20; /* Ensure text is visible above the overlay */
+    color: white; /* Ensure visibility */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    padding: 10px;
+    font-size: 16px; /* Adjust as needed */
+}

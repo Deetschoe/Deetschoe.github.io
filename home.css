@@ -1,13 +1,23 @@
 body {
     margin: 0;
     padding: 0;
-    overflow: auto; /* Changed from hidden to auto */
     background-color: #FFFFFF;
-    background-image: url('bg2.png');
+    background-image: url('hq.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+a {
+    color: #fcfdda;
+    text-decoration: none; /* Removes the underline from links */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+a:hover, a:active {
+    color: #5bc982; /* Green color when hovered or active */
+    text-decoration:  none; /* Adds underline on hover/active for accessibility */
+}
+
 
 
 .icons-container {
@@ -52,16 +62,34 @@ body {
 
 .head1subtext {
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-    font-size: 18px; 
+    font-size: 32px; 
     font-weight: lighter;
     color: rgb(255, 255, 255);
     z-index: 2; 
     margin-left: 50px;
     margin-right: 50px;
+    margin-top: 50px;
+
     position: relative;
     text-align: left
 }
 
+
+.head12subtext {
+
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 12px; 
+    font-weight: lighter;
+    color: rgb(199, 199, 199);
+    z-index: 2; 
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 10px;
+    width: 70%;
+
+    position: relative;
+    text-align: left
+}
 
 .head3subtext {
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
@@ -70,14 +98,18 @@ body {
     color: rgb(202, 210, 255);
     z-index: 2; 
     position: relative;
-    text-align: left
+    text-align: left;
 }
+
+
+
 #starfield {
     position: relative;
     width: 100%;
     height: 100%;
   }
 
+  
 .head2subtext {
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
     font-size: 12px; 
@@ -90,6 +122,7 @@ body {
     text-align: left;
     display: flex;
 }
+
 .projecthead{
     margin-left: 32px;
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
@@ -98,86 +131,94 @@ body {
     color: rgb(255, 255, 255);
     z-index: 2;
 
+
 }
 .projecthead2{
     margin-left: 32px;
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
     font-size: 22px;
     font-weight: regular;
-    color: rgb(210, 255, 230);
+    color:#ffffff;
     z-index: 2;
+    animation: flickerAnimation 1.5s infinite;
+
 }
 
-
-.projecthead3{
-    margin-left: 32px;
-    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-    font-size: 22px;
-    font-weight: regular;
-    color: rgb(255, 201, 235);
-    z-index: 2;
-}
-.projecthead4{
-    margin-left: 32px;
-    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-    font-size: 22px;
-    font-weight: regular;
-    color: rgb(201, 229, 255);
-    z-index: 2;
-}
-.projecthead5{
-    margin-left: 32px;
-    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-    font-size: 22px;
-    font-weight: regular;
-    color: rgb(255, 201, 201);
-    z-index: 2;
-}
-.projecthead6{
-    margin-left: 32px;
-    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-    font-size: 22px;
-    font-weight: regular;
-    color: rgb(255, 238, 201);
-    z-index: 2;
-}
-
-
-
-#randomImagesContainer {
-    display: none !important;
-}
+/*  */
 
 @media (min-width: 769px) {
     #randomImagesContainer {
-        display: block !important; /* Ensure visibility on desktop */
-        /* The rest of your positioning and styling */
-        position: fixed; /* Fixed position to place it relative to the viewport */
-        top: 20%; /* Adjust this to align with your text or as needed */
-        right: 10%; /* Adjust this to move closer to the right edge if needed */
-        width: 23%; /* Adjust according to the size of the images */
+        display: block;
         transition: opacity 1s ease-in-out;
-        z-index: 100; /* Ensure it is above other content */
-        opacity: 1; /* Ensure it is fully visible when displayed */
+        position: fixed;
+        top: 20%;
+        right: 10%;
+        text-align: center;
+        opacity: 0;
+        width: auto; /* Adjust based on your image size */
+        height: auto; /* Adjust based on your image size */
     }
 
-    /* Adjustments to ensure image and text inside the container align well */
     #randomImage {
-        width: 100%; /* Full width of the container */
-        height: auto; /* Maintain aspect ratio */
-        border-radius: 20px; /* Optional: Adds rounded corners to your images */
+        transition: opacity 1.5s ease-in-out;
+        width: 45%; /* Adjust if necessary */
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 10px;
     }
 
-    #randomImageText {
-        margin-top: 10px; /* Space between the image and text */
-        text-align: left; /* Center the text below the image */
-        color: rgb(182, 182, 182); /* Light grey text color */
-        font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
-        font-size: 16px;
+    #randomImagesContainer::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        bottom: -50%;
+        left: -50%;
+        border-radius: 10px;
+        z-index: -1;
+    }
+
+    #randomImage:hover {
+        transform: scale(1.005);
+        cursor: pointer;
+    }
+
+    #randomImagesContainer:hover {
+        opacity: 1; /* Ensure the container stays visible while hovered */
     }
 }
 
-#randomImage:hover {
-    transform: scale(2.15);
-    cursor: pointer;
+/*  */
+
+#randomImageText {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: lighter;
+    color: rgb(205, 205, 205);
+    z-index: 2;
+    margin-left: 50px;
+    margin-right: 50px;
+    position: relative;
+    text-align: left;
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+@keyframes flickerAnimation {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 4px rgba(255, 255, 255, 0.2), 
+                     0 0 11px rgba(255, 255, 255, 0.2), 
+                     0 0 19px rgba(82, 111, 255, 0.2), 
+                     0 0 40px rgba(255, 255, 255, 0.2);
+    }
+    20%, 24%, 55% {        
+        text-shadow: 0 0 5px rgba(118, 175, 255, 0.3), 
+                     0 0 14px rgba(0, 153, 255, 0.3), 
+                     0 0 24px rgba(255, 255, 255, 0.3), 
+                     0 0 49px rgba(0, 229, 255, 0.3);
+    }
+}
+
 }
