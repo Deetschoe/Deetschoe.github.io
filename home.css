@@ -134,6 +134,16 @@ a:hover, a:active {
 
 }
 .projecthead2{
+    margin-left: 56px;
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    font-weight: regular;
+    color:#ffffff;
+    z-index: 2;
+    animation: flickerAnimation 1.5s infinite;
+
+}
+.projecthead2{
     margin-left: 32px;
     font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
     font-size: 22px;
