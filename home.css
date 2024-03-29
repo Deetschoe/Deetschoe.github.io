@@ -13,11 +13,10 @@ a {
     transition: color 0.3s ease; /* Smooth color transition */
 }
 
-a:hover, a:active {
-    color: #5bc982; /* Green color when hovered or active */
+li:hover, a:active {
+    color: #e5e5e5; /* Green color when hovered or active */
     text-decoration:  none; /* Adds underline on hover/active for accessibility */
 }
-
 
 
 .icons-container {
