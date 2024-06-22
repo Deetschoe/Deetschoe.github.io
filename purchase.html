@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Confirmation</title>
+    <script>
+        function downloadReceipt() {
+            const link = document.createElement('a');
+            link.href = '/shiba.gif';
+            link.download = 'shiba.gif';
+            link.click();
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const music = new Audio('/fly.mp3');
+            music.play();
+        });
+    </script>
+    <style>
+        body {
+            background: url('/background.gif') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            color: #3A405A;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <body style="margin: 10; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif;">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 320px; transform: translateY(-40px); text-align: center;">
+            <h1 style="font-weight: bold; color: #512300;">Payment Confirmed</h1>
+            <p style="color: #915a2f;">If you would like to download a receipt, hit this button:</p>
+            <button onclick="downloadReceipt()" style="margin: 10px; padding: 10px 20px; background-color: #be743a; color: white; border: none; border-radius: 5px; cursor: pointer;">Download Receipt</button>
+        </div>
+</body>
+</html>

@@ -94,3 +94,48 @@ window.onload = () => {
     createFloatingIcons(iconsData);
     initiateFadeToWhiteAndRedirect();
 };
+
+
+
+
+
+let currentImageIndex = 0;
+const images = [
+    "/Img/IMG_8091.jpeg",
+    "/Img/IMG_8090.jpeg",
+    "/Img/IMG_8088.jpeg",
+    "/Img/IMG_8089.jpeg",
+    "/Img/IMG_8086.jpeg",
+    "/Img/IMG_8093.jpeg",
+    "/Img/IMG_8094.jpeg",
+    "/Img/IMG_8095.jpeg",
+    "/Img/IMG_8097.jpeg",
+    "/Img/IMG_8086.jpeg",
+    "/Img/IMG_8087.jpeg",
+    "/Img/IMG_8092.jpeg",
+];
+
+const nextImageSound = new Audio('/next.wav');
+const pageLoadMusic = new Audio('/bgmusic.mp3');
+
+function handleResponse(response) {
+    if (response === 'yes') {
+        document.getElementById('prompt').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        pageLoadMusic.play();
+    } else {
+        window.close();
+    }
+}
+
+function nextImage() {
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+    document.getElementById('slide').src = images[currentImageIndex];
+    nextImageSound.play();
+}
+
+function addToCart() {
+    if (confirm('Are you sure you wanna buy my Subaru?')) {
+        window.location.href = 'purchase.html';
+    }
+}
