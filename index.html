@@ -325,7 +325,7 @@
             <p>Took a gap year to make epic content</p>
             <div class="youtube-videos">
                 <div class="youtube-video">
-                    <a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank">
+                    <a href="https://www.instagram.com/starthackclub" target="_blank">
                         <img src="https://i.ibb.co/X7y516q/2.jpg" alt="Instagram">
                         <div class="video-overlay">
                             <span class="play-icon">▶</span>
@@ -697,69 +697,75 @@ const terminalObserver = new MutationObserver(() => {
 });
 
 terminalObserver.observe(terminalOutput, { childList: true });
-    const commands = {
-        help: {
-            action: () => {
-                return 'Available commands: ' + Object.keys(commands).join(', ');
-            },
-            description: "Show available commands"
+const commands = {
+    help: {
+        action: () => {
+            return 'Available commands: ' + Object.keys(commands).join(', ');
         },
-        about: {
-            action: () => "about me?? really? fine.. i'm dieter and I try and build things that I find fun and cool! I have been making videos since I got my first camera and doing design since I got a computer. I pirated photoshop at age 10 and was getting paid thousands a month by age 13 to make Fortnite thumbnails. After this point I got into other ventures; reselling, clothing brands, coding, 3D modeling, etc. I then graduated high school early , moving in with my best friend and working at Hack Club to make videos. Now I'm working with him on our startup Kōdan, who knows what is next?",
-            description: "Learn about deet"
+        description: "Show available commands"
+    },
+    about: {
+        action: () => "about me?? really? fine.. i'm dieter and I try and build things that I find fun and cool! ...",
+        description: "Learn about deet"
+    },
+    contact: {
+        action: () => 'dm me on twitter or if you wanna be formal send me an email; dieter@serenidad.app',
+        description: "Get contact information"
+    },
+    projects: {
+        action: () => 'click on a project above for more info',
+        description: "List projects"
+    },
+    age: {
+        action: () => {
+            const birthDate = new Date('2005-06-09');
+            const now = new Date();
+            const ageInYears = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
+            return `I've been here for ${ageInYears.toFixed(8)} yrs.`;
         },
-        contact: {
-            action: () => 'dm me on twitter or if you wanna be formal send me an email; dieter@serenidad.app',
-            description: "Get contact information"
+        description: "Show age"
+    },
+    clear: {
+        action: () => {
+            terminalOutput.innerHTML = '';
+            return '';
         },
-        projects: {
-            action: () => 'click on a project above for more info',
-            description: "List projects"
+        description: "Clear the terminal"
+    },
+    kaploot: {
+        action: handleKaploot,
+        description: "Enter or exit kaploot mode"
+    },
+    gif: {
+        action: () => {
+            return '<img src="path/to/your/gif.gif" width="20px" alt="Terminal GIF">';
         },
-        age: {
-            action: () => {
-                const birthDate = new Date('2005-06-09');
-                const now = new Date();
-                const ageInYears = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
-                return `I've been here for ${ageInYears.toFixed(8)} yrs.`;
-            },
-            description: "Show age"
-        },
-        clear: {
-            action: () => {
-                terminalOutput.innerHTML = '';
-                return '';
-            },
-            description: "Clear the terminal"
-        },
-        kaploot: {
-            action: handleKaploot,
-            description: "Enter or exit kaploot mode"
-        }
-    };
+        description: "Display a small GIF"
+    }
+};
 
-    
+// Modified event listener for case-insensitive command handling
+terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const input = terminalInput.value.trim().toLowerCase();
+        let output = '';
 
-    terminalInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const input = terminalInput.value.trim();
-            let output = '';
-
-            if (isKaplootMode && input.toLowerCase() !== 'kaploot') {
-                output = getKaplootImage();
+        if (isKaplootMode && input !== 'kaploot') {
+            output = getKaplootImage();
+        } else {
+            const [command, ...args] = input.split(' ');
+            const matchedCommand = Object.keys(commands).find(cmd => cmd.toLowerCase() === command);
+            if (matchedCommand) {
+                output = commands[matchedCommand].action(args);
             } else {
-                const [command, ...args] = input.split(' ');
-                if (command in commands) {
-                    output = commands[command].action(args);
-                } else {
-                    output = `Command not recognized: "${command}". Type "help" for available commands.`;
-                }
+                output = `Command not recognized: "${command}". Type "help" for available commands.`;
             }
-
-            printToTerminal(`<div>> ${input}</div><div>${output}</div>`);
-            terminalInput.value = '';
         }
-    });
+
+        printToTerminal(`<div>> ${terminalInput.value}</div><div>${output}</div>`);
+        terminalInput.value = '';
+    }
+});
 
 
         // Initialize
@@ -787,6 +793,7 @@ terminalObserver.observe(terminalOutput, { childList: true });
             createFloatingIcons(iconsData);
            
             printToTerminal('<div>Welcome to deets\'s terminal. Type "help" for available commands.</div>');
+
         };
     </script>
 </body>
