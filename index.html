@@ -26,6 +26,23 @@
     font-weight: 300; /* Adjust this to the correct weight for the light version */
 }
 
+#ascii-art {
+    font-family: monospace;
+    white-space: pre;
+    line-height: 1;
+    color: #00ff00; /* Green color */
+    background-color: #000;
+    font-size: 16px;
+    padding: 10px 0;
+    margin-top: -50px;
+    opacity: 0.14; /* Adjust this value as needed */
+    text-align: center;
+    user-select: none; /* Prevents text selection */
+    -webkit-user-select: none; /* For webkit browsers like Chrome and Safari */
+    -moz-user-select: none; /* For Firefox */
+    -ms-user-select: none; /* For Internet Explorer/Edge */
+
+}
     
       .youtube-videos {
         display: grid;
@@ -178,31 +195,94 @@
             box-sizing: border-box;
             z-index: 2;
         }
+        .website-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.website-category {
+    flex: 1 1 300px;
+}
+
+.website-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #00ff00;
+    border-radius: 5px;
+}
+
+.website-content {
+    display: flex;
+    align-items: flex-start;
+}
+
+.website-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.website-icon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.website-info {
+    flex: 1;
+}
+
+.website-info h4 {
+    margin: 0 0 5px 0;
+}
+
+.website-link {
+    color: #00ff00;
+    text-decoration: none;
+}
+
+.website-link:hover {
+    text-decoration: underline;
+}
+
+.website-info p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.visit-icon {
+    font-size: 24px;
+}
         #terminal-output {
             
             margin-bottom: 10px;
         }
         #terminal-input {
-            width: 100%;
-            background-color: transparent;
-            border: none;
-            color: #00ff00;
-            font-family: 'MonaspaceArgon', 'Courier New', monospace;
-            font-size: 16px;
-            outline: none;
-        }
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: #00ff00;
+    font-family: 'MonaspaceArgon', 'Courier New', monospace;
+    font-size: 16px;
+    outline: none;
+    caret-color: #00ff00; /* This will make the cursor green */
+}
         #terminal-output img {
             display: block;
             max-width: 500px;
             margin: 10px 0;
         }
-        .twitter-logo {
-            margin-top: 25px;
-            bottom: 25px;
-            right: 15px;
-            width: 30px;
-            height: 30px;
-        }
+        .twitter-logo, .github-logo {
+    margin-top: 25px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
         .project-popup {
             position: fixed;
             top: 0;
@@ -277,19 +357,97 @@
         }
     </style>
 </head>
+ <div id="ascii-art">
+                                                                                                                                                                              
+                                                                                                                                                                              
+                                                                                                                                                                              
+                                                                        *+++*                                                                                                 
+                                                                       ****#**                                                                                                
+                                                                      **########                                                                                              
+                                                                     **#%%######                                                                                              
+                                                                     **%%%%##%####**#                                                                                         
+                                                                    +*#%@@%##%%%%##********##*******###                                                                       
+                                                                   +**#%@@@%%%%%%%######*********#********#                                                                   
+                                                                  *+##%%%%###%%%%####%%#######******####%%#                                                                   
+                                                                  *+*****######%%%##%%#######%%%%%%%%%%%%%                                                                    
+                                                                 +==++******#####%%%%#####%%%%@@%%@@@@@%%%                                                                    
+                                                               *+=+*********+***##%%%%#%#%%%%%%@@@@@@@%%%#                                                                    
+                                                               ++++**+*****++++*##%%%####%%%%%%%%@@@@%%%%#                                                                    
+                                                               +++++***#####*+++*#%########%%%%%%%%@@%%%#                                                                     
+                                                               +======++#@@@#++**#########%%%%%%%###%%%%%                                                                     
+                                                               ===---=+++#@@%****###**#%%%%%%%%%%####%%%%%                                                                    
+                                                                -----=+++++***++**#%#%@@@@@%%%%%####**#####                                                                   
+                                                                =-==-----==++++++*#%@@@@@%###%%#####***##%#%@@@@@@                                                            
+                                           @%%%@@@%%@%%%%%       =+=-------=+++++**######*****######***###%@@@%@@@@%                                                          
+                                        +++:...........:--:..-   ==+=-::--=+++++*****************###**##%@@@%%%%%@@@%                  @@@@@@@@@                              
+                                    *@+:.....................::+@+=+=-:--==+**********+**********###*#%%@@@%%%%%%%@@@                %@@@%%%%@@@@                             
+                              %+#%@@+:::.....:++...............=%%*+=--=+**##********************####%%@@@%%%%%%%%@@@               @@@@%%%%%%@@@                             
+                            -+%@+-*#*++*:.....:............-#=.-=*%%*==+@@@@@@%#*++***#*****#######%%@@@@%%%%%%%%%%@@%             %@@@%%%%%%%%@@%                            
+                          =++--....:......:..........-=+=+=*##@*=+#%@@#*@@@@@@@@*****############%@@@@@@@%%%%%%%%%%@@%             @@@%%%%%%%%%@@%                            
+                        #+%-.:=.:*#+*:..:-#-+-=+:*.---%*#=@@@%##@%%@@@@@%@@@@@%#***##########%%%@@@@%%@@%%%%%%%%%%%@@%            @@@%%%%%%%%%%@@%                            
+                       *%@@**#+#=@@##==.=+%:#:*=*#+@@@@@@@@@@@@@@@%%@@@@@%%%%%%###########%%%@@@@%%%%%%%%%%%%%%%%%@@@            %@@@%%%%%%%%%@@@@@@@                         
+                      =%@@%%%*#.*@@@*#+*%#@=@+*#@@@@@@@@@@@@@@@@@@@@@@@@@@@%##########%%%%@@@%%@@@%%%%%%%%%%%%%%%%@@@            @@@%%%%%%%%%%@@@@@@@@@                       
+                     +%@@@@@%++-%@@@@@+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#%%%%%%@@%%%%%%%%%%@@@@%%%%%%%%@@@@@@@@@@@@@@@@@    @@@%%%%%%%%%%%%%%%%%@@@                      
+                    %#@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#%%%%%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%@@@                      
+                    @%@#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%@@@%#**++++++*@@@%#*++++++++++++++++++++++**#%@@@@@@@@%%%%%%%%%@@@@                       
+                    #@@%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#@@@@@@@@#*@@@@@@@@@@@@%%%%%@@@*++++++++++++++++++++++++++++++++++++++++++++++++*#%@@@@@@@@@@@@@                        
+                   +-@@*@@@@@@@@@@@@@@@@@@@@@@@#@@@@@#*@@#*@@@@#:#@@%@@@@@@@@@%%%%@@#++++++++++++++++++++++++++++++++++++++++++++++++++++++#%@@@@@@@@@@@                      
+                    =#@#@@@@@@@@@@@@@@@@@@@@@@#=@@#@%-@@%.*@@%@#..#@=*#@@@@@@@##%%@@#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++*%@%%%@@@@@@@@@%                
+                    *#@@@@@@@@@@@@@@@@@@@@@@@@=+@*#@=+@%-.#@#+@#..-@=*+@@@@@@%**##@@%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*#%@@@@@@             
+                      @@@@@@@@@++%@@@@@@@@@@@@-%%#@#*@@+.:@@*+@+:+#%**-@@@@@@#****#@@*++++*%#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*#@@@@           
+                      %@@@@@@%:...=@@@@@%#@#*%=+:#:.+*:=*-@#+*@=*..=+*-%@@@@%******%@@++++%@%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*@@@          
+                      @@@@@@@:-::--+@@@#**@*=@==+.:*-....%*.:*+...=*+*+@@@@%###*****%@%++#@@*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#@@@         
+                     @@@@@@@+.+:-.-:+*%%++=%:+*=*##***-.::-.:=..=@#::#@@@@@%%%##*#***@@%+@@%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@@          
+                   @@@@@@@@@*..-=*:.=++=*+-=:.*%@@@*.-@=..-....:*@@=.=@%%%%%%@@@@@%%##%@@@@+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@@%          
+                 @@@@@@@@@@@#:..:=-.:=:......=*%@@@%-..=:.......*@+..+%%%%%%%%%@@@@@@%%%@@%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*#*+++++*@@@@           
+               @@@@@@@@@@@@%#+:..:-............+@@#-:..............--*%%%%%%%%%%@@@@@@@%@@*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@%++++#@@@             
+            @@@@@@@@@@@@@@@%:++=..............:::...::.::.......----+%%%%%%%%%%%%@@@@@@@@%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@%++#@@@@              
+         @@@@@@@@@@@@@@@@@@@*::.==*=:............::-:..............:%%%%%%%%%%%%@@@@@@@@@#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@%%@@@@                
+         @@@@@@@@@@@@@@@@@@@@+...:-##..............................=@@@@@@@@@@@@@@@@@@%@@*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@@@@@                  
+         @@@@@@@@@@@@@@@@@@%%@=...:-+:.........................=...*%@@@@@@@@@@@@@@@@*#@@++++++++%@@@%*+++++++++++++++++++++++++++++++++++++++++++++++%@@@                    
+         @@@@@@@@@@@@@@@@@@@%%@=.:..:*............................=#@@@@@@@@@@@@@@@%++%@%++++++#@@@@@@@%++++++++++++++++++++++++++++++++++++++++++++++%@@                     
+         @@@@@@@@@%@@@@@@@@@@%%@+--.:%:..........................**@@@@@@@@@@@@@@%*+=+@@*++++++%@@@@@@@@*++++++++++++++++++++++++++%@@@%+++++++++++++*@@@                     
+         @@@@@@@@@++@@@@@##@@++@@+-.........................--.-%#====++******++====+@@#+++++++#@@@@@@@@+++++++++++++++++++++++++#@@@@@@@#+++++++++++*@@@                     
+         @@@@@@@@@@++@@@@@*+++=+@@*.....-+=..............-:==:=@@@%+================#@%+++++++++*@@@@@#++++++++++++++++++++++++++@@@@@@@@@*++++++++++*@@@                     
+         @@@@@@@@@@@@@@@@@%+===+%@@*......::=*=:.............+@@@@@@*==============+%@#++++++++++++++++++++++++++++++++++++++++++%@@@@@@@%+++++++++++*@@@                     
+         @@@@@@@@@@@@%@@@@@%===*@@@@#.......:=:-==-.........#@@@@@@@@#=============+@@#+++++++++++++++++++++++++*@@@%#++++++++++++#@@@@@#++++++++++++*@@@                     
+         @@@@@@@@@@@@@*@@@@@%=*@%@@@@%:......:=:--.-+=:....#@@@@@@@@@@*=============%@%++++++++++++++++++++**++++%@@@%+++++++++++++++++++++++++++++++#@@                      
+        @@@@@@@@@@@@@@@%@@@@@%%#@@@@@@%:.........=#%%@@@#%@@@@@@@@@@@@@%=========++*%@@#++++++++++++++++++*@@@%%@@@@@@%***#++++++++++++++++++++++++++%@@                      
+        @@@@@@@@@@@@@@@@@@@@@@@@@%@%@@@@:...:-#@@@@@@@@@@@@@@@@@@@@@@@@=====+@@@@@@@@@@@%+++++++++++++++++++#%%%%*++#@@@@@@*+++++++++++++++++++++++++@@@                      
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+#@#--=@@@@@@@@@@@@@@@@@@@@@@*=====%@%+**#%%@@@@@%+++++++++++++++++++++++++++++++++++++++++++++++++++++++++%@@                       
+       @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%..=:+@@@@@@@+*@@@@@@@@@@@@@+====*@@@@@@@%%%#%@@@@@#*++++++++++++++++++++++++++++++++++++++++++++++++++++#@@@                       
+      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%+.-#@@@@@@%@@@@@@@@@@@@@@@+==#@@#-::..........-+@@@@@%*+++++++++++++++++++++++++++++++++++++++++++++++%@@@                        
+      @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%==:#@@@%@@@@@@@@@@@@@@@@@@**@@#:..................:*%@@@@@@#+++++++++++++++++++++++++++++++++++++++*%@@@                          
+     @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*-:#@@##@@@@@@@@@@@@@@%%@@@@#:...........:-=**#%%%%%%#@@%#%%*++++++++++++++++++++++++++++++++++%@@@@@@@                           
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%#@%+.-@@@@@@%@@@@@@@@@@@@@%@@@=--=*#%@@@@@%%%#**+++++++++%@%++++++++++++++++++++++++++++++++++++++#%%*+#@@@@@                        
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@%-....+@@@@@=+@@@@@@@@@@@@@@@@@@*+++++++++++++++++++++++++#@@+++++++++++++++++++++++++++++++++++++++++++++*%@@@                       
+   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@+=:...:=--@@@@%=#@@@@@@@@@@@@@@@@@@%+++++**++++++**+*++++++++#@@*+++++++++++++++++++++++++++++++++++++++++++++++@@@@                     
+  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%:..:...-@@@@*#@@@@@@@@@@@@@@@@@@@@*++@@#@++++%@@@*@*+++++++*@@#+++++++++++++++++++++++++++++++++++++#@%++++++++#@@@                    
+ @@@@@@@@@@@@@@@@@@@@@@@%+##%@@@@@@@@@@@-.....-@@@@*@@@@@@@@@@@@@@@@@@@@@%++@@@@@@@*#@@@@#@++++++++@@#+++++++++++++++++++++++++++++++++++++%@%++++++++++%@@@                  
+@@@@@@@@@@@@@@@@@@%*@@@@@@%+*@@@@@@@@@@@@=....+@@@%*@@@@@@@@@@@@@@@@@@@@@@#*@@+%@*+++@@@@%@*+++++++@@#+++++++++++++++++++++++++++++++++++++%@@*++++++++++%@@@                 
+@@@@@@@@@@@@@@@@@@@%@@@@@@%%*%@@@@@@@@@@@@=..-=@@@%@@@@@@@@@@@@@#@@@@@@@@@@*#%%%@@%%###%@#%@+++++++%@%+++++++++++++++++++++++++++++++++++++%@@*++++++++++%@@                  
+@@@@@@@@@@@@@@@@@@#%@@@@@@@%*+@@@@@@@@@@@+-::.+@@@@@@@@@@@@@@@#%+#@@@@@@@@@#+###%@###*@@@@%@#@*++++#@@*+++++++++++++++++++++++++++++++++++*@@#++++++++++@@@@                  
+@@@@@@%@@@@@@@@@@@@@@@@@@@@@+%@@@@@@@@@%::=::-*@@@@@@@@@@@@@@#=%#%@@@@@@@@@%++++*@*+++**@%+@%@%+++++@@*+++++++++++++++++++++++++++++++++++*@@*++++++++%@@@                    
+@@@@@@@@@@@@@@@@@@%*@@@@@@@@@%@@@@@@@@+:+-.-..#@@@@@@@@@@@@%+=*@@@@@@@@@@@@@*++++%@++++%@%++@@%+++++@@#+++++++++++++++++++++++++++++++++++*@@#++++++%@@@@                     
+@@@@@@@@@@@@@@@@@@%*@@@@@@@@@*@@@@@@@**::-..-@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@%+++++++++++++++++++++++@@%++++++++++++++++++++++++++++++++++++@@@#++++*@@@                               </div>
 <body>
+    
     <div id="canvas-container"></div>
     <div class="icons-container"></div>
     <div class="content">
+        
         <h1>deet.bio</h1>
-        <div id="age-counter"></div>
-        <p>Currently building ai storytelling <a href="https://www.kodan.app/" target="_blank">Kōdan</a></p>
+        <p>builder of his interests</p>
+       
+        <!-- <div id="age-counter"></div>  -->
+        <p></p>
 <br>
-        <p>most proud projects</p>
 
         <div class="projects">
             <div class="project" data-project="lifeofchai">Life of Chai</div>
             <div class="project" data-project="hackclub">Hack Club</div>
+            <div class="project" data-project="kodan">Kōdan</div>
+            <div class="project" data-project="websites">Websites i like</div>
 
             <div class="project" data-project="bikstar">BikstAR</div>
             <div class="project" data-project="minimaru">Minimaru Clothing</div>
@@ -299,7 +457,13 @@
         <a href="https://x.com/DeetSchoe" target="_blank">
             <img src="twitter.png" alt="Twitter" class="twitter-logo">
         </a>
+        <a href="https://github.com/Deetschoe" target="_blank">
+            <img src="github.png" alt="Github" class="github-logo">
+        </a>
     </div>
+
+
+
     <div id="terminal">
         <div id="terminal-output"></div>
         <input type="text" id="terminal-input" placeholder="Type a command...">
@@ -313,10 +477,27 @@
             <div class="project-popup-images">
                 <!-- Add your image paths here -->
                 <img src="/mini.png" alt="Minimaru Clothing" style="width: 250px;">
-                <img src="/minimaru.png" alt="Minimaru Clothing" style="width: 250px;">
+                <img src="/minimaru.png" alt="Minimaru Clothing" style="height: 120px; width: 150px;">
                             </div>
-            <p>Started a clothing brand at 14, gaining a million in revenue before 17</p>
-            <a href="https://www.instagram.com/minimaruclothing/?hl=en" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Minimaru</a>
+                            <p>Started a clothing brand at 14</p>
+                            <p>shipped 25,000 orders within the first 2 years</p>
+                            <a href="https://www.instagram.com/minimaruclothing/?hl=en" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Minimaru</a>
+        </div>
+    </div>
+    <div class="project-popup" id="kodan-popup">
+        <div class="project-popup-content">
+            <button class="close-popup">&times;</button>
+            <h2>Kōdan</h2>
+            <div class="project-popup-images">
+                <!-- Add your image paths here -->
+                <img src="/kodan.png" alt="Kōdan" style="height: 150px; width: 150px;">
+                <img src="/japan.jpg" alt="Kōdan image" style="width: 150px;">
+                <img src="/robo.jpg" alt="Kōdan image" style="width: 150px;">
+            </div>
+                            
+            <p>locally generate AI anime videos</p>
+            <p>lived in Japan with Thomas for 2 months building Kōdan</p>
+            <a href="https://serenityux.github.io/kodan-desktop-site/" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Download Kōdan</a>
         </div>
     </div>
 
@@ -324,7 +505,7 @@
         <div class="project-popup-content">
             <button class="close-popup">&times;</button>
             <h2>Hack Club</h2>
-            <p>Took a gap year to make epic content</p>
+            <p>I spent a year making epic videos</p>
             <div class="youtube-videos">
                 <div class="youtube-video">
                     <a href="https://www.instagram.com/starthackclub" target="_blank">
@@ -410,6 +591,114 @@
             </div>
         </div>
     </div>
+    <div class="project-popup" id="websites-popup">
+        <div class="project-popup-content">
+            <button class="close-popup">&times;</button>
+            <h2>Favorite Websites</h2>
+            <p>A curated list of interesting and useful websites</p>
+            
+            <div class="website-categories">
+                <div class="website-category">
+                    <h3>Tech & Essays</h3>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://paulgraham.com/favicon.ico" alt="Paul Graham's Essays" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://paulgraham.com/articles.html" target="_blank" class="website-link">Paul Graham's Essays</a></h4>
+                                <p>A collection of insightful essays on startups, technology, and life by Y Combinator co-founder Paul Graham.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="website-category">
+                    <h3>Game Development Resources</h3>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://www.textures-resource.com/favicon.ico" alt="The Textures Resource" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://www.textures-resource.com/" target="_blank" class="website-link">The Textures Resource</a></h4>
+                                <p>A vast collection of video game textures for developers and enthusiasts.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://www.models-resource.com/favicon.ico" alt="The Models Resource" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://www.models-resource.com/" target="_blank" class="website-link">The Models Resource</a></h4>
+                                <p>An extensive library of 3D models from various video games.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="website-category">
+                    <h3>Utility Tools</h3>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://www.qrcode-monkey.com/img/favicon/favicon-96x96.png" alt="QRCode Monkey" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://www.qrcode-monkey.com/" target="_blank" class="website-link">QRCode Monkey</a></h4>
+                                <p>A free online QR code generator with advanced customization options.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="website-category">
+                    <h3>Animation & Art</h3>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://www.ghibli.jp/favicon.ico" alt="Studio Ghibli Works" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://www.ghibli.jp/works/" target="_blank" class="website-link">Studio Ghibli Works</a></h4>
+                                <p>Official website showcasing the masterpieces of Studio Ghibli, the renowned Japanese animation studio.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="website-category">
+                    <h3>Web Design Inspiration</h3>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://www.hoverstat.es/favicon.ico" alt="Hoverstat.es Archive" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://www.hoverstat.es/archive/" target="_blank" class="website-link">Hoverstat.es Archive</a></h4>
+                                <p>A curated collection of interesting and innovative web design examples.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="website-item">
+                        <div class="website-content">
+                            <div class="website-icon">
+                                <img src="https://brutalistwebsites.com/favicon.ico" alt="Brutalist Websites" onerror="this.style.display='none'">
+                            </div>
+                            <div class="website-info">
+                                <h4><a href="https://brutalistwebsites.com/" target="_blank" class="website-link">Brutalist Websites</a></h4>
+                                <p>A showcase of websites with a raw, minimalist aesthetic inspired by brutalist architecture.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="project-popup" id="lifeofchai-popup">
         <div class="project-popup-content">
@@ -420,8 +709,8 @@
                 <img src="https://cdn.sidequestvr.com/file/540048/img_4238.jpg" alt="Life of Chai" style="width: 250px;">>
                 <img src="https://cdn.sidequestvr.com/file/540045/img_4228.jpg" alt="Life of Chai" style="width: 250px;">>
             </div>
-            <p>First VR game published</p>
-            <a href="https://sidequestvr.com/app/27172/life-of-chai" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Project</a>
+            <p>VR story game i made with Thomas it was our first VR game published</p>
+            <a href="https://sidequestvr.com/app/27172/life-of-chai" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Play life of chai</a>
         </div>
     </div>
 
@@ -433,7 +722,7 @@
                 <img src="/biking.png" alt="Minimaru Clothing" style="width: 250px;">
             </div>
             <p>Created the world's most dangerous VR game</p>
-            <a href="https://devpost.com/software/bikstar" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Project</a>
+            <a href="https://devpost.com/software/bikstar" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Devpost</a>
         </div>
     </div>
 
@@ -444,10 +733,11 @@
             <div class="project-popup-images">
                 <img src="https://cloud-o4poffhxo-hack-club-bot.vercel.app/0thumbnail_dev_post.png" alt="Hack The Geese" style="width: 250px;">
             </div>
-            <p>Won Canada's largest Hackathon!</p>
-            <a href="https://devpost.com/software/hack-the-geese" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Project</a>
+            <p>Fayd, Sam and I Won Canada's largest Hackathon! We made a selfie challenge game</p>
+            <a href="https://devpost.com/software/hack-the-geese" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Devpost</a>
         </div>
     </div>
+
 
     <div class="project-popup" id="darukiyu-popup">
         <div class="project-popup-content">
@@ -467,75 +757,87 @@
  let usedImages = [];
  let isKaplootMode = false;
 const images = [
-{ "src": "1.jpg", "text": "Did I mention I love boba?" },
-        { "src": "2.JPG", "text": "Photo from the summit a hackathon i filmed videos at with Jack, and Ajith" },
-        { "src": "3.JPG", "text": "Built a human sized microwave with Shawn" },
+{ "src": "1.jpg", "text": "did I mention I love boba?" },
+        { "src": "2.JPG", "text": "photo from the summit a hackathon i filmed videos at with Jack, and Ajith" },
+        { "src": "3.JPG", "text": "built a human sized microwave with Shawn" },
         { "src": "4.JPG", "text": "Kyoto has great shrines and food" },
-        { "src": "5.JPG", "text": "One day I want a Shiba, they are so cool" },
-        { "src": "6.JPG", "text": "Brownies." },
-        { "src": "7.JPG", "text": "Call em" },
+        { "src": "5.JPG", "text": "one day I want a Shiba, they are so cool" },
+        { "src": "6.JPG", "text": "brownies." },
+        { "src": "7.JPG", "text": "call em" },
         { "src": "8.JPG", "text": "BOBA BOBA" },
-        { "src": "9.JPG", "text": "Hack the north 2023 with Sam and Fayd" },
-        { "src": "10.JPG", "text": "Laptop on planes is a vibe" },
+        { "src": "9.JPG", "text": "hack the north 2023 with Sam and Fayd" },
+        { "src": "10.JPG", "text": "laptop on planes is a vibe" },
         { "src": "11.JPG", "text": "build space!" },
-        { "src": "12.JPG", "text": "Funny way of spelling my name" },
-        { "src": "13.JPG", "text": "Tonkatsu ramen >" },
+        { "src": "12.JPG", "text": "funny way of spelling my name" },
+        { "src": "13.JPG", "text": "tonkatsu ramen >" },
         { "src": "14.JPG", "text": "Uh Oh" },
         { "src": "15.JPG", "text": "I LOVE Açaí Bowls" },
         { "src": "16.jpg", "text": "packed 500 orders in one night with my friends for my brand Minimaru" },
         { "src": "17.jpg", "text": "Pokemon." },
         { "src": "18.jpg", "text": "best quote I saw a hackathon" },
         { "src": "19.jpg", "text": "Aphex twin, Mac Demarco, Odetari, TVGirl, Clairo, J Dilla, and Nujabes are some of my fav artists " },
-        { "src": "21.jpg", "text": "I used to have a 2DS and take a lot of insp from Nintendo" },
+        { "src": "21.jpg", "text": "i used to have a 2DS and take a lot of insp from Nintendo" },
         { "src": "22.JPG", "text": "MHacks16 with Fayd, Thomas, and Sam!" },
         { "src": "23.jpg", "text": "Tom Preston-Werner's username: mojombo, came from a flan elephant sculpture he made during lunch in college. The more you know" },
         { "src": "24.jpg", "text": "another group photo!" },
-        { "src": "25.JPG", "text": "I have seen almost every Studio Ghibli film, they are so great. Highly reccomend" },
-        { "src": "26.jpg", "text": "Group photo!" },
+        { "src": "25.JPG", "text": "i have seen almost every Studio Ghibli film, they are so great. Highly reccomend" },
+        { "src": "26.jpg", "text": "group photo!" },
         { "src": "28.jpg", "text": "Hack Club!" },
-        { "src": "29.JPG", "text": "Walks at night in Vermont are very nice" },
-        { "src": "30.JPG", "text": "Maple water exists in Montreal?" },
-        { "src": "31.jpg", "text": "Package drop off!" },
-        { "src": "32.jpg", "text": "Highest amount of TikTok views i got in 60 days!" },
+        { "src": "29.JPG", "text": "walks at night in Vermont are very nice" },
+        { "src": "30.JPG", "text": "maple water exists in Montreal" },
+        { "src": "31.jpg", "text": "package drop off!" },
+        { "src": "32.jpg", "text": "highest amount of TikTok views i got in 60 days!" },
         { "src": "33.JPG", "text": "hyde street roof is snazzy" },
         { "src": "34.JPG", "text": "cool art on the wall in Montreal" },
         { "src": "35.JPG", "text": "Thomas and Ivoine getting in a chess battle" },
-        { "src": "36.JPG", "text": "You will see me biking with a VR headset on" },
-        { "src": "37.JPG", "text": "You will see me in public with a VR headset on" },
-        { "src": "38.JPG", "text": "Good times, need to go back to SF" },
-        { "src": "39.JPG", "text": "Why do my friends drink Tomato and Apple juice together?" },
-        { "src": "40.JPG", "text": "Never finished this movie but i watched it on a plane, very good" },
-        { "src": "41.JPG", "text": "Cheeto" },
-        { "src": "42.JPG", "text": "Aromas of India good Indian food in VT" },
-        { "src": "43.JPG", "text": "Solar Eclipse 2024" },
-        { "src": "44.JPG", "text": "E-Bike Chariot" },
+        { "src": "36.JPG", "text": "you will see me biking with a VR headset on" },
+        { "src": "37.JPG", "text": "you will see me in public with a VR headset on" },
+        { "src": "38.JPG", "text": "good times, need to go back to SF" },
+        { "src": "39.JPG", "text": "why do my friends drink Tomato and Apple juice together?" },
+        { "src": "40.JPG", "text": "never finished this movie but i watched it on a plane, very good" },
+        { "src": "41.JPG", "text": "cheeto" },
+        { "src": "42.JPG", "text": "aromas of India good Indian food in VT" },
+        { "src": "43.JPG", "text": "solar eclipse 2024" },
+        { "src": "44.JPG", "text": "e-bike Chariot" },
         { "src": "45.JPG", "text": "YC Start up school boston!" },
-        { "src": "46.JPG", "text": "Selfie stickers!!" },
-        { "src": "70.JPG", "text": "I don't game often but i have a switch" },
+        { "src": "46.JPG", "text": "selfie stickers!!" },
+        { "src": "70.JPG", "text": "Nintendo's design is inspiring" },
         { "src": "69.JPG", "text": "is he cooking?" },
-        { "src": "68.JPG", "text": "Thomas and I hike" },
+        { "src": "68.JPG", "text": "hiking is epic" },
         { "src": "66.JPG", "text": "the sf trio" },
-        { "src": "67.JPG", "text": "Dalton Cadwell?!?" },
+        { "src": "67.JPG", "text": "getting feedback on start up>" },
 
 ];
 
 const soundEffects = ['1.wav', '2.wav', '3.wav', '4.wav', '5.wav', '6.wav', '7.wav'];
 
+function typeWriter(element, text, index = 0) {
+    if (index < text.length) {
+        element.textContent += text.charAt(index);
+        index++;
+        setTimeout(() => typeWriter(element, text, index), 25);
+    }
+}
+
+
+
+
 function handleKaploot() {
     if (!isKaplootMode) {
         isKaplootMode = true;
         usedImages = [];
-        return "Kaploot mode activated. Press Enter for a new image. Type 'kaploot' again to exit.";
+        printToTerminal("Kaploot mode activated. Press Enter for a new image. Type 'kaploot' again to exit.");
     } else {
         isKaplootMode = false;
-        return "Exited kaploot mode.";
+        printToTerminal("Exited kaploot mode.");
     }
+    return ''; // Return empty string as we've already printed the message
 }
 
 function getKaplootImage() {
     if (usedImages.length === images.length) {
         usedImages = [];
-        return "Kaploot is tired...";
+        return { text: "Kaploot is tired...", image: null };
     }
 
     let randomImage;
@@ -548,12 +850,11 @@ function getKaplootImage() {
     const randomSound = soundEffects[Math.floor(Math.random() * soundEffects.length)];
     playSound(randomSound);
 
-    return `
-        <img src="./${randomImage.src}" alt="Random Image" style="width: 70px; height: auto; pointer-events: none;">
-        <p>${randomImage.text}</p>
-    `;
+    return {
+        image: `./${randomImage.src}`,
+        text: randomImage.text
+    };
 }
-
 function playSound(soundFile) {
     const audio = new Audio(soundFile);
     audio.play().catch(e => console.error('Error playing audio:', e));
@@ -615,7 +916,7 @@ function playSound(soundFile) {
             const now = new Date();
             const ageInMilliseconds = now - birthDate;
             const ageInYears = ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000);
-            document.getElementById('age-counter').textContent = ` ${ageInYears.toFixed(8)} online`;
+            document.getElementById('age-counter').textContent = ` ${ageInYears.toFixed(8)} yrs online`;
         }
 
         setInterval(updateAgeCounter, 50);
@@ -647,6 +948,9 @@ function playSound(soundFile) {
 const popups = document.querySelectorAll('.project-popup');
 const closeButtons = document.querySelectorAll('.close-popup');
 
+const encodedKey = 'QjRzSFFzbEtrN3BRN2dGSEZaQmJOQzgzaVdmUzdzWEY';  // Your Base64 encoded API key
+const GIPHY_API_KEY = atob(encodedKey);  // Decodes the Base64 string back to the original key
+
 function closeAllPopups() {
     const popups = document.querySelectorAll('.project-popup');
     popups.forEach(popup => {
@@ -676,22 +980,20 @@ document.addEventListener('keydown', (e) => {
         const terminal = document.getElementById('terminal');
         const terminalInput = document.getElementById('terminal-input');
         const terminalOutput = document.getElementById('terminal-output');
-
-        function printToTerminal(text) {
+        function printToTerminal(text, isHTML = false) {
     const newOutput = document.createElement('div');
-    newOutput.innerHTML = text;
     terminalOutput.appendChild(newOutput);
+
+    if (isHTML) {
+        newOutput.innerHTML = text;
+    } else {
+        typeWriter(newOutput, text);
+    }
     
-    // Scroll to the bottom after a short delay to ensure content is rendered
     setTimeout(() => {
         terminalOutput.scrollTop = terminalOutput.scrollHeight;
     }, 10);
 }
-
-        const commandImages = {
-            contact: "https://cloud-5hbkwdgc2-hack-club-bot.vercel.app/9contact.png",
-            projects: "https://cloud-5hbkwdgc2-hack-club-bot.vercel.app/10projects.png",
-        };
     
         
 const terminalObserver = new MutationObserver(() => {
@@ -707,23 +1009,23 @@ const commands = {
         description: "Show available commands"
     },
     about: {
-        action: () => "Hey! I'm Dieter, played minecraft, watched anime, designed in blender, streamed fortnite, made vines, loved cameras, pirated photoshop, etc.",
+        action: () => "i grew up in South Carolina. I moved around when I was young, so I spent a lot of time on the computer playing Minecraft, watching anime, creating animations, editing videos, designing Fortnite thumbnails using Blender, and reselling things on eBay. At an early age, I was able to find ways to make a living on my own using the internet, and it's been my passion to make digital and physical things.",
         description: "Learn about deet"
     },
     contact: {
-        action: () => 'dm me on twitter or if you wanna be formal send me an email; dieter@serenidad.app',
+        action: () => 'dm me on twitter @deetschoe / dieter@serenidad.app',
         description: "Get contact information"
     },
-    projects: {
-        action: () => 'click on a project above for more info',
-        description: "List projects"
+    music: {
+        action: () => 'i enjoy music a lot - check out my <a href="https://open.spotify.com/user/deetschoening/playlists" target="_blank">personal spotify</a> and <a href="https://open.spotify.com/artist/76OhUz2MXMvlF8dlJAN9v5" target="_blank">public spotify</a>',
+        description: "musics"
     },
     age: {
         action: () => {
             const birthDate = new Date('2005-06-09');
             const now = new Date();
             const ageInYears = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
-            return `I've been here for ${ageInYears.toFixed(8)} yrs.`;
+            return `I've been on earth for ${ageInYears.toFixed(8)} yrs.`;
         },
         description: "Show age"
     },
@@ -739,37 +1041,89 @@ const commands = {
         description: "Enter or exit kaploot mode"
     },
     gif: {
-        action: () => {
-            return '<img src="shibe.gif" width="100px" alt="Terminal GIF">';
-            
-        },
-        description: "Display a small GIF"
-    }
-};
+    action: () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const searchTerms = 'shiba+inu+dog';
+                const url = `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${searchTerms}&limit=25&offset=0&rating=g&lang=en`;
+                console.log('Fetching from URL:', url);
 
-// Modified event listener for case-insensitive command handling
-terminalInput.addEventListener('keydown', (e) => {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                if (data.data && data.data.length > 0) {
+                    console.log('Number of GIFs received:', data.data.length);
+                    
+                    const filteredGifs = data.data.filter(gif => {
+                        // Check if title or slug contains cryptocurrency-related terms
+                        const lowerTitle = (gif.title || '').toLowerCase();
+                        const lowerSlug = (gif.slug || '').toLowerCase();
+                        const isCryptoRelated = 
+                            lowerTitle.includes('coin') || 
+                            lowerTitle.includes('crypto') || 
+                            lowerSlug.includes('coin') || 
+                            lowerSlug.includes('crypto');
+                        return !isCryptoRelated;
+                    });
+                    console.log('Number of filtered GIFs:', filteredGifs.length);
+
+                    if (filteredGifs.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * filteredGifs.length);
+                        const gifUrl = filteredGifs[randomIndex].images.fixed_height_small.url;
+                        console.log('Selected GIF URL:', gifUrl);
+                        resolve(`<img src="${gifUrl}" alt="Random Shiba Inu Dog GIF" style="max-width: 100px; max-height: 100px;">`);
+                    } else {
+                        resolve("Please try again.");
+                    }
+                } else {
+                    resolve("No GIFs received from the API. Please try again.");
+                }
+            } catch (error) {
+                console.error("Detailed error in gif command:", error);
+                resolve(`An error occurred while fetching the GIF: ${error.message}. Please try again.`);
+            }
+        });
+    },
+    description: "Display a random Shiba Inu dog GIF (excluding cryptocurrency-related GIFs)"
+}
+};
+terminalInput.addEventListener('keydown', async (e) => {
     if (e.key === 'Enter') {
-        const input = terminalInput.value.trim().toLowerCase();
+        const input = terminalInput.value.trim();
         let output = '';
 
-        if (isKaplootMode && input !== 'kaploot') {
-            output = getKaplootImage();
+        printToTerminal(`> ${input}`);
+
+        if (isKaplootMode && input.toLowerCase() !== 'kaploot') {
+            const kaplootResult = getKaplootImage();
+            if (kaplootResult.image) {
+                const imgElement = `<img src="${kaplootResult.image}" alt="Random Image" style="width: 70px; height: auto; pointer-events: none;">`;
+                printToTerminal(imgElement, true);
+            }
+            printToTerminal(kaplootResult.text);
         } else {
-            const [command, ...args] = input.split(' ');
+            const [command, ...args] = input.toLowerCase().split(' ');
             const matchedCommand = Object.keys(commands).find(cmd => cmd.toLowerCase() === command);
             if (matchedCommand) {
-                output = commands[matchedCommand].action(args);
+                const result = commands[matchedCommand].action(args);
+                if (result instanceof Promise) {
+                    output = await result;
+                } else {
+                    output = result;
+                }
             } else {
                 output = `Command not recognized: "${command}". Type "help" for available commands.`;
             }
+            printToTerminal(output, output.startsWith('<'));
         }
 
-        printToTerminal(`<div>> ${terminalInput.value}</div><div>${output}</div>`);
         terminalInput.value = '';
     }
 });
-
 
         // Initialize
         window.onload = () => {
@@ -795,7 +1149,7 @@ terminalInput.addEventListener('keydown', (e) => {
 
             createFloatingIcons(iconsData);
            
-            printToTerminal('<div>Welcome to deets\'s terminal. Type "help" for available commands.</div>');
+            printToTerminal('Welcome to deets\'s terminal. Type "help" for available commands.');
 
         };
     </script>
