@@ -281,6 +281,30 @@
     height: 30px;
     display: inline-block;
     margin-right: 10px;
+    text-decoration: none;
+
+}.social-icon {
+    margin-top: 25px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform 0.3s ease; /* Add smooth transition for transform */
+}
+
+a .social-icon {
+    text-decoration: none;
+}
+
+a:hover .social-icon {
+    text-decoration: none;
+    transform: scale(1.1); /* Increase size by 10% on hover */
+}
+
+/* To ensure no text decoration on any links */
+a, a:hover, a:focus, a:active {
+    text-decoration: none;
+    outline: none;
 }
 
         .project-popup {
@@ -455,10 +479,13 @@
 
         </div>
         <a href="https://x.com/DeetSchoe" target="_blank">
-            <img src="twitter.png" alt="Twitter" class="twitter-logo">
+            <img src="twitter.png" alt="Twitter" class="social-icon">
+        </a>
+        <a href="https://www.youtube.com/channel/UCq16tLSvTGvE1HXCqRU1qlg" target="_blank">
+            <img src="youtube.png" alt="YouTube" class="social-icon">
         </a>
         <a href="https://github.com/Deetschoe" target="_blank">
-            <img src="github.png" alt="Github" class="github-logo">
+            <img src="github.png" alt="Github" class="social-icon">
         </a>
     </div>
 
@@ -1036,13 +1063,17 @@ const commands = {
         description: "Learn about deet"
     },
     contact: {
-        action: () => 'dm me on twitter @deetschoe / dieter@serenidad.app',
+        action: () => 'dieter@serenidad.app',
         description: "Get contact information"
     },
     music: {
-        action: () => 'i enjoy music a lot - check out my <a href="https://open.spotify.com/user/deetschoening/playlists" target="_blank">personal spotify</a> and <a href="https://open.spotify.com/artist/76OhUz2MXMvlF8dlJAN9v5" target="_blank">public spotify</a>',
-        description: "musics"
+    action: () => {
+        window.open("https://open.spotify.com/user/deetschoening/playlists", "_blank");
+        return "Opening Spotify playlists...";
     },
+    description: "Opens the Spotify playlists in a new tab"
+},
+
     age: {
         action: () => {
             const birthDate = new Date('2005-06-09');
