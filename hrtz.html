@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Audio-Driven Laser Visualization Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #162D37;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            width: 800px;
+            max-width: 95%;
+        }
+        h1 {
+            color: #EAF469;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #0BDE3D;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .control-panel {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .control {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .control label {
+            margin-bottom: 5px;
+            color: #EAF469;
+        }
+        input[type="range"] {
+            width: 200px;
+        }
+        .value-display {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #0BDE3D;
+        }
+        #laser-canvas {
+            background-color: #000000;
+            border-radius: 5px;
+        }
+        .playback-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #0BDE3D;
+            color: #162D37;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #09AB2F;
+        }
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enhanced Audio-Driven Laser Visualization Simulator</h1>
+        <p>Adjust the frequency and amplitude to see how they affect the laser visualization.</p>
+        <div class="control-panel">
+            <div class="control">
+                <label for="frequency-slider">Frequency (Hz)</label>
+                <input type="range" id="frequency-slider" min="20" max="2000" value="440" step="1">
+                <div id="frequency-value" class="value-display">440 Hz</div>
+            </div>
+            <div class="control">
+                <label for="amplitude-slider">Amplitude</label>
+                <input type="range" id="amplitude-slider" min="0" max="1" value="0.5" step="0.01">
+                <div id="amplitude-value" class="value-display">50%</div>
+            </div>
+        </div>
+        <canvas id="laser-canvas" width="700" height="400"></canvas>
+        <div class="playback-controls">
+            <button id="start-btn">Start</button>
+            <button id="stop-btn" disabled>Stop</button>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let oscillator;
+        let gainNode;
+        let analyser;
+        let isPlaying = false;
+        let animationId;
+
+        const frequencySlider = document.getElementById('frequency-slider');
+        const amplitudeSlider = document.getElementById('amplitude-slider');
+        const frequencyValue = document.getElementById('frequency-value');
+        const amplitudeValue = document.getElementById('amplitude-value');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const canvas = document.getElementById('laser-canvas');
+        const ctx = canvas.getContext('2d');
+
+        frequencySlider.addEventListener('input', updateFrequency);
+        amplitudeSlider.addEventListener('input', updateAmplitude);
+        startBtn.addEventListener('click', startSimulation);
+        stopBtn.addEventListener('click', stopSimulation);
+
+        function updateFrequency() {
+            const frequency = frequencySlider.value;
+            frequencyValue.textContent = `${frequency} Hz`;
+            if (oscillator) {
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            }
+        }
+
+        function updateAmplitude() {
+            const amplitude = amplitudeSlider.value;
+            amplitudeValue.textContent = `${Math.round(amplitude * 100)}%`;
+            if (gainNode) {
+                gainNode.gain.setValueAtTime(amplitude, audioContext.currentTime);
+            }
+        }
+
+        function startSimulation() {
+            if (isPlaying) return;
+
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            oscillator = audioContext.createOscillator();
+            gainNode = audioContext.createGain();
+            analyser = audioContext.createAnalyser();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(analyser);
+            analyser.connect(audioContext.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequencySlider.value, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(amplitudeSlider.value, audioContext.currentTime);
+
+            analyser.fftSize = 2048;
+
+            oscillator.start();
+            isPlaying = true;
+
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+
+            animateLaser();
+        }
+
+        function stopSimulation() {
+            if (!isPlaying) return;
+
+            oscillator.stop();
+            isPlaying = false;
+            cancelAnimationFrame(animationId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        }
+
+        function animateLaser() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteTimeDomainData(dataArray);
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const frequency = parseFloat(frequencySlider.value);
+            const amplitude = parseFloat(amplitudeSlider.value);
+            const time = audioContext.currentTime;
+
+            // Lissajous figure
+            ctx.beginPath();
+            ctx.strokeStyle = `hsl(${frequency % 360}, 100%, 50%)`;
+            ctx.lineWidth = 2;
+
+            for (let i = 0; i < 360; i++) {
+                const angle = (i / 180) * Math.PI;
+                const x = (Math.sin(angle * frequency / 100) * amplitude * canvas.width / 3) + canvas.width / 2;
+                const y = (Math.sin(angle * frequency / 150 + time) * amplitude * canvas.height / 3) + canvas.height / 2;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            
+            ctx.stroke();
+
+            // Oscilloscope
+            ctx.beginPath();
+            ctx.strokeStyle = '#0BDE3D';
+            ctx.lineWidth = 2;
+
+            const sliceWidth = canvas.width * 1.0 / bufferLength;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const v = dataArray[i] / 128.0;
+                const y = v * canvas.height / 2;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+
+            animationId = requestAnimationFrame(animateLaser);
+        }
+
+        // Initialize value displays
+        updateFrequency();
+        updateAmplitude();
+    </script>
+</body>
+</html>
