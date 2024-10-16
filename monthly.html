@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="number"] {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Financial Calculator</h1>
+    
+    <h2>Income</h2>
+    <label for="income">Income amount:</label>
+    <input type="number" id="income" step="0.01">
+    <select id="incomeFrequency">
+        <option value="monthly">Monthly</option>
+        <option value="weekly">Weekly</option>
+        <option value="daily">Daily</option>
+    </select>
+
+    <h2>Expenses</h2>
+    <table id="expensesTable">
+        <tr>
+            <th>Label</th>
+            <th>Amount</th>
+            <th>Action</th>
+        </tr>
+    </table>
+    <button onclick="addExpense()">Add Expense</button>
+
+    <h2>Total Savings</h2>
+    <label for="savings">Total savings:</label>
+    <input type="number" id="savings" step="0.01">
+
+    <h2>Results</h2>
+    <div id="results"></div>
+
+    <script>
+        function addExpense() {
+            const table = document.getElementById('expensesTable');
+            const newRow = table.insertRow(-1);
+            
+            const labelCell = newRow.insertCell(0);
+            const amountCell = newRow.insertCell(1);
+            const actionCell = newRow.insertCell(2);
+
+            labelCell.innerHTML = '<input type="text" class="expenseLabel">';
+            amountCell.innerHTML = '<input type="number" class="expenseAmount" step="0.01">';
+            actionCell.innerHTML = '<button onclick="this.parentNode.parentNode.remove(); calculate();">Remove</button>';
+
+            calculate();
+        }
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const incomeFrequency = document.getElementById('incomeFrequency').value;
+            const savings = parseFloat(document.getElementById('savings').value) || 0;
+
+            let monthlyIncome = income;
+            if (incomeFrequency === 'weekly') {
+                monthlyIncome = income * 4.33;
+            } else if (incomeFrequency === 'daily') {
+                monthlyIncome = income * 30.44;
+            }
+
+            const expenses = Array.from(document.getElementsByClassName('expenseAmount'))
+                .map(input => parseFloat(input.value) || 0)
+                .reduce((sum, expense) => sum + expense, 0);
+
+            const monthlyBalance = monthlyIncome - expenses;
+            const dailyRequirement = expenses / 30.44;
+            const runway = savings / dailyRequirement;
+
+            let resultHTML = `
+                <p>Monthly Income: $${monthlyIncome.toFixed(2)}</p>
+                <p>Monthly Expenses: $${expenses.toFixed(2)}</p>
+                <p>Monthly Balance: $${monthlyBalance.toFixed(2)}</p>
+                <p>Daily Requirement: $${dailyRequirement.toFixed(2)}</p>
+                <p>Financial Runway: ${runway.toFixed(1)} days</p>
+            `;
+
+            if (monthlyBalance >= 0) {
+                resultHTML += `<p>You are profiting $${monthlyBalance.toFixed(2)} per month.</p>`;
+            } else {
+                resultHTML += `<p>You need to make an additional $${(-monthlyBalance).toFixed(2)} per month to break even.</p>`;
+            }
+
+            document.getElementById('results').innerHTML = resultHTML;
+        }
+
+        // Add event listeners to inputs for real-time calculation
+        document.getElementById('income').addEventListener('input', calculate);
+        document.getElementById('incomeFrequency').addEventListener('change', calculate);
+        document.getElementById('savings').addEventListener('input', calculate);
+        document.body.addEventListener('input', function(e) {
+            if (e.target.classList.contains('expenseAmount')) {
+                calculate();
+            }
+        });
+
+        // Add initial expense row
+        addExpense();
+    </script>
+</body>
+</html>
