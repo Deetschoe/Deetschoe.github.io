@@ -82,6 +82,15 @@
             background-color: #666;
             cursor: not-allowed;
         }
+        #frequency-layers {
+            margin-top: 20px;
+        }
+        #letter-projection {
+            margin-top: 30px;
+        }
+        #letter-2 {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -91,8 +100,8 @@
         <div class="control-panel">
             <div class="control">
                 <label for="frequency-slider">Frequency (Hz)</label>
-                <input type="range" id="frequency-slider" min="20" max="2000" value="440" step="1">
-                <div id="frequency-value" class="value-display">440 Hz</div>
+                <input type="range" id="frequency-slider" min="0" max="500" value="250" step="1">
+                <div id="frequency-value" class="value-display">250 Hz</div>
             </div>
             <div class="control">
                 <label for="amplitude-slider">Amplitude</label>
@@ -104,13 +113,21 @@
         <div class="playback-controls">
             <button id="start-btn">Start</button>
             <button id="stop-btn" disabled>Stop</button>
+            <button id="add-layer-btn">Add Frequency Layer</button>
         </div>
+        <div id="frequency-layers"></div>
+        <div id="letter-2">
+        <div id="letter-projection">
+            <input type="text" id="letter-input" maxlength="1" placeholder="Enter a letter">
+            <button id="project-letter-btn">Project Letter</button>
+        </div>
+    </div>
     </div>
 
     <script>
         let audioContext;
-        let oscillator;
-        let gainNode;
+        let oscillators = [];
+        let gainNodes = [];
         let analyser;
         let isPlaying = false;
         let animationId;
@@ -121,27 +138,33 @@
         const amplitudeValue = document.getElementById('amplitude-value');
         const startBtn = document.getElementById('start-btn');
         const stopBtn = document.getElementById('stop-btn');
+        const addLayerBtn = document.getElementById('add-layer-btn');
+        const frequencyLayers = document.getElementById('frequency-layers');
         const canvas = document.getElementById('laser-canvas');
         const ctx = canvas.getContext('2d');
+        const letterInput = document.getElementById('letter-input');
+        const projectLetterBtn = document.getElementById('project-letter-btn');
 
         frequencySlider.addEventListener('input', updateFrequency);
         amplitudeSlider.addEventListener('input', updateAmplitude);
         startBtn.addEventListener('click', startSimulation);
         stopBtn.addEventListener('click', stopSimulation);
+        addLayerBtn.addEventListener('click', addFrequencyLayer);
+        projectLetterBtn.addEventListener('click', projectLetter);
 
         function updateFrequency() {
             const frequency = frequencySlider.value;
             frequencyValue.textContent = `${frequency} Hz`;
-            if (oscillator) {
-                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            if (oscillators.length > 0) {
+                oscillators[0].frequency.setValueAtTime(frequency, audioContext.currentTime);
             }
         }
 
         function updateAmplitude() {
             const amplitude = amplitudeSlider.value;
             amplitudeValue.textContent = `${Math.round(amplitude * 100)}%`;
-            if (gainNode) {
-                gainNode.gain.setValueAtTime(amplitude, audioContext.currentTime);
+            if (gainNodes.length > 0) {
+                gainNodes[0].gain.setValueAtTime(amplitude, audioContext.currentTime);
             }
         }
 
@@ -149,21 +172,10 @@
             if (isPlaying) return;
 
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            oscillator = audioContext.createOscillator();
-            gainNode = audioContext.createGain();
             analyser = audioContext.createAnalyser();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(analyser);
-            analyser.connect(audioContext.destination);
+            createOscillator(frequencySlider.value, amplitudeSlider.value);
 
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(frequencySlider.value, audioContext.currentTime);
-            gainNode.gain.setValueAtTime(amplitudeSlider.value, audioContext.currentTime);
-
-            analyser.fftSize = 2048;
-
-            oscillator.start();
             isPlaying = true;
 
             startBtn.disabled = true;
@@ -175,13 +187,67 @@
         function stopSimulation() {
             if (!isPlaying) return;
 
-            oscillator.stop();
+            oscillators.forEach(osc => osc.stop());
+            oscillators = [];
+            gainNodes = [];
             isPlaying = false;
             cancelAnimationFrame(animationId);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             startBtn.disabled = false;
             stopBtn.disabled = true;
+        }
+
+        function createOscillator(frequency, amplitude) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(analyser);
+            analyser.connect(audioContext.destination);
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(amplitude, audioContext.currentTime);
+
+            analyser.fftSize = 2048;
+
+            oscillator.start();
+            oscillators.push(oscillator);
+            gainNodes.push(gainNode);
+        }
+
+        function addFrequencyLayer() {
+            const layerFrequency = Math.floor(Math.random() * 501);
+            const layerAmplitude = 0.5;
+
+            createOscillator(layerFrequency, layerAmplitude);
+
+            const layerElement = document.createElement('div');
+            layerElement.innerHTML = `
+                <label>Layer ${oscillators.length}: ${layerFrequency} Hz</label>
+                <input type="range" min="0" max="500" value="${layerFrequency}" step="1">
+                <button>Remove</button>
+            `;
+
+            const layerSlider = layerElement.querySelector('input');
+            const removeButton = layerElement.querySelector('button');
+
+            layerSlider.addEventListener('input', () => {
+                const index = oscillators.length - 1;
+                oscillators[index].frequency.setValueAtTime(layerSlider.value, audioContext.currentTime);
+                layerElement.querySelector('label').textContent = `Layer ${index + 1}: ${layerSlider.value} Hz`;
+            });
+
+            removeButton.addEventListener('click', () => {
+                const index = Array.from(frequencyLayers.children).indexOf(layerElement);
+                oscillators[index].stop();
+                oscillators.splice(index, 1);
+                gainNodes.splice(index, 1);
+                frequencyLayers.removeChild(layerElement);
+            });
+
+            frequencyLayers.appendChild(layerElement);
         }
 
         function animateLaser() {
@@ -192,27 +258,35 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const frequency = parseFloat(frequencySlider.value);
-            const amplitude = parseFloat(amplitudeSlider.value);
             const time = audioContext.currentTime;
 
             // Lissajous figure
             ctx.beginPath();
-            ctx.strokeStyle = `hsl(${frequency % 360}, 100%, 50%)`;
+            ctx.strokeStyle = `hsl(${oscillators[0].frequency.value % 360}, 100%, 50%)`;
             ctx.lineWidth = 2;
 
             for (let i = 0; i < 360; i++) {
                 const angle = (i / 180) * Math.PI;
-                const x = (Math.sin(angle * frequency / 100) * amplitude * canvas.width / 3) + canvas.width / 2;
-                const y = (Math.sin(angle * frequency / 150 + time) * amplitude * canvas.height / 3) + canvas.height / 2;
-                
+                let x = 0;
+                let y = 0;
+
+                oscillators.forEach((osc, index) => {
+                    const frequency = osc.frequency.value;
+                    const amplitude = gainNodes[index].gain.value;
+                    x += (Math.sin(angle * frequency / 100) * amplitude * canvas.width / 6);
+                    y += (Math.sin(angle * frequency / 150 + time) * amplitude * canvas.height / 6);
+                });
+
+                x += canvas.width / 2;
+                y += canvas.height / 2;
+
                 if (i === 0) {
                     ctx.moveTo(x, y);
                 } else {
                     ctx.lineTo(x, y);
                 }
             }
-            
+
             ctx.stroke();
 
             // Oscilloscope
@@ -240,6 +314,28 @@
             ctx.stroke();
 
             animationId = requestAnimationFrame(animateLaser);
+        }
+
+        function projectLetter() {
+            const letter = letterInput.value.toUpperCase();
+            if (letter.length !== 1 || letter < 'A' || letter > 'Z') {
+                alert('Please enter a single letter (A-Z)');
+                return;
+            }
+
+            // This is a simplified approach and may not accurately represent letter shapes
+            const baseFrequency = 100;
+            const letterCode = letter.charCodeAt(0) - 65; // A = 0, B = 1, etc.
+            const frequency1 = baseFrequency + letterCode * 10;
+            const frequency2 = baseFrequency + letterCode * 15;
+
+            stopSimulation();
+            startSimulation();
+
+            createOscillator(frequency1, 0.5);
+            createOscillator(frequency2, 0.5);
+
+            alert(`Projecting letter "${letter}" using frequencies ${frequency1} Hz and ${frequency2} Hz`);
         }
 
         // Initialize value displays
