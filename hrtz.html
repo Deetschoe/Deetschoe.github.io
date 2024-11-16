@@ -3,100 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Audio-Driven Laser Visualization Simulator</title>
+    <title>Nostagrtz Layering</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #162D37;
-            color: #ffffff;
+        * {
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #ff0000;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Matrix-like background animation */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .matrix-line {
+            position: absolute;
+            color: rgba(255, 0, 0, 0.1);
+            font-size: 12px;
+            line-height: 12px;
+            white-space: nowrap;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
         .container {
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(20, 20, 20, 0.95);
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000;
             border-radius: 10px;
             padding: 20px;
-            width: 800px;
-            max-width: 95%;
+            width: min(95%, 800px);
+            margin: 20px auto;
         }
+
         h1 {
-            color: #EAF469;
+            color: #ff0000;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        p {
-            color: #0BDE3D;
-            text-align: center;
-            margin-bottom: 20px;
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            }
+            to {
+                text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+            }
         }
+
         .control-panel {
             display: flex;
-            justify-content: space-around;
+            flex-direction: column;
+            gap: 20px;
             margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(40, 0, 0, 0.5);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
+
+        @media (min-width: 768px) {
+            .control-panel {
+                flex-direction: row;
+                justify-content: space-around;
+            }
+        }
+
         .control {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
+
         .control label {
-            margin-bottom: 5px;
-            color: #EAF469;
+            margin-bottom: 10px;
+            color: #ff0000;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
         }
+
         input[type="range"] {
-            width: 200px;
+            width: min(200px, 90%);
+            appearance: none;
+            background: #300;
+            height: 4px;
+            border-radius: 2px;
+            box-shadow: 0 0 5px #ff0000;
         }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: #ff0000;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px #ff0000;
+        }
+
         .value-display {
-            margin-top: 5px;
-            font-size: 14px;
-            color: #0BDE3D;
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #ff4444;
+            text-shadow: 0 0 5px #ff0000;
         }
+
         #laser-canvas {
             background-color: #000000;
             border-radius: 5px;
+            border: 1px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
+
         .playback-controls {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
             margin-top: 20px;
         }
+
         button {
-            background-color: #0BDE3D;
-            color: #162D37;
-            border: none;
-            padding: 10px 20px;
-            margin: 0 10px;
+            background-color: #200;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 10px 25px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            font-family: 'Courier New', monospace;
+            min-width: 120px;
         }
+
         button:hover {
-            background-color: #09AB2F;
+            background-color: #400;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
         }
+
         button:disabled {
-            background-color: #666;
+            background-color: #111;
+            color: #444;
+            border-color: #444;
+            box-shadow: none;
             cursor: not-allowed;
         }
+
         #frequency-layers {
             margin-top: 20px;
+            padding: 10px;
+            background: rgba(40, 0, 0, 0.3);
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
         }
-        #letter-projection {
-            margin-top: 30px;
+
+        #frequency-layers::-webkit-scrollbar {
+            width: 8px;
         }
-        #letter-2 {
-            margin-top: 10px;
+
+        #frequency-layers::-webkit-scrollbar-track {
+            background: #200;
+        }
+
+        #frequency-layers::-webkit-scrollbar-thumb {
+            background: #ff0000;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
+    <div class="matrix-bg" id="matrix-bg"></div>
     <div class="container">
-        <h1>Enhanced Audio-Driven Laser Visualization Simulator</h1>
-        <p>Adjust the frequency and amplitude to see how they affect the laser visualization.</p>
+        <h1>Nostagrtz Layering</h1>
         <div class="control-panel">
             <div class="control">
                 <label for="frequency-slider">Frequency (Hz)</label>
@@ -111,20 +234,49 @@
         </div>
         <canvas id="laser-canvas" width="700" height="400"></canvas>
         <div class="playback-controls">
-            <button id="start-btn">Start</button>
+            <button id="start-btn">Initialize</button>
             <button id="stop-btn" disabled>Stop</button>
-            <button id="add-layer-btn">Add Frequency Layer</button>
+            <button id="add-layer-btn">Add Layer</button>
         </div>
         <div id="frequency-layers"></div>
-        <div id="letter-2">
-        <div id="letter-projection">
-            <input type="text" id="letter-input" maxlength="1" placeholder="Enter a letter">
-            <button id="project-letter-btn">Project Letter</button>
-        </div>
-    </div>
     </div>
 
     <script>
+        // Matrix background animation
+        function createMatrixBackground() {
+            const matrixBg = document.getElementById('matrix-bg');
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+            const lineCount = 50;
+
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'matrix-line';
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.animationDuration = `${5 + Math.random() * 10}s`;
+                
+                let text = '';
+                for (let j = 0; j < 20; j++) {
+                    text += characters[Math.floor(Math.random() * characters.length)] + ' ';
+                }
+                line.textContent = text;
+                
+                matrixBg.appendChild(line);
+            }
+
+            // Periodically update the characters
+            setInterval(() => {
+                document.querySelectorAll('.matrix-line').forEach(line => {
+                    let text = '';
+                    for (let j = 0; j < 20; j++) {
+                        text += characters[Math.floor(Math.random() * characters.length)] + ' ';
+                    }
+                    line.textContent = text;
+                });
+            }, 2000);
+        }
+
+        createMatrixBackground();
+
         let audioContext;
         let oscillators = [];
         let gainNodes = [];
@@ -142,15 +294,30 @@
         const frequencyLayers = document.getElementById('frequency-layers');
         const canvas = document.getElementById('laser-canvas');
         const ctx = canvas.getContext('2d');
-        const letterInput = document.getElementById('letter-input');
-        const projectLetterBtn = document.getElementById('project-letter-btn');
+
+        // Ensure canvas maintains aspect ratio on mobile
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const containerWidth = container.clientWidth;
+            const aspectRatio = canvas.width / canvas.height;
+            
+            if (containerWidth < canvas.width) {
+                canvas.style.width = containerWidth + 'px';
+                canvas.style.height = (containerWidth / aspectRatio) + 'px';
+            } else {
+                canvas.style.width = '';
+                canvas.style.height = '';
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
         frequencySlider.addEventListener('input', updateFrequency);
         amplitudeSlider.addEventListener('input', updateAmplitude);
         startBtn.addEventListener('click', startSimulation);
         stopBtn.addEventListener('click', stopSimulation);
         addLayerBtn.addEventListener('click', addFrequencyLayer);
-        projectLetterBtn.addEventListener('click', projectLetter);
 
         function updateFrequency() {
             const frequency = frequencySlider.value;
@@ -177,7 +344,6 @@
             createOscillator(frequencySlider.value, amplitudeSlider.value);
 
             isPlaying = true;
-
             startBtn.disabled = true;
             stopBtn.disabled = false;
 
@@ -224,10 +390,19 @@
             createOscillator(layerFrequency, layerAmplitude);
 
             const layerElement = document.createElement('div');
+            layerElement.style.marginBottom = '10px';
+            layerElement.style.padding = '10px';
+            layerElement.style.background = 'rgba(40, 0, 0, 0.5)';
+            layerElement.style.borderRadius = '5px';
+            layerElement.style.display = 'flex';
+            layerElement.style.alignItems = 'center';
+            layerElement.style.flexWrap = 'wrap';
+            layerElement.style.gap = '10px';
+            
             layerElement.innerHTML = `
-                <label>Layer ${oscillators.length}: ${layerFrequency} Hz</label>
-                <input type="range" min="0" max="500" value="${layerFrequency}" step="1">
-                <button>Remove</button>
+                <label style="color: #ff0000; margin-right: 10px;">Layer ${oscillators.length}: ${layerFrequency} Hz</label>
+                <input type="range" min="0" max="500" value="${layerFrequency}" step="1" style="flex: 1; min-width: 100px; max-width: 150px;">
+                <button style="padding: 5px 10px;">Remove</button>
             `;
 
             const layerSlider = layerElement.querySelector('input');
@@ -260,9 +435,8 @@
 
             const time = audioContext.currentTime;
 
-            // Lissajous figure
             ctx.beginPath();
-            ctx.strokeStyle = `hsl(${oscillators[0].frequency.value % 360}, 100%, 50%)`;
+            ctx.strokeStyle = `hsl(${time * 50 % 360}, 100%, 50%)`;
             ctx.lineWidth = 2;
 
             for (let i = 0; i < 360; i++) {
@@ -288,10 +462,11 @@
             }
 
             ctx.stroke();
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#ff0000';
 
-            // Oscilloscope
             ctx.beginPath();
-            ctx.strokeStyle = '#0BDE3D';
+            ctx.strokeStyle = '#ff0000';
             ctx.lineWidth = 2;
 
             const sliceWidth = canvas.width * 1.0 / bufferLength;
@@ -316,29 +491,6 @@
             animationId = requestAnimationFrame(animateLaser);
         }
 
-        function projectLetter() {
-            const letter = letterInput.value.toUpperCase();
-            if (letter.length !== 1 || letter < 'A' || letter > 'Z') {
-                alert('Please enter a single letter (A-Z)');
-                return;
-            }
-
-            // This is a simplified approach and may not accurately represent letter shapes
-            const baseFrequency = 100;
-            const letterCode = letter.charCodeAt(0) - 65; // A = 0, B = 1, etc.
-            const frequency1 = baseFrequency + letterCode * 10;
-            const frequency2 = baseFrequency + letterCode * 15;
-
-            stopSimulation();
-            startSimulation();
-
-            createOscillator(frequency1, 0.5);
-            createOscillator(frequency2, 0.5);
-
-            alert(`Projecting letter "${letter}" using frequencies ${frequency1} Hz and ${frequency2} Hz`);
-        }
-
-        // Initialize value displays
         updateFrequency();
         updateAmplitude();
     </script>
