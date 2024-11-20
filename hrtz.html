@@ -5,221 +5,288 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nostagrtz Layering</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Courier New', monospace;
-            background: #1a1a1a;
-            color: #ff0000;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
+body {
+    font-family: 'Courier New', monospace;
+    background: #1a1a1a;
+    color: #ff0000;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
 
-        /* Matrix-like background animation */
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            z-index: -1;
-        }
+/* Matrix-like background animation */
+.matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: -1;
+}
 
-        .matrix-line {
-            position: absolute;
-            color: rgba(255, 0, 0, 0.1);
-            font-size: 12px;
-            line-height: 12px;
-            white-space: nowrap;
-            animation: fall linear infinite;
-        }
+.matrix-line {
+    position: absolute;
+    color: rgba(255, 0, 0, 0.1);
+    font-size: 12px;
+    line-height: 12px;
+    white-space: nowrap;
+    animation: fall linear infinite;
+}
 
-        @keyframes fall {
-            0% {
-                transform: translateY(-100%);
-                opacity: 1;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
+@keyframes fall {
+    0% {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
+    90% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
 
-        .container {
-            background-color: rgba(20, 20, 20, 0.95);
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000;
-            border-radius: 10px;
-            padding: 20px;
-            width: min(95%, 800px);
-            margin: 20px auto;
-        }
+.container {
+    background-color: rgba(20, 20, 20, 0.95);
+    border: 2px solid #ff0000;
+    box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000;
+    border-radius: 10px;
+    padding: 20px;
+    width: min(95%, 800px);
+    margin: 20px auto;
+}
 
-        h1 {
-            color: #ff0000;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
+h1 {
+    color: #ff0000;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    animation: glow 2s ease-in-out infinite alternate;
+}
 
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
-            }
-            to {
-                text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
-            }
-        }
+.subtitle {
+    color: #ff4444;
+    text-align: center;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px #ff0000;
+}
 
-        .control-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 20px;
-            background: rgba(40, 0, 0, 0.5);
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-        }
+.bio-text {
+    text-align: center;
+    margin-top: 20px;
+    color: #ff4444;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
 
-        @media (min-width: 768px) {
-            .control-panel {
-                flex-direction: row;
-                justify-content: space-around;
-            }
-        }
+.bio-text a {
+    color: #ff0000;
+    text-decoration: none;
+    text-shadow: 0 0 5px #ff0000;
+    transition: all 0.3s;
+}
 
-        .control {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
+.bio-text a:hover {
+    color: #ff8888;
+    text-shadow: 0 0 10px #ff0000;
+}
 
-        .control label {
-            margin-bottom: 10px;
-            color: #ff0000;
-            text-transform: uppercase;
-            font-size: 0.9em;
-            letter-spacing: 1px;
-        }
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    }
+    to {
+        text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000;
+    }
+}
 
-        input[type="range"] {
-            width: min(200px, 90%);
-            appearance: none;
-            background: #300;
-            height: 4px;
-            border-radius: 2px;
-            box-shadow: 0 0 5px #ff0000;
-        }
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: rgba(40, 0, 0, 0.5);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
 
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
-            width: 15px;
-            height: 15px;
-            background: #ff0000;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px #ff0000;
-        }
+@media (min-width: 768px) {
+    .control-panel {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
 
-        .value-display {
-            margin-top: 8px;
-            font-size: 0.9em;
-            color: #ff4444;
-            text-shadow: 0 0 5px #ff0000;
-        }
+.control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
-        #laser-canvas {
-            background-color: #000000;
-            border-radius: 5px;
-            border: 1px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-            width: 100%;
-            max-width: 700px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
+.control label {
+    margin-bottom: 10px;
+    color: #ff0000;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
 
-        .playback-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
+input[type="range"] {
+    width: min(200px, 90%);
+    appearance: none;
+    background: #300;
+    height: 4px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px #ff0000;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
 
-        button {
-            background-color: #200;
-            color: #ff0000;
-            border: 1px solid #ff0000;
-            padding: 10px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-            font-family: 'Courier New', monospace;
-            min-width: 120px;
-        }
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #ff0000;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px #ff0000;
+}
 
-        button:hover {
-            background-color: #400;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        }
+.value-display {
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #ff4444;
+    text-shadow: 0 0 5px #ff0000;
+}
 
-        button:disabled {
-            background-color: #111;
-            color: #444;
-            border-color: #444;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
+#laser-canvas {
+    background-color: #000000;
+    border-radius: 5px;
+    border: 1px solid #ff0000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
 
-        #frequency-layers {
-            margin-top: 20px;
-            padding: 10px;
-            background: rgba(40, 0, 0, 0.3);
-            border-radius: 5px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
+.playback-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
 
-        #frequency-layers::-webkit-scrollbar {
-            width: 8px;
-        }
+button {
+    background-color: #200;
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    font-family: 'Courier New', monospace;
+    min-width: 120px;
+}
 
-        #frequency-layers::-webkit-scrollbar-track {
-            background: #200;
-        }
+button:hover {
+    background-color: #400;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
 
-        #frequency-layers::-webkit-scrollbar-thumb {
-            background: #ff0000;
-            border-radius: 4px;
-        }
+button:disabled {
+    background-color: #111;
+    color: #444;
+    border-color: #444;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+#frequency-layers {
+    margin-top: 20px;
+    padding: 10px;
+    background: rgba(40, 0, 0, 0.3);
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#frequency-layers::-webkit-scrollbar {
+    width: 8px;
+}
+
+#frequency-layers::-webkit-scrollbar-track {
+    background: #200;
+}
+
+#frequency-layers::-webkit-scrollbar-thumb {
+    background: #ff0000;
+    border-radius: 4px;
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    .control-panel {
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .control {
+        padding: 5px;
+    }
+
+    input[type="range"] {
+        width: 80%;
+        margin: 10px 0;
+    }
+
+    .playback-controls {
+        gap: 8px;
+    }
+
+    button {
+        padding: 8px 20px;
+        font-size: 14px;
+        min-width: 100px;
+    }
+}
     </style>
 </head>
 <body>
     <div class="matrix-bg" id="matrix-bg"></div>
     <div class="container">
         <h1>Nostagrtz Layering</h1>
+        <h4 style="text-align: center; margin-bottom: 3rem;">Control your v1 using custom frequency layering</h4>
+
         <div class="control-panel">
             <div class="control">
                 <label for="frequency-slider">Frequency (Hz)</label>
