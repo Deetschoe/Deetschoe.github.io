@@ -147,36 +147,79 @@ h1 {
     font-size: 0.9em;
     letter-spacing: 1px;
 }
-
 input[type="range"] {
     width: min(200px, 90%);
     appearance: none;
     background: #300;
-    height: 4px;
-    border-radius: 2px;
+    height: 8px; /* Increased from 4px */
+    border-radius: 4px;
     box-shadow: 0 0 5px #ff0000;
-    touch-action: none;
-    -webkit-user-select: none;
-    user-select: none;
+    touch-action: pan-y pinch-zoom; /* Allow vertical scroll but prevent horizontal */
+    margin: 15px 0; /* Add more vertical space */
+    padding: 15px 0; /* Increase touch area */
+    position: relative;
+    z-index: 2;
 }
 
+/* Larger thumb for better touch */
 input[type="range"]::-webkit-slider-thumb {
     appearance: none;
-    width: 15px;
-    height: 15px;
+    width: 28px; /* Increased from 15px */
+    height: 28px; /* Increased from 15px */
     background: #ff0000;
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 0 10px #ff0000;
+    border: 2px solid #ff3333;
 }
 
-.value-display {
-    margin-top: 8px;
-    font-size: 0.9em;
-    color: #ff4444;
-    text-shadow: 0 0 5px #ff0000;
+/* Prevent text selection while sliding */
+body.sliding {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
 }
 
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+    .control {
+        padding: 10px;
+        touch-action: none;
+        min-height: 90px; /* Ensure enough touch area */
+    }
+
+    .control-panel {
+        gap: 25px; /* More space between controls */
+        padding: 20px;
+    }
+
+    input[type="range"] {
+        width: 85%; /* Slightly wider on mobile */
+        margin: 20px 0; /* More vertical space */
+    }
+
+    .value-display {
+        margin-top: 12px;
+        font-size: 1.1em; /* Larger text */
+    }
+
+    /* Larger labels on mobile */
+    .control label {
+        font-size: 1.1em;
+        margin-bottom: 15px;
+    }
+}
+
+/* Add touch handling styles */
+.touch-prevent {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 #laser-canvas {
     background-color: #000000;
     border-radius: 5px;
@@ -287,7 +330,7 @@ button:disabled {
         <h1>Nostagrtz Layering</h1>
         <h4 style="text-align: center; margin-bottom: 3rem;">Control your v1 using custom frequency layering</h4>
 
-        <div class="control-panel">
+        <div class="control-panel touch-prevent">
             <div class="control">
                 <label for="frequency-slider">Frequency (Hz)</label>
                 <input type="range" id="frequency-slider" min="0" max="500" value="250" step="1">
@@ -350,6 +393,34 @@ button:disabled {
         let analyser;
         let isPlaying = false;
         let animationId;
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    
+    sliders.forEach(slider => {
+        slider.addEventListener('touchstart', function(e) {
+            document.body.classList.add('sliding');
+            e.stopPropagation();
+        }, { passive: false });
+
+        slider.addEventListener('touchend', function() {
+            document.body.classList.remove('sliding');
+        });
+
+        slider.addEventListener('touchmove', function(e) {
+            e.stopPropagation();
+        }, { passive: false });
+    });
+
+    // Also handle the frequency layer sliders that are added dynamically
+    const frequencyLayers = document.getElementById('frequency-layers');
+    frequencyLayers.addEventListener('touchmove', function(e) {
+        if (e.target.type === 'range') {
+            e.stopPropagation();
+        }
+    }, { passive: false });
+});
+
 
         const frequencySlider = document.getElementById('frequency-slider');
         const amplitudeSlider = document.getElementById('amplitude-slider');
