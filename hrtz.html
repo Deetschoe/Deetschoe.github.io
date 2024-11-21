@@ -173,13 +173,6 @@ input[type="range"]::-webkit-slider-thumb {
     border: 2px solid #ff3333;
 }
 
-/* Prevent text selection while sliding */
-body.sliding {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-}
-
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
     .control {
@@ -399,24 +392,32 @@ button:disabled {
     
     sliders.forEach(slider => {
         slider.addEventListener('touchstart', function(e) {
-            document.body.classList.add('sliding');
             e.stopPropagation();
-        }, { passive: false });
+        }, { passive: true });
 
-        slider.addEventListener('touchend', function() {
-            document.body.classList.remove('sliding');
-        });
+        slider.addEventListener('touchend', function(e) {
+            e.stopPropagation();
+        }, { passive: true });
 
         slider.addEventListener('touchmove', function(e) {
-            e.stopPropagation();
+            // Only prevent default if moving horizontally
+            const touch = e.touches[0];
+            const movementX = touch.movementX || 0;
+            if (Math.abs(movementX) > Math.abs(touch.movementY || 0)) {
+                e.preventDefault();
+            }
         }, { passive: false });
     });
 
-    // Also handle the frequency layer sliders that are added dynamically
+    // Update frequency layers touch handling
     const frequencyLayers = document.getElementById('frequency-layers');
     frequencyLayers.addEventListener('touchmove', function(e) {
         if (e.target.type === 'range') {
-            e.stopPropagation();
+            const touch = e.touches[0];
+            const movementX = touch.movementX || 0;
+            if (Math.abs(movementX) > Math.abs(touch.movementY || 0)) {
+                e.preventDefault();
+            }
         }
     }, { passive: false });
 });
