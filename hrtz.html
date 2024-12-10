@@ -61,7 +61,7 @@ body {
     border: 2px solid #ff0000;
     box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000;
     border-radius: 10px;
-    padding: 20px;
+    padding: 10px;
     width: min(95%, 800px);
     margin: 20px auto;
 }
@@ -213,17 +213,18 @@ input[type="range"]::-webkit-slider-thumb {
     -ms-user-select: none;
     user-select: none;
 }
+
+
 #laser-canvas {
     background-color: #000000;
     border-radius: 5px;
     border: 1px solid #ff0000;
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-    width: 100%;
+    width: calc(100% - 40px); /* subtracting the desired spacing from the full width */
     max-width: 700px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+    margin-left:22px;
 }
+
 
 .playback-controls {
     display: flex;
@@ -335,8 +336,9 @@ button:disabled {
                 <div id="amplitude-value" class="value-display">50%</div>
             </div>
         </div>
-        <canvas id="laser-canvas" width="700" height="400"></canvas>
-        <div class="playback-controls">
+        
+        <canvas id="laser-canvas"></canvas>
+                <div class="playback-controls">
             <button id="start-btn">Initialize</button>
             <button id="stop-btn" disabled>Stop</button>
             <button id="add-layer-btn">Add Layer</button>
