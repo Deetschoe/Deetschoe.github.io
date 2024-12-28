@@ -459,25 +459,35 @@ a, a:hover, a:focus, a:active {
     <div id="canvas-container"></div>
     <div class="icons-container"></div>
     <div class="content">
+        <br>
+        <p style="color: #ffffff; font-size: 0.95em">Dieter Schoening</p>
+        <p id="age-display" style="color: #bcffcc; font-size: 0.95em"></p>
+        <p style="font-size: 0.95em">i am building <a href="https://nostagrtz.com" style="text-decoration: underline;">Nostagrtz;</a> an ai/vr animation studio but not without <a href="https://kodan.app" style="text-decoration: underline;">Kodan;</a> an AI/VR tool to film complex animation scenes and to complete it off <a href="https://pineabur.com" style="text-decoration: underline;">Pineabur;</a> a merchandise company based on my series i produce</p>
         
-        <h1>dieter</h1>
-            
-<p>my studio <a href="https://nostagrtz.com" style="text-decoration: underline;">Nostagrtz</a></p>
-    <p>my brand <a href="https://pineabur.com" style="text-decoration: underline;">Pineabur</a></p>
+        <script>
+        function updateAge() {
+            const birthDate = new Date('2005-06-09');
+            const now = new Date();
+            const age = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
+            document.getElementById('age-display').textContent = 
+                `${age.toFixed(1)}yr maker, entrepreneur, producer, etc`;
+        }
+        
+        updateAge();
+        setInterval(updateAge, 1000);
+        </script>
 
     <br>
-<p>past projects that shaped me</p>
+<p>prev projects</p>
 
         <div class="projects">
 
             <div class="project" data-project="lifeofchai">Life of Chai</div>
             <div class="project" data-project="hackclub">Hack Club</div>
-            <div class="project" data-project="kodan">Kōdan</div>
             <div class="project" data-project="bikstar">BikstAR</div>
-            <div class="project" data-project="minimaru">Minimaru</div>
             <div class="project" data-project="hackthegeese">Hack The Geese</div>
             <div class="project" data-project="darukiyu">Darukiyu</div>
-            <div class="project" data-project="websites">other</div>
+            <div class="project" data-project="websites">🔎</div>
 
         </div>
         <a href="https://x.com/dieterschoening" target="_blank">
@@ -502,36 +512,7 @@ a, a:hover, a:focus, a:active {
         <input type="text" id="terminal-input" placeholder="Type a command...">
     </div>
 
-    <!-- Project Popups -->
-    <div class="project-popup" id="minimaru-popup">
-        <div class="project-popup-content">
-            <button class="close-popup">&times;</button>
-            <h2>Minimaru</h2>
-            <div class="project-popup-images">
-                <!-- Add your image paths here -->
-                <img src="/mini.png" alt="Minimaru Clothing" style="width: 250px;">
-                <img src="/minimaru.png" alt="Minimaru Clothing" style="height: 120px; width: 150px;">
-                            </div>
-                            <p>started an anime inspired apparel brand at 14</p>
-                            <a href="https://www.instagram.com/minimaruclothing/?hl=en" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Link to Minimaru</a>
-        </div>
-    </div>
-    <div class="project-popup" id="kodan-popup">
-        <div class="project-popup-content">
-            <button class="close-popup">&times;</button>
-            <h2>Kōdan</h2>
-            <div class="project-popup-images">
-                <!-- Add your image paths here -->
-                <img src="/kodan.png" alt="Kōdan" style="height: 150px; width: 150px;">
-                <img src="/japan.JPG" alt="Kōdan image" style="width: 150px;">
-                <img src="/robo.JPG" alt="Kōdan image" style="width: 150px;">
-            </div>
-                            
-            <p>locally generate AI anime videos</p>
-            <p>lived in Japan with Thomas for 2 months building Kōdan</p>
-            <a href="https://kodan.app/" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Download Kōdan</a>
-        </div>
-    </div>
+  
 
     <div class="project-popup" id="hackclub-popup">
         <div class="project-popup-content">
@@ -821,7 +802,7 @@ a, a:hover, a:focus, a:active {
             <button class="close-popup">&times;</button>
             <h2>BikstAR</h2>
             <div class="project-popup-images">
-                <img src="/biking.png" alt="Minimaru Clothing" style="width: 250px;">
+                <img src="/biking.png" alt="Biking" style="width: 250px;">
             </div>
             <p>Created the world's most dangerous VR game</p>
             <a href="https://devpost.com/software/bikstar" class="project-link" target="_blank" onclick="window.open(this.href, '_blank'); return false;">Devpost</a>
@@ -874,7 +855,7 @@ const images = [
         { "src": "13.JPG", "text": "tonkatsu ramen >" },
         { "src": "14.JPG", "text": "Uh Oh" },
         { "src": "15.JPG", "text": "I LOVE Açaí Bowls" },
-        { "src": "16.jpg", "text": "packed 500 orders in one night with my friends for my brand Minimaru" },
+        { "src": "16.jpg", "text": "packed 500 orders in one night with my friends for my brand" },
         { "src": "17.jpg", "text": "Pokemon." },
         { "src": "18.jpg", "text": "best quote I saw a hackathon" },
         { "src": "19.jpg", "text": "Aphex twin, Mac Demarco, Odetari, TVGirl, Clairo, J Dilla, and Nujabes are some of my fav artists " },
