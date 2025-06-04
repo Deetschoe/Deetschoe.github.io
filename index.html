@@ -472,20 +472,35 @@ a, a:hover, a:focus, a:active {
         <p style="color: #ffffff; font-size: 0.95em">
             Working on a film called <a href="https://pineabur.com" style="color: #ffffff; text-decoration: underline;">Pineabur</a>
           </p>
-          
+       <script>
+function getPreciseAge(birthDate) {
+    const now = new Date();
+    const msInYear = 365.25 * 24 * 60 * 60 * 1000;
+    const ageInYears = (now - birthDate) / msInYear;
 
-        <script>
-        function updateAge() {
-            const birthDate = new Date('2005-06-09');
-            const now = new Date();
-            const age = (now - birthDate) / (365.25 * 24 * 60 * 60 * 1000);
-            document.getElementById('age-display').textContent = 
-                `${age.toFixed(1)}yr entrepreneur filmer, creative, etc`;
-        }
-        
-        updateAge();
-        setInterval(updateAge, 1000);
-        </script>
+    const thisYearBirthday = new Date(
+        now.getFullYear(),
+        birthDate.getMonth(),
+        birthDate.getDate()
+    );
+
+    const hasBirthdayPassed = now >= thisYearBirthday;
+
+    return hasBirthdayPassed ? ageInYears : Math.min(ageInYears, 19.999999);
+}
+
+function updateAge() {
+    const birthDate = new Date('2005-06-09');
+    const age = getPreciseAge(birthDate);
+    const displayAge = age.toFixed(2); // <-- just two decimal places
+    document.getElementById('age-display').textContent =
+        `${displayAge}yr entrepreneur filmer, creative, etc`;
+}
+
+updateAge();
+setInterval(updateAge, 1000);
+</script>
+
 
     <br>
 
