@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nostagrtz Hand Visualizer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: red;
+      font-family: monospace;
+      overflow: hidden;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
+    #videoPreview {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    #info, #startBtn, #presetSelect, #freqSensitivity {
+      position: absolute;
+      left: 10px;
+      color: #ff0000;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      z-index: 2;
+    }
+    #info { top: 10px; }
+    #startBtn { top: 50px; cursor: pointer; border: 1px solid red; font-family: monospace; }
+    #presetSelect { top: 90px; }
+    #freqSensitivity { top: 130px; width: 200px; }
+    #controls {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+      color: #ff0000;
+      z-index: 2;
+    }
+    .slider-container {
+      margin-bottom: 8px;
+    }
+    label {
+      font-size: 12px;
+    }
+    #previewCanvas {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 200px;
+      height: 100px;
+      background: black;
+      border: 1px solid red;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoPreview" autoplay muted playsinline></video>
+  <canvas id="canvas"></canvas>
+  <canvas id="previewCanvas"></canvas>
+  <div id="info">Click "Start Audio" and wave your hand!</div>
+  <button id="startBtn">Start Audio</button>
+  <select id="presetSelect">
+    <option value="basswave">Basswave</option>
+    <option value="daftpunk">Daft Punk</option>
+    <option value="synthpop">Synth Pop</option>
+    <option value="spacey">Spacey</option>
+  </select>
+  <input type="range" id="freqSensitivity" min="50" max="600" value="200">
+  <div id="controls">
+    <div class="slider-container">
+      <label for="bassGain">Bass</label>
+      <input type="range" id="bassGain" min="-40" max="40" value="10">
+    </div>
+    <div class="slider-container">
+      <label for="midGain">Mid</label>
+      <input type="range" id="midGain" min="-40" max="40" value="0">
+    </div>
+    <div class="slider-container">
+      <label for="trebleGain">Treble</label>
+      <input type="range" id="trebleGain" min="-40" max="40" value="0">
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const previewCanvas = document.getElementById('previewCanvas');
+    const previewCtx = previewCanvas.getContext('2d');
+    const info = document.getElementById('info');
+    const startBtn = document.getElementById('startBtn');
+    const presetSelect = document.getElementById('presetSelect');
+    const freqSensitivitySlider = document.getElementById('freqSensitivity');
+    const videoPreview = document.getElementById('videoPreview');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let audioCtx;
+    let started = false;
+    const layers = [];
+    let baseFreq = 60;
+    let freqSensitivity = parseFloat(freqSensitivitySlider.value);
+
+    let bassFilter, midFilter, trebleFilter;
+
+    const presetConfigs = {
+      basswave: { baseFreq: 60, wave: 'sine' },
+      daftpunk: { baseFreq: 100, wave: 'square' },
+      synthpop: { baseFreq: 150, wave: 'sawtooth' },
+      spacey: { baseFreq: 80, wave: 'triangle' },
+    };
+
+    presetSelect.addEventListener('change', () => {
+      const preset = presetConfigs[presetSelect.value];
+      baseFreq = preset.baseFreq;
+      layers.forEach(l => l.osc.type = preset.wave);
+    });
+
+    freqSensitivitySlider.addEventListener('input', () => {
+      freqSensitivity = parseFloat(freqSensitivitySlider.value);
+    });
+
+    function initAudio() {
+      if (started) return;
+      started = true;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      bassFilter = audioCtx.createBiquadFilter();
+      bassFilter.type = 'lowshelf';
+      bassFilter.frequency.value = 200;
+
+      midFilter = audioCtx.createBiquadFilter();
+      midFilter.type = 'peaking';
+      midFilter.frequency.value = 1000;
+
+      trebleFilter = audioCtx.createBiquadFilter();
+      trebleFilter.type = 'highshelf';
+      trebleFilter.frequency.value = 3000;
+
+      bassFilter.connect(midFilter).connect(trebleFilter).connect(audioCtx.destination);
+
+      info.textContent = 'Wave your hand! One hand = one sound layer';
+      startBtn.style.display = 'none';
+    }
+
+    function createLayer(frequency, amplitude) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = presetConfigs[presetSelect.value].wave;
+      osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      gain.gain.setValueAtTime(amplitude, audioCtx.currentTime);
+      osc.connect(gain).connect(bassFilter);
+      osc.start();
+      return { osc, gain, frequency, amplitude };
+    }
+
+    function updateLayer(layer, frequency, amplitude) {
+      layer.osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+      layer.gain.gain.setValueAtTime(amplitude, audioCtx.currentTime);
+      layer.frequency = frequency;
+      layer.amplitude = amplitude;
+    }
+
+    startBtn.addEventListener('click', initAudio);
+
+    document.getElementById('bassGain').addEventListener('input', e => {
+      bassFilter.gain.value = e.target.value;
+    });
+    document.getElementById('midGain').addEventListener('input', e => {
+      midFilter.gain.value = e.target.value;
+    });
+    document.getElementById('trebleGain').addEventListener('input', e => {
+      trebleFilter.gain.value = e.target.value;
+    });
+
+    const hands = new Hands({ locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
+    hands.setOptions({
+      maxNumHands: 2,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7
+    });
+
+    hands.onResults((results) => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+      if (!started) return;
+
+      const count = results.multiHandLandmarks.length;
+      while (layers.length < count) {
+        layers.push(createLayer(baseFreq, 0.5));
+      }
+      while (layers.length > count) {
+        const layer = layers.pop();
+        layer.osc.stop();
+      }
+
+      results.multiHandLandmarks.forEach((landmarks, i) => {
+        const mirrored = landmarks.map(p => ({ x: 1 - p.x, y: p.y, z: p.z }));
+        const tip = mirrored[8];
+        const base = mirrored[5];
+        const palm = mirrored[0];
+        const dx = tip.x - base.x;
+        const dy = tip.y - base.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const depth = palm.z;
+
+        const freq = Math.floor(baseFreq + freqSensitivity * (1 - tip.y));
+        let amp = Math.min(1.0, Math.max(0.0, dist * 5));
+        if (depth > 0) amp *= 0.5;
+
+        updateLayer(layers[i], freq, amp);
+
+        const handColor = i === 0 ? '#00ff00' : '#00ffff';
+        drawConnectors(ctx, mirrored, HAND_CONNECTIONS, { color: handColor, lineWidth: 2 });
+        drawLandmarks(ctx, mirrored, { color: handColor, lineWidth: 1 });
+
+        info.textContent = `Layers: ${count} | Layer ${i + 1}: ${freq} Hz / ${Math.round(amp * 100)}%`;
+      });
+
+      previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+      layers.forEach((layer, i) => {
+        previewCtx.beginPath();
+        const color = i === 0 ? 'red' : 'cyan';
+        previewCtx.strokeStyle = color;
+        for (let x = 0; x < previewCanvas.width; x++) {
+          const y = previewCanvas.height / 2 + Math.sin(x * 0.05 * layer.frequency / 250) * layer.amplitude * 40;
+          if (x === 0) previewCtx.moveTo(x, y);
+          else previewCtx.lineTo(x, y);
+        }
+        previewCtx.stroke();
+      });
+
+      const pulse = Math.sin(Date.now() / 500) * 10 + 10;
+      canvas.style.boxShadow = `0 0 ${pulse}px red`;
+    });
+
+    const videoElement = videoPreview;
+    const camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await hands.send({ image: videoElement });
+      },
+      width: 640,
+      height: 480
+    });
+    camera.start();
+  </script>
+</body>
+</html>
