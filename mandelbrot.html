@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mandelbrot — Fractal Time Machine (WebGL)</title>
+<style>
+  :root{
+    --bg:#05060a; --neon:#50f4ff; --accent:#ff6fd8; --muted:#9fb1bd;
+  }
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#03060a,#07121a);font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial;color:#dff6ff}
+  #wrap{display:flex;gap:18px;height:100vh;padding:18px;box-sizing:border-box}
+  .left{width:360px;min-width:260px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:16px;box-shadow:0 10px 40px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.03)}
+  .right{flex:1;display:flex;flex-direction:column}
+  h1{margin:0;font-size:18px;color:var(--neon);letter-spacing:1px}
+  p.desc{color:var(--muted);font-size:13px;line-height:1.35;margin-top:8px}
+  .hud{margin-top:12px;font-family:monospace;background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-size:13px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--accent);cursor:pointer;font-weight:700}
+  #glcanvas{width:100%;height:calc(100vh - 36px);display:block;border-radius:12px;box-shadow:0 18px 80px rgba(0,0,0,.7)}
+  .overlayHUD{position:absolute;left:28px;top:28px;padding:8px 12px;border-radius:8px;background:linear-gradient(180deg,rgba(0,0,0,0.5),rgba(255,255,255,0.02));font-family:monospace;color:var(--neon);font-size:13px;border:1px solid rgba(255,255,255,.03)}
+  .small{font-size:12px;color:var(--muted)}
+  .legend{margin-top:10px;color:var(--muted);font-size:13px;line-height:1.3}
+  .footer{margin-top:14px;color:var(--muted);font-size:12px}
+  @media (max-width:900px){ #wrap{flex-direction:column} .left{width:auto} #glcanvas{height:60vh} }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div class="left">
+    <h1>MANDELBROT — TIME MACHINE</h1>
+    <p class="desc">GPU-powered Mandelbrot explorer. Use WASD to fly, QE to zoom, wheel/click to zoom & center. Press <strong>Space</strong> to toggle auto-zoom. Smooth, game-like controls with inertia.</p>
+
+    <div class="hud" id="hud">
+      <div><strong>Center:</strong> <span id="center">-0.500000, 0.000000</span></div>
+      <div><strong>Scale:</strong> <span id="scale">3.000000</span></div>
+      <div><strong>Iterations:</strong> <span id="iter">800</span></div>
+      <div><strong>FPS:</strong> <span id="fps">--</span></div>
+    </div>
+
+    <div class="controls">
+      <button id="resetBtn">RESET VIEW</button>
+      <button id="saveBtn">SAVE PNG</button>
+      <button id="toggleAuto">AUTO ZOOM: OFF</button>
+      <button id="paletteBtn">PALETTE: NEON</button>
+    </div>
+
+    <div class="legend">
+      <div><strong>Controls</strong></div>
+      <div class="small">W/A/S/D — Pan | Q/E — Zoom in/out | Mouse wheel — smooth zoom to cursor | Click — center & zoom</div>
+      <div class="small">Space — toggle auto-zoom | R — reset | P — cycle palette</div>
+    </div>
+
+    <div class="footer">Drop into GitHub Pages as a single HTML. No build system required.</div>
+  </div>
+
+  <div class="right" style="position:relative">
+    <canvas id="glcanvas"></canvas>
+    <div class="overlayHUD" id="overlayHUD">Time Machine</div>
+  </div>
+</div>
+
+<script>
+// WebGL Mandelbrot Fractal — Game-like controls (WASD) + smooth zoom/pan
+// Author: ChatGPT — single-file, GPU fragment shader approach
+
+// ---- Setup WebGL ----
+const canvas = document.getElementById('glcanvas');
+const gl = canvas.getContext('webgl', { antialias: false, preserveDrawingBuffer: true });
+if (!gl) {
+  alert('WebGL not supported by your browser.');
+  throw new Error('WebGL not supported');
+}
+
+// Handle resize & high DPR
+let DPR = Math.max(1, window.devicePixelRatio || 1);
+function resizeCanvas() {
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = Math.floor(rect.width * DPR);
+  canvas.height = Math.floor(rect.height * DPR);
+  gl.viewport(0,0,canvas.width, canvas.height);
+}
+function fitToWindow() {
+  const wrap = document.getElementById('wrap');
+  // right column canvas should fill remaining width
+  canvas.style.width = '100%';
+  canvas.style.height = 'calc(100vh - 36px)';
+  DPR = Math.max(1, window.devicePixelRatio || 1);
+  resizeCanvas();
+}
+window.addEventListener('resize', () => { fitToWindow(); });
+fitToWindow();
+
+// ---- Shader sources ----
+const vertexSrc = `
+attribute vec2 a_pos;
+varying vec2 v_uv;
+void main(){
+  v_uv = a_pos * 0.5 + 0.5;
+  gl_Position = vec4(a_pos, 0.0, 1.0);
+}
+`;
+
+// fragment shader computes Mandelbrot for each fragment on GPU
+const fragmentSrc = `
+precision highp float;
+varying vec2 v_uv;
+uniform vec2 u_resolution;
+uniform vec2 u_center; // complex center
+uniform float u_scale;  // width of view (in complex plane)
+uniform float u_time;
+uniform int u_maxIter;
+uniform int u_palette;
+uniform float u_pixelRatio;
+
+// map screen uv to complex plane
+vec2 uvToComplex(vec2 uv) {
+  float aspect = u_resolution.x / u_resolution.y;
+  float w = u_scale;
+  float h = w / aspect;
+  float re = u_center.x + (uv.x - 0.5) * w;
+  float im = u_center.y + (uv.y - 0.5) * h;
+  return vec2(re, im);
+}
+
+// smooth escape time
+float mandelbrot(vec2 c) {
+  vec2 z = vec2(0.0);
+  float iter = 0.0;
+  float maxIter = float(u_maxIter);
+  float bailout = 4.0;
+  for (int i=0; i<2000; i++) { // 2000 is compile-time upper bound
+    if(i >= u_maxIter) break;
+    // z = z^2 + c
+    float x = z.x*z.x - z.y*z.y + c.x;
+    float y = 2.0*z.x*z.y + c.y;
+    z = vec2(x,y);
+    float mag2 = dot(z,z);
+    if (mag2 > bailout) {
+      // smooth iteration count
+      float mu = float(i) + 1.0 - log(log(sqrt(mag2))) / log(2.0);
+      return mu / maxIter; // normalized 0..1
+    }
+  }
+  // inside set
+  return 1.0;
+}
+
+// palettes
+vec3 paletteNeon(float t) {
+  if (t >= 1.0) return vec3(0.0);
+  float a = sin(6.2831 * (t*1.2 + 0.0)) * 0.5 + 0.5;
+  float b = sin(6.2831 * (t*1.5 + 0.4)) * 0.5 + 0.5;
+  float c = sin(6.2831 * (t*0.7 + 0.8)) * 0.5 + 0.5;
+  return vec3(a, b*0.85, c*1.0);
+}
+vec3 paletteSunset(float t) {
+  if (t >= 1.0) return vec3(0.02,0.01,0.0);
+  return vec3(pow(t,0.6), 0.2*pow(1.0-t,0.8), 0.05*pow(1.0-t,1.8));
+}
+vec3 paletteOcean(float t) {
+  if (t >= 1.0) return vec3(0.0);
+  return vec3(0.03*pow(1.0-t,1.2), pow(t,0.6)*0.8+0.2, 0.9*pow(t,0.35)+0.05);
+}
+vec3 paletteMono(float t) {
+  if (t >= 1.0) return vec3(0.02);
+  return vec3(pow(t,0.5));
+}
+
+void main(){
+  // anti-alias by jittering UV a bit based on pixel ratio (cheap AA)
+  vec2 uv = v_uv;
+  // compute complex coordinate
+  vec2 c = uvToComplex(uv);
+  float t = mandelbrot(c);
+  // choose palette
+  vec3 col;
+  if (u_palette == 0) col = paletteNeon(t);
+  else if (u_palette == 1) col = paletteSunset(t);
+  else if (u_palette == 2) col = paletteOcean(t);
+  else col = paletteMono(t);
+
+  // vignette + subtle grain
+  float vign = smoothstep(0.8, 0.2, length(uv-0.5) * 1.2);
+  float grain = (fract(sin(dot(gl_FragCoord.xy ,vec2(12.9898,78.233))) * 43758.5453) - 0.5) * 0.03;
+  col = mix(col, vec3(0.0), (1.0 - vign)*0.35) + grain;
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+// ---- Compile helpers ----
+function compileShader(src, type) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(s));
+    gl.deleteShader(s);
+    throw new Error('Shader compile failed');
+  }
+  return s;
+}
+function createProgram(vsSrc, fsSrc) {
+  const vs = compileShader(vsSrc, gl.VERTEX_SHADER);
+  const fs = compileShader(fsSrc, gl.FRAGMENT_SHADER);
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs);
+  gl.attachShader(prog, fs);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(prog));
+    throw new Error('Program link failed');
+  }
+  return prog;
+}
+
+// create program
+const program = createProgram(vertexSrc, fragmentSrc);
+gl.useProgram(program);
+
+// --- Geometry (full screen quad) ---
+const quadVerts = new Float32Array([
+  -1, -1,
+   1, -1,
+  -1,  1,
+  -1,  1,
+   1, -1,
+   1,  1
+]);
+const vbo = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+gl.bufferData(gl.ARRAY_BUFFER, quadVerts, gl.STATIC_DRAW);
+const a_pos = gl.getAttribLocation(program, 'a_pos');
+gl.enableVertexAttribArray(a_pos);
+gl.vertexAttribPointer(a_pos, 2, gl.FLOAT, false, 0, 0);
+
+// --- Uniform locations ---
+const u_resolution = gl.getUniformLocation(program, 'u_resolution');
+const u_center = gl.getUniformLocation(program, 'u_center');
+const u_scale = gl.getUniformLocation(program, 'u_scale');
+const u_time = gl.getUniformLocation(program, 'u_time');
+const u_maxIter = gl.getUniformLocation(program, 'u_maxIter');
+const u_palette = gl.getUniformLocation(program, 'u_palette');
+const u_pixelRatio = gl.getUniformLocation(program, 'u_pixelRatio');
+
+// ---- View & control state ----
+let center = { x: -0.5, y: 0.0 };    // complex center
+let scale = 3.0;                     // view width in complex plane
+let target = { x: center.x, y: center.y, scale: scale };
+let vel = { x: 0, y: 0, s: 0 };      // velocities for inertia
+let damping = 0.92;
+let moveSpeed = 0.0025;              // base pan speed (will scale by view scale)
+let zoomSpeed = 0.95;                // per-frame zoom factor when using Q/E or auto-zoom
+let maxIter = 800;                   // starting iterations
+let paletteIndex = 0;
+let autoZoom = false;
+
+// HUD elements
+const centerLabel = document.getElementById('center');
+const scaleLabel = document.getElementById('scale');
+const iterLabel = document.getElementById('iter');
+const fpsLabel = document.getElementById('fps');
+const overlayHUD = document.getElementById('overlayHUD');
+document.getElementById('iter').textContent = maxIter.toString();
+
+// buttons
+document.getElementById('resetBtn').addEventListener('click', () => {
+  target.x = -0.5; target.y = 0.0; target.scale = 3.0;
+  vel = {x:0,y:0,s:0};
+});
+document.getElementById('saveBtn').addEventListener('click', () => {
+  // use toDataURL (preserveDrawingBuffer = true is set on context)
+  const url = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mandelbrot.png'; a.click();
+});
+document.getElementById('toggleAuto').addEventListener('click', (e) => {
+  autoZoom = !autoZoom;
+  e.target.textContent = `AUTO ZOOM: ${autoZoom ? 'ON' : 'OFF'}`;
+});
+document.getElementById('paletteBtn').addEventListener('click', (e) => {
+  paletteIndex = (paletteIndex + 1) % 4;
+  const names = ['NEON','SUNSET','OCEAN','MONO'];
+  e.target.textContent = `PALETTE: ${names[paletteIndex]}`;
+});
+
+// Keyboard / Game controls (WASD + QE + Space + P + R)
+const keys = {};
+window.addEventListener('keydown', (ev) => {
+  keys[ev.key.toLowerCase()] = true;
+  if (ev.key === ' ') { autoZoom = !autoZoom; document.getElementById('toggleAuto').textContent = `AUTO ZOOM: ${autoZoom ? 'ON' : 'OFF'}`; ev.preventDefault(); }
+  if (ev.key.toLowerCase() === 'p') { paletteIndex = (paletteIndex + 1) % 4; document.getElementById('paletteBtn').textContent = `PALETTE: ${['NEON','SUNSET','OCEAN','MONO'][paletteIndex]}`; }
+  if (ev.key.toLowerCase() === 'r') { document.getElementById('resetBtn').click(); }
+});
+window.addEventListener('keyup', (ev) => { keys[ev.key.toLowerCase()] = false; });
+
+// Mouse interactions: wheel for zoom toward cursor, click to center+zoom
+canvas.addEventListener('wheel', (ev) => {
+  ev.preventDefault();
+  // pointer pos in canvas pixels
+  const rect = canvas.getBoundingClientRect();
+  const px = (ev.clientX - rect.left) * DPR;
+  const py = (ev.clientY - rect.top) * DPR;
+  // compute complex coordinate under cursor
+  const aspect = canvas.width / canvas.height;
+  const w = scale;
+  const h = w / aspect;
+  const cx = center.x + (px / canvas.width - 0.5) * w;
+  const cy = center.y + (py / canvas.height - 0.5) * h;
+  const factor = Math.exp(ev.deltaY * 0.0012); // smooth factor
+  // move center toward cursor and scale
+  target.x = cx + (target.x - cx) * factor;
+  target.y = cy + (target.y - cy) * factor;
+  target.scale *= factor;
+  // small velocity to make it feel game-like
+  vel.s *= 0.3;
+  requestRender(); // trigger more immediate render
+}, { passive: false });
+
+canvas.addEventListener('mousedown', (ev) => {
+  const rect = canvas.getBoundingClientRect();
+  const px = (ev.clientX - rect.left) * DPR;
+  const py = (ev.clientY - rect.top) * DPR;
+  const aspect = canvas.width / canvas.height;
+  const w = scale;
+  const h = w / aspect;
+  const cx = center.x + (px / canvas.width - 0.5) * w;
+  const cy = center.y + (py / canvas.height - 0.5) * h;
+  // center and zoom in a touch
+  target.x = cx; target.y = cy;
+  target.scale *= 0.5;
+  vel.s = 0;
+});
+
+// helper to adapt max iterations with zoom (more iterations as you zoom in)
+function computeAdaptiveIterations(s) {
+  // s is width of view: about 3 -> initial, small value -> deep zoom
+  const zoomLevel = Math.max(1.0, Math.log2(3.0 / Math.max(1e-20, s)));
+  // base 300, add logarithmic growth
+  const iter = Math.min(8000, Math.floor(300 + zoomLevel * 250));
+  return iter;
+}
+
+// ---- Animation loop ----
+let lastTime = performance.now();
+let frames = 0, fps = 0, fpsTimer = performance.now();
+let needsRender = true;
+
+function update(dt) {
+  // user input influences velocity (relative to current scale)
+  const panFactor = moveSpeed * scale; // larger when zoomed out, smaller when zoomed in
+  if (keys['w'] || keys['arrowup']) vel.y -= panFactor * dt * 60;
+  if (keys['s'] || keys['arrowdown']) vel.y += panFactor * dt * 60;
+  if (keys['a'] || keys['arrowleft']) vel.x -= panFactor * dt * 60;
+  if (keys['d'] || keys['arrowright']) vel.x += panFactor * dt * 60;
+  if (keys['q']) { target.scale *= Math.pow(zoomSpeed, dt*60); needsRender = true; }
+  if (keys['e']) { target.scale /= Math.pow(zoomSpeed, dt*60); needsRender = true; }
+
+  // auto zoom: continuous zoom toward center
+  if (autoZoom) {
+    target.scale *= Math.pow(0.9985, dt*60); // gentle continuous zoom in
+    needsRender = true;
+  }
+
+  // apply damping to velocities
+  vel.x *= damping;
+  vel.y *= damping;
+  vel.s *= damping;
+
+  // update target center by velocity, scaled by current scale (pan moves in complex plane)
+  target.x += vel.x * dt;
+  target.y += vel.y * dt;
+  target.scale += vel.s * dt;
+
+  // Smoothly interpolate actual view towards target for nice easing
+  const interp = 1 - Math.pow(0.001, dt); // frame-rate independent smoothing
+  center.x = center.x + (target.x - center.x) * interp;
+  center.y = center.y + (target.y - center.y) * interp;
+  scale = scale + (target.scale - scale) * interp;
+
+  // adapt iterations
+  const newIter = computeAdaptiveIterations(scale);
+  if (newIter !== maxIter) {
+    maxIter = newIter;
+    document.getElementById('iter').textContent = maxIter;
+  }
+}
+
+function render(time) {
+  // set uniforms and draw
+  gl.useProgram(program);
+  gl.uniform2f(u_resolution, canvas.width, canvas.height);
+  gl.uniform2f(u_center, center.x, center.y);
+  gl.uniform1f(u_scale, scale);
+  gl.uniform1f(u_time, time * 0.001);
+  gl.uniform1i(u_maxIter, maxIter);
+  gl.uniform1i(u_palette, paletteIndex);
+  gl.uniform1f(u_pixelRatio, DPR);
+
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
+
+function frame(now) {
+  const dt = Math.min(0.05, (now - lastTime) / 1000); // clamp delta to avoid big jumps
+  lastTime = now;
+  update(dt);
+  render(now);
+
+  // HUD updates
+  frames++;
+  if (now - fpsTimer > 500) {
+    fps = Math.round((frames * 1000) / (now - fpsTimer));
+    frames = 0;
+    fpsTimer = now;
+    fpsLabel.textContent = fps.toString();
+  }
+  centerLabel.textContent = `${center.x.toFixed(8)}, ${center.y.toFixed(8)}`;
+  scaleLabel.textContent = `${scale.toExponential(6)}`;
+  iterLabel.textContent = `${maxIter}`;
+  overlayHUD.textContent = `Time Machine · Scale: ${scale.toExponential(2)} · Palette: ${['NEON','SUNSET','OCEAN','MONO'][paletteIndex]}`;
+
+  requestAnimationFrame(frame);
+}
+
+// tiny helper to trigger a render when input changes
+function requestRender(){ needsRender = true; }
+
+requestAnimationFrame((t)=>{ lastTime = t; fpsTimer = t; frame(t); });
+
+// initial draw
+render(performance.now());
+
+// ensure canvas fits correctly on load
+window.addEventListener('load', () => { fitToWindow(); render(performance.now()); });
+</script>
+</body>
+</html>
