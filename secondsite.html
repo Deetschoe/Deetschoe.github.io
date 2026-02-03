@@ -47,33 +47,17 @@
             background-image: url('paper.png');
             background-size: cover;
             background-attachment: fixed;
-            opacity: 0.25; /* this was the age i realized i had 2 lives */
+            opacity: 0; /* Start at 0 for fade-in */
             transform: scaleY(var(--flip-scale, 1));
             pointer-events: none;
             z-index: -1;
+            animation: paperFadeIn 1s ease-in forwards;
         }
 
-        /* Paper texture for text */
-        .text-paper {
-            position: relative;
-            color: #1a1a1a;
-        }
-
-        .text-paper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('paper.png');
-            background-size: 200% 200%;
-            background-position: var(--scroll-y, 0px) var(--scroll-y, 0px);
-            opacity: 0.25; /* this was the age i realized i had 2 lives */
-            mix-blend-mode: multiply;
-            pointer-events: none;
-            z-index: -1;
-            transform: scaleY(var(--flip-scale, 1));
+        @keyframes paperFadeIn {
+            to {
+                opacity: 0.15; /* this was the age i realized i had 2 lives */
+            }
         }
 
         /* Color accents - lighter */
@@ -119,11 +103,17 @@
             object-fit: cover;
             transition: all 0.4s ease;
             cursor: pointer;
+            pointer-events: auto;
         }
 
         .profile-img:hover {
             filter: invert(1);
             transform: scale(1.05);
+        }
+
+        .profile-img:active {
+            filter: none;
+            transform: scale(0.98);
         }
 
         .name-wrapper {
@@ -132,7 +122,7 @@
         }
 
         .name {
-            font-size: 2.4rem;
+            font-size: 2rem;
             font-weight: 300;
             font-family: 'Courier New', monospace;
             letter-spacing: 2px;
@@ -406,6 +396,44 @@
             background: linear-gradient(135deg, #d4a574 0%, #8ba68b 50%, #7a9ba8 100%);
         }
 
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .video-item {
+            border: 2px solid #1a1a1a;
+            overflow: hidden;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .video-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 0 #1a1a1a;
+        }
+
+        .video-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .video-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-item h3 {
+            padding: 15px;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+
         /* Cool Shit List */
         .cool-list {
             list-style: none;
@@ -481,6 +509,13 @@
             color: #ff6b35;
         }
 
+        /* Age Display */
+        .age-display {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -488,7 +523,7 @@
             }
 
             .name {
-                font-size: 2rem;
+                font-size: 3rem;
             }
 
             .section-header {
@@ -496,7 +531,8 @@
                 padding: 20px;
             }
 
-            .project-grid {
+            .project-grid,
+            .video-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -523,11 +559,11 @@
         <div class="header">
             <div class="header-top-right" id="header-age">20.4yr based in Japan</div>
             <div class="name-container">
-                <a href="hidden.html" onclick="playRandomSound(); return true;">
+                <a href="#" onclick="event.preventDefault(); playRandomSound(); setTimeout(() => { window.location.href = 'hidden.html'; }, 100);">
                     <img src="shibb.png" alt="Profile" class="profile-img">
                 </a>
                 <div class="name-wrapper">
-                    <h1 class="name text-paper">deet</h1>
+                    <h1 class="name">deet</h1>
                     <p class="name-katakana">デイート</p>
                 </div>
             </div>
@@ -708,10 +744,17 @@
         }
 
         // Play random sound effect
+        let currentAudio = null;
         function playRandomSound() {
+            // Stop any currently playing sound
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
             const soundNum = Math.floor(Math.random() * 7) + 1;
-            const audio = new Audio(`${soundNum}.wav`);
-            audio.play().catch(e => console.error('Error playing audio:', e));
+            currentAudio = new Audio(`${soundNum}.wav`);
+            currentAudio.volume = 0.5; // 50% quieter
+            currentAudio.play().catch(e => console.error('Error playing audio:', e));
         }
 
         updateAge();
@@ -754,24 +797,9 @@
             // Parallax for background paper texture with flipping
             document.body.style.setProperty('--flip-scale', flipScale);
             document.documentElement.style.setProperty('--flip-scale', flipScale);
-            
-            // Parallax for text paper texture with flipping
-            const paperElements = document.querySelectorAll('.text-paper');
-            paperElements.forEach(el => {
-                const speed = 0.2;
-                el.style.setProperty('--scroll-y', `${scrollY * speed}px`);
-                el.style.setProperty('--flip-scale', flipScale);
-            });
         });
 
-        // Smooth scroll on page load
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s ease';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+        // Smooth scroll on page load - removed fade that was affecting paper texture
     </script>
 </body>
 </html>

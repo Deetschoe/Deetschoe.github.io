@@ -7,7 +7,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>deet</title>
+    <title>deet schoening</title>
 
     <style>
         @font-face {
@@ -47,33 +47,17 @@
             background-image: url('paper.png');
             background-size: cover;
             background-attachment: fixed;
-            opacity: 0.25; /* this was the age i realized i had 2 lives */
+            opacity: 0; /* Start at 0 for fade-in */
             transform: scaleY(var(--flip-scale, 1));
             pointer-events: none;
             z-index: -1;
+            animation: paperFadeIn 2s ease-in forwards;
         }
 
-        /* Paper texture for text */
-        .text-paper {
-            position: relative;
-            color: #1a1a1a;
-        }
-
-        .text-paper::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('paper.png');
-            background-size: 200% 200%;
-            background-position: var(--scroll-y, 0px) var(--scroll-y, 0px);
-            opacity: 0.25; /* this was the age i realized i had 2 lives */
-            mix-blend-mode: multiply;
-            pointer-events: none;
-            z-index: -1;
-            transform: scaleY(var(--flip-scale, 1));
+        @keyframes paperFadeIn {
+            to {
+                opacity: 0.14; /* this was the age i realized i had 2 lives */
+            }
         }
 
         /* Color accents - lighter */
@@ -119,11 +103,17 @@
             object-fit: cover;
             transition: all 0.4s ease;
             cursor: pointer;
+            pointer-events: auto;
         }
 
         .profile-img:hover {
             filter: invert(1);
             transform: scale(1.05);
+        }
+
+        .profile-img:active {
+            filter: none;
+            transform: scale(0.98);
         }
 
         .name-wrapper {
@@ -132,7 +122,7 @@
         }
 
         .name {
-            font-size: 2.4rem;
+            font-size: 2rem;
             font-weight: 300;
             font-family: 'Courier New', monospace;
             letter-spacing: 2px;
@@ -228,6 +218,42 @@
         .section-content.active {
             max-height: 5000px;
             padding: 20px;
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .project-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px 0;
+        }
+
+        .project-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .project-list li:last-child {
+            border-bottom: none;
+        }
+
+        .project-list-title {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .project-list-description {
+            font-size: 0.9rem;
+            color: #666;
         }
 
         /* Project Grid */
@@ -406,6 +432,44 @@
             background: linear-gradient(135deg, #d4a574 0%, #8ba68b 50%, #7a9ba8 100%);
         }
 
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .video-item {
+            border: 2px solid #1a1a1a;
+            overflow: hidden;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .video-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 0 #1a1a1a;
+        }
+
+        .video-item a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .video-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-item h3 {
+            padding: 15px;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            line-height: 1.4;
+        }
+
         /* Cool Shit List */
         .cool-list {
             list-style: none;
@@ -458,11 +522,13 @@
             width: 30px;
             height: 30px;
             filter: grayscale(100%);
-            transition: filter 0.3s ease;
+            transition: filter 0.3s ease, opacity 0.3s ease;
+            opacity: 0.4;
         }
 
         .footer a:hover .footer-icon {
             filter: grayscale(0%);
+            opacity: 0.9;
         }
 
         /* Text Content */
@@ -481,6 +547,13 @@
             color: #ff6b35;
         }
 
+        /* Age Display */
+        .age-display {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -488,7 +561,7 @@
             }
 
             .name {
-                font-size: 2rem;
+                font-size: 3rem;
             }
 
             .section-header {
@@ -496,7 +569,8 @@
                 padding: 20px;
             }
 
-            .project-grid {
+            .project-grid,
+            .video-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -521,82 +595,73 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-top-right" id="header-age">20.4yr based in Japan</div>
+            <div class="header-top-right" id="header-age">20.4yr based in japan</div>
             <div class="name-container">
-                <a href="hidden.html" onclick="playRandomSound(); return true;">
+                <a href="#" onclick="event.preventDefault(); playRandomSound(); setTimeout(() => { window.location.href = 'hidden.html'; }, 100);">
                     <img src="shibb.png" alt="Profile" class="profile-img">
                 </a>
                 <div class="name-wrapper">
-                    <h1 class="name text-paper">deet</h1>
-                    <p class="name-katakana">デイート</p>
+                    <h1 class="name">deet schoening</h1>
+                    <p class="name-katakana">dieter デイート</p>
+                    <p class="tagline">viral creator → entrepreneur → hacker.</p>
                 </div>
             </div>
-            <p class="tagline"><span class="accent-purple">viral creator</span> → <span class="accent-orange">entrepreneur</span> → <span class="accent-green">hacker</span>. now making things that matter.</p>
+
         </div>
 
         <!-- About -->
         <div class="about-section">
-            <h2>about</h2>
             <div class="text-content">
-                <p>Grew up in South Carolina, moved around a lot. Spent my time on the computer—Minecraft, anime, animations, video editing, Blender thumbnails, reselling on eBay. Eventually started my first business and scaled it to a million in revenue before 18.</p>
+                <p>grew up moving around south carolina. started early: photoshop at 10, designing thumbnails for youtubers at 12, then scaled my first business to $1M revenue before 18.</p>
             </div>
         </div>
 
         <!-- Projects -->
         <div class="section">
             <div class="section-header" onclick="toggleSection(this)">
-                <span>projects</span>
+                <span>things i've built</span>
                 <span class="toggle-icon">+</span>
             </div>
             <div class="section-content">
-                <div class="project-grid">
-                    <div class="project-card">
-                        <h3 class="project-title">Minimalmaru</h3>
-                        <p class="project-description">Started a Japanese-inspired minimal clothing brand at 14. Shipped 33,000+ orders within 2 years before age 17.</p>
-                        <div class="project-images">
-                            <div class="gradient-box gradient-1"></div>
-                            <div class="gradient-box gradient-2"></div>
-                        </div>
-                        <a href="https://www.instagram.com/minimaruclothing/?hl=en" class="project-link" target="_blank">View →</a>
-                    </div>
+                <p class="section-label">worlds & brands</p>
+                <ul class="project-list">
+                    <li>
+                        <span class="project-list-title">minimalmaru</span>
+                        <span class="project-list-description">japanese minimal clothing brand. 33K+ orders shipped by age 17.</span>
+                        <a href="https://www.instagram.com/minimaruclothing/?hl=en" class="project-link" target="_blank">instagram →</a>
+                    </li>
+                    <li>
+                        <span class="project-list-title">darukiyu</span>
+                        <span class="project-list-description">grew a tiktok account to 300K followers with anime content.</span>
+                        <a href="https://www.tiktok.com/@darukiyu" class="project-link" target="_blank">tiktok →</a>
+                    </li>
+                    <li>
+                        <span class="project-list-title">kōdan</span>
+                        <span class="project-list-description">locally generated ai anime stories on your mac. spent 2 months in rural japan building it.</span>
+                        <a href="https://serenityux.github.io/kodan-desktop-site/" class="project-link" target="_blank">site →</a>
+                    </li>
+                </ul>
 
-                    <div class="project-card">
-                        <h3 class="project-title">Kōdan</h3>
-                        <p class="project-description">Locally generate AI anime videos. Lived in Japan with Thomas for 2 months building Kōdan.</p>
-                        <div class="project-images">
-                            <div class="gradient-box gradient-3"></div>
-                            <div class="gradient-box gradient-4"></div>
-                            <div class="gradient-box gradient-5"></div>
-                        </div>
-                        <a href="https://serenityux.github.io/kodan-desktop-site/" class="project-link" target="_blank">Download →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">Life of Chai</h3>
-                        <p class="project-description">VR story game I made with Thomas. Our first VR game published.</p>
-                        <div class="project-images">
-                            <div class="gradient-box gradient-1"></div>
-                            <div class="gradient-box gradient-2"></div>
-                        </div>
-                        <a href="https://sidequestvr.com/app/27172/life-of-chai" class="project-link" target="_blank">Play →</a>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">Darukiyu</h3>
-                        <p class="project-description">300K TikTok account making anime videos.</p>
-                        <div class="project-images">
-                            <div class="gradient-box gradient-4"></div>
-                        </div>
-                        <a href="https://www.tiktok.com/@darukiyu" class="project-link" target="_blank">Check it out →</a>
-                    </div>
-                </div>
+                <p class="section-label">hardware & experiments</p>
+                <ul class="project-list">
+                    <li>
+                        <span class="project-list-title">dj kit</span>
+                        <span class="project-list-description">custom midi dj controller built on arduino uno.</span>
+                        <a href="https://www.youtube.com/watch?v=7gjYoUgeyIw&t=1s" class="project-link" target="_blank">video →</a>
+                    </li>
+                    <li>
+                        <span class="project-list-title">laser speaker</span>
+                        <span class="project-list-description">laser-based audio experiment—turning light into sound.</span>
+                        <a href="https://www.youtube.com/watch?v=hvUBrkJTV_0" class="project-link" target="_blank">video →</a>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <!-- Experience -->
         <div class="section">
             <div class="section-header" onclick="toggleSection(this)">
-                <span>experience</span>
+                <span>work</span>
                 <span class="toggle-icon">+</span>
             </div>
             <div class="section-content">
@@ -625,44 +690,18 @@
         <!-- Cool Shit -->
         <div class="section">
             <div class="section-header" onclick="toggleSection(this)">
-                <span>cool shit i've done</span>
+                <span>odd experiments</span>
                 <span class="toggle-icon">+</span>
             </div>
             <div class="section-content">
                 <ul class="cool-list">
                     <li>
-                        <span>Won Hack The North 2023</span>
+                        <span>selfie 1v1 battle challenge — hack the geese (won hack the north 2023)</span>
                         <a href="https://devpost.com/Deetschoe" target="_blank" class="accent-green">→</a>
                     </li>
                     <li>
-                        <span>Created the world's most dangerous VR game (BikstAR)</span>
+                        <span>world's most dangerous vr game (bikstar) — quest 3 passthrough, catch carrots while biking outside</span>
                         <a href="https://devpost.com/software/bikstar" target="_blank" class="accent-orange">→</a>
-                    </li>
-                    <li>
-                        <span>Graduated early, took a gap year to market Hack Club</span>
-                    </li>
-                    <li>
-                        <span>Built a human-sized microwave with Shawn</span>
-                    </li>
-                    <li>
-                        <span>Lived in Japan for 2 months building Kōdan with Thomas</span>
-                    </li>
-                    <li>
-                        <span>Filmed the world's first Hikeathon—30 teen hackers on the Pacific Crest Trail</span>
-                        <a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank" class="accent-blue">→</a>
-                    </li>
-                    <li>
-                        <span>Grew a TikTok account to 300K followers making anime content</span>
-                        <a href="https://www.tiktok.com/@darukiyu" target="_blank" class="accent-purple">→</a>
-                    </li>
-                    <li>
-                        <span>Shipped 33,000+ orders for my clothing brand within 2 years before age 17</span>
-                    </li>
-                    <li>
-                        <span>Made VR games that got published on SideQuest</span>
-                    </li>
-                    <li>
-                        <span>Created content that reached millions of views across platforms</span>
                     </li>
                 </ul>
             </div>
@@ -671,13 +710,13 @@
         <!-- Footer -->
         <div class="footer">
             <a href="https://x.com/DeetSchoe" target="_blank">
-                <img src="x.png" alt="Twitter" class="footer-icon">
+                <img src="1x.png" alt="Twitter" class="footer-icon">
             </a>
             <a href="https://www.youtube.com/channel/UCxqUaH4DbGc86G_BQIGoU4A" target="_blank">
-                <img src="youtube.png" alt="YouTube" class="footer-icon">
+                <img src="1youtube.png" alt="YouTube" class="footer-icon">
             </a>
             <a href="https://github.com/deetschoening" target="_blank">
-                <img src="github.png" alt="Github" class="footer-icon">
+                <img src="1github.png" alt="Github" class="footer-icon">
             </a>
         </div>
     </div>
@@ -688,30 +727,28 @@
             const now = new Date();
             const msInYear = 365.25 * 24 * 60 * 60 * 1000;
             const ageInYears = (now - birthDate) / msInYear;
-
-            const thisYearBirthday = new Date(
-                now.getFullYear(),
-                birthDate.getMonth(),
-                birthDate.getDate()
-            );
-
-            const hasBirthdayPassed = now >= thisYearBirthday;
-
-            return hasBirthdayPassed ? ageInYears : Math.min(ageInYears, 19.999999);
+            return ageInYears;
         }
 
         function updateAge() {
             const birthDate = new Date('2005-06-09');
             const age = getPreciseAge(birthDate);
             const displayAge = age.toFixed(1);
-            document.getElementById('header-age').textContent = `${displayAge}yr based in Japan`;
+            document.getElementById('header-age').textContent = `${displayAge}yr based in japan`;
         }
 
         // Play random sound effect
+        let currentAudio = null;
         function playRandomSound() {
+            // Stop any currently playing sound
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
             const soundNum = Math.floor(Math.random() * 7) + 1;
-            const audio = new Audio(`${soundNum}.wav`);
-            audio.play().catch(e => console.error('Error playing audio:', e));
+            currentAudio = new Audio(`${soundNum}.wav`);
+            currentAudio.volume = 0.5; // 50% quieter
+            currentAudio.play().catch(e => console.error('Error playing audio:', e));
         }
 
         updateAge();
@@ -754,24 +791,9 @@
             // Parallax for background paper texture with flipping
             document.body.style.setProperty('--flip-scale', flipScale);
             document.documentElement.style.setProperty('--flip-scale', flipScale);
-            
-            // Parallax for text paper texture with flipping
-            const paperElements = document.querySelectorAll('.text-paper');
-            paperElements.forEach(el => {
-                const speed = 0.2;
-                el.style.setProperty('--scroll-y', `${scrollY * speed}px`);
-                el.style.setProperty('--flip-scale', flipScale);
-            });
         });
 
-        // Smooth scroll on page load
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s ease';
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+        // Smooth scroll on page load - removed fade that was affecting paper texture
     </script>
 </body>
 </html>
