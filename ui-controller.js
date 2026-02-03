@@ -258,12 +258,25 @@
         if (!this.laptopTerminalOpen) return;
 
         const rect = this.cabinScene.getLaptopScreenRect();
-        if (rect && rect.width > 20 && rect.height > 15) {
-          el.style.left = rect.left + 'px';
-          el.style.top = rect.top + 'px';
-          el.style.width = rect.width + 'px';
-          el.style.height = rect.height + 'px';
-          const fs = Math.max(6, Math.min(13, rect.height / 20));
+        if (rect && rect.width > 10 && rect.height > 8) {
+          // Ensure minimum usable size
+          const minW = 280, minH = 180;
+          let w = Math.max(rect.width, minW);
+          let h = Math.max(rect.height, minH);
+          // Center on the projected rect center
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          let left = cx - w / 2;
+          let top = cy - h / 2;
+          // Keep on screen
+          left = Math.max(4, Math.min(window.innerWidth - w - 4, left));
+          top = Math.max(4, Math.min(window.innerHeight - h - 4, top));
+
+          el.style.left = left + 'px';
+          el.style.top = top + 'px';
+          el.style.width = w + 'px';
+          el.style.height = h + 'px';
+          const fs = Math.max(9, Math.min(14, h / 16));
           el.style.fontSize = fs + 'px';
         }
 
@@ -382,12 +395,17 @@
       this.isLaptopZoom = progress > 0.75;
       if (wasLaptopZoom !== this.isLaptopZoom) {
         document.body.classList.toggle('laptop-zoom', this.isLaptopZoom);
-        // Auto-open laptop terminal when zooming in, close when scrolling away
-        if (this.isLaptopZoom && progress > 0.9) {
-          this.openLaptopTerminal();
-        } else if (!this.isLaptopZoom && this.laptopTerminalOpen) {
+        // Close laptop terminal when scrolling away
+        if (!this.isLaptopZoom && this.laptopTerminalOpen) {
           this.closeLaptopTerminal();
         }
+      }
+
+      // Enable editable laptop screen when zoomed in
+      if (progress > 0.85 && this.cabinScene && !this.cabinScene._screenEditing) {
+        this.cabinScene.enableScreenEditing();
+      } else if (progress <= 0.75 && this.cabinScene && this.cabinScene._screenEditing) {
+        this.cabinScene.disableScreenEditing();
       }
 
       // Forward to scene
@@ -396,9 +414,29 @@
       // Active nav link
       this.updateActiveNav();
 
-      // Depth blur + grey fog effect - starts very blurry/grey, clears as you scroll
-      const blurAmount = progress < 0.3 ? (1 - progress / 0.3) * 6 : 0;
+      // Depth blur + grey fog effect
+      // Initial blur that clears as you scroll in
+      const introBlur = progress < 0.3 ? (1 - progress / 0.3) * 6 : 0;
+
+      // Depth-of-field: blur the 3D scene when text sections are in view
+      // Peaks when about/projects sections are centered on screen
+      let dofBlur = 0;
+      const textSections = document.querySelectorAll('#about, #projects');
+      textSections.forEach((sec) => {
+        const rect = sec.getBoundingClientRect();
+        const center = rect.top + rect.height / 2;
+        const screenCenter = window.innerHeight / 2;
+        const dist = Math.abs(center - screenCenter) / window.innerHeight;
+        // Stronger blur when section is centered (dist < 0.4)
+        if (dist < 0.5) {
+          const strength = (1 - dist / 0.5) * 3.5;
+          dofBlur = Math.max(dofBlur, strength);
+        }
+      });
+
+      const blurAmount = Math.max(introBlur, dofBlur);
       document.documentElement.style.setProperty('--scene-blur', blurAmount.toFixed(2) + 'px');
+
       // Grey overlay that fades out as you scroll
       const greyOpacity = progress < 0.25 ? (1 - progress / 0.25) * 0.55 : 0;
       document.documentElement.style.setProperty('--intro-grey', greyOpacity.toFixed(3));
@@ -1040,13 +1078,23 @@
       // Click: open link or terminal
       canvas.addEventListener('click', (e) => {
         if (!this.cabinScene) return;
+
+        // When fully zoomed, clicks focus the editable screen
+        if (this.isLaptopZoom && this.cabinScene && this.cabinScene._screenEditing) {
+          this.cabinScene.focusScreenInput();
+          this.playClickSound();
+          return;
+        }
+
         const hit = this.cabinScene.getInteractiveAt(e.clientX, e.clientY);
 
         if (hit === 'tv') {
           window.open('https://serenityux.github.io/kodan-desktop-site/', '_blank');
           this.playClickSound();
         } else if (hit === 'laptop') {
-          this.openLaptopTerminal();
+          if (this.cabinScene && this.cabinScene._screenEditing) {
+            this.cabinScene.focusScreenInput();
+          }
           this.playClickSound();
         }
       });

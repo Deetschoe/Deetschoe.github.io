@@ -320,103 +320,195 @@ class CabinScene {
 
   _createCodeScreenTexture() {
     const size = 512;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
+    this._screenCanvas = document.createElement('canvas');
+    this._screenCanvas.width = size;
+    this._screenCanvas.height = size;
+    this._screenCtx = this._screenCanvas.getContext('2d');
+    this._screenEditing = false;
+    this._screenCursorVisible = true;
+    this._screenCursorTimer = null;
 
-    // Warm off-white background like a note
-    ctx.fillStyle = '#faf8f5';
+    // The editable text lines
+    this._screenLines = [
+      '- finish PCB design',
+      '- order new filament',
+      '- read kahneman ch.7',
+      '- test new firmware',
+      '- brain sim v0.3 bugs',
+      '- upload youtube vid',
+      '',
+      'say hi:',
+      'dieter@serenidad.app',
+      'twitter  @dieterzsh',
+      'github   Deetschoe',
+      '',
+      '',
+    ];
+    this._screenCursorLine = this._screenLines.length - 1;
+    this._screenCursorCol = 0;
+
+    this._renderScreen();
+    this._screenTexture = new THREE.CanvasTexture(this._screenCanvas);
+    return this._screenTexture;
+  }
+
+  _renderScreen() {
+    const ctx = this._screenCtx;
+    const size = 512;
+
+    // Background
+    ctx.fillStyle = '#1e1e2a';
     ctx.fillRect(0, 0, size, size);
 
-    // Top bar (dark)
-    ctx.fillStyle = '#2d2d2d';
-    ctx.fillRect(0, 0, size, 32);
-    ctx.fillStyle = '#ff5f56'; ctx.fillRect(10, 10, 12, 12);
-    ctx.fillStyle = '#ffbd2e'; ctx.fillRect(28, 10, 12, 12);
-    ctx.fillStyle = '#27c93f'; ctx.fillRect(46, 10, 12, 12);
-    ctx.fillStyle = '#999';
-    ctx.font = '11px monospace';
-    ctx.fillText('notes.txt', 200, 22);
+    // Top bar
+    ctx.fillStyle = '#16161e';
+    ctx.fillRect(0, 0, size, 28);
+    ctx.fillStyle = '#ff5f56'; ctx.fillRect(8, 8, 10, 10);
+    ctx.fillStyle = '#ffbd2e'; ctx.fillRect(24, 8, 10, 10);
+    ctx.fillStyle = '#27c93f'; ctx.fillRect(40, 8, 10, 10);
+    ctx.fillStyle = '#666';
+    ctx.font = '10px monospace';
+    ctx.fillText('notes.txt', 190, 18);
 
-    // Faint ruled lines
-    ctx.strokeStyle = 'rgba(180,170,160,0.2)';
-    ctx.lineWidth = 0.5;
-    for (let ly = 52; ly < size; ly += 20) {
-      ctx.beginPath();
-      ctx.moveTo(16, ly);
-      ctx.lineTo(size - 16, ly);
-      ctx.stroke();
-    }
-
-    // Notes content
-    ctx.font = '13px monospace';
-    let y = 62;
-    const gap = 20;
-
-    const notes = [
-      { color: '#555', text: '- finish PCB design' },
-      { color: '#555', text: '- order new filament' },
-      { color: '#888', style: 'line-through', text: '- fix 3d printer nozzle' },
-      { color: '#555', text: '- read kahneman ch.7' },
-      { color: '#555', text: '- test new firmware' },
-      { color: '#888', style: 'line-through', text: '- solder power board' },
-      { color: '#555', text: '- brain sim v0.3 bugs' },
-      { color: '#555', text: '- upload youtube vid' },
-      { color: '#555', text: '' },
-      { color: '#333', text: '' },
-    ];
-
-    for (const note of notes) {
-      if (note.text) {
-        ctx.fillStyle = note.color;
-        ctx.fillText(note.text, 20, y);
-        if (note.style === 'line-through') {
-          const w = ctx.measureText(note.text).width;
-          ctx.strokeStyle = note.color;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(20, y - 4);
-          ctx.lineTo(20 + w, y - 4);
-          ctx.stroke();
-        }
-      }
-      y += gap;
-    }
-
-    // Divider
-    y += 5;
-    ctx.strokeStyle = 'rgba(100,90,80,0.3)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(20, y);
-    ctx.lineTo(size - 20, y);
-    ctx.stroke();
-    y += 22;
-
-    // Contact block
-    ctx.font = 'bold 13px monospace';
-    ctx.fillStyle = '#333';
-    ctx.fillText('say hi:', 20, y);
-    y += 22;
-
+    // Content area
     ctx.font = '12px monospace';
-    ctx.fillStyle = '#2563eb';
-    ctx.fillText('dieter@serenidad.app', 20, y);
-    y += 20;
-    ctx.fillStyle = '#555';
-    ctx.fillText('twitter  @dieterzsh', 20, y);
-    y += 20;
-    ctx.fillStyle = '#555';
-    ctx.fillText('github   Deetschoe', 20, y);
+    const lineH = 18;
+    const startY = 45;
+    const pad = 14;
 
-    // Cursor
-    y += 25;
-    ctx.fillStyle = '#333';
-    ctx.fillRect(20, y, 7, 14);
+    for (let i = 0; i < this._screenLines.length; i++) {
+      const line = this._screenLines[i];
+      const y = startY + i * lineH;
 
-    const texture = new THREE.CanvasTexture(canvas);
-    return texture;
+      if (y > size - 10) break;
+
+      // Color coding
+      if (line.startsWith('say hi:')) {
+        ctx.fillStyle = '#c49a6c';
+        ctx.font = 'bold 12px monospace';
+      } else if (line.startsWith('dieter@')) {
+        ctx.fillStyle = '#6a9fd8';
+        ctx.font = '12px monospace';
+      } else if (line.startsWith('-')) {
+        ctx.fillStyle = '#8a9a8a';
+        ctx.font = '12px monospace';
+      } else {
+        ctx.fillStyle = '#888';
+        ctx.font = '12px monospace';
+      }
+
+      ctx.fillText(line, pad, y);
+
+      // Draw cursor on the active line when editing
+      if (this._screenEditing && i === this._screenCursorLine && this._screenCursorVisible) {
+        const beforeCursor = line.substring(0, this._screenCursorCol);
+        const cursorX = pad + ctx.measureText(beforeCursor).width;
+        ctx.fillStyle = '#c49a6c';
+        ctx.fillRect(cursorX, y - 11, 7, 14);
+      }
+    }
+
+    // Update texture if it exists
+    if (this._screenTexture) {
+      this._screenTexture.needsUpdate = true;
+    }
+  }
+
+  enableScreenEditing() {
+    if (this._screenEditing) return;
+    this._screenEditing = true;
+    this._screenCursorVisible = true;
+
+    // Blink cursor
+    this._screenCursorTimer = setInterval(() => {
+      this._screenCursorVisible = !this._screenCursorVisible;
+      this._renderScreen();
+    }, 530);
+
+    // Listen for keyboard input
+    this._screenKeyHandler = (e) => {
+      if (!this._screenEditing) return;
+
+      const line = this._screenCursorLine;
+      const col = this._screenCursorCol;
+
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (col > 0) {
+          this._screenLines[line] = this._screenLines[line].substring(0, col - 1) + this._screenLines[line].substring(col);
+          this._screenCursorCol--;
+        } else if (line > 0) {
+          // Merge with previous line
+          this._screenCursorCol = this._screenLines[line - 1].length;
+          this._screenLines[line - 1] += this._screenLines[line];
+          this._screenLines.splice(line, 1);
+          this._screenCursorLine--;
+        }
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const before = this._screenLines[line].substring(0, col);
+        const after = this._screenLines[line].substring(col);
+        this._screenLines[line] = before;
+        this._screenLines.splice(line + 1, 0, after);
+        this._screenCursorLine++;
+        this._screenCursorCol = 0;
+      } else if (e.key === 'ArrowLeft') {
+        if (col > 0) this._screenCursorCol--;
+      } else if (e.key === 'ArrowRight') {
+        if (col < this._screenLines[line].length) this._screenCursorCol++;
+      } else if (e.key === 'ArrowUp') {
+        if (line > 0) {
+          this._screenCursorLine--;
+          this._screenCursorCol = Math.min(this._screenCursorCol, this._screenLines[this._screenCursorLine].length);
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (line < this._screenLines.length - 1) {
+          this._screenCursorLine++;
+          this._screenCursorCol = Math.min(this._screenCursorCol, this._screenLines[this._screenCursorLine].length);
+        }
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        this._screenLines[line] = this._screenLines[line].substring(0, col) + e.key + this._screenLines[line].substring(col);
+        this._screenCursorCol++;
+      }
+
+      this._screenCursorVisible = true;
+      this._renderScreen();
+    };
+
+    window.addEventListener('keydown', this._screenKeyHandler);
+    this._renderScreen();
+  }
+
+  disableScreenEditing() {
+    if (!this._screenEditing) return;
+    this._screenEditing = false;
+    if (this._screenCursorTimer) {
+      clearInterval(this._screenCursorTimer);
+      this._screenCursorTimer = null;
+    }
+    if (this._screenKeyHandler) {
+      window.removeEventListener('keydown', this._screenKeyHandler);
+      this._screenKeyHandler = null;
+    }
+    this._screenCursorVisible = false;
+    this._renderScreen();
+  }
+
+  focusScreenInput() {
+    if (!this._screenEditing) {
+      this.enableScreenEditing();
+    }
+    // Place cursor at end of last non-empty line
+    for (let i = this._screenLines.length - 1; i >= 0; i--) {
+      if (this._screenLines[i].length > 0 || i === this._screenLines.length - 1) {
+        this._screenCursorLine = i;
+        this._screenCursorCol = this._screenLines[i].length;
+        break;
+      }
+    }
+    this._screenCursorVisible = true;
+    this._renderScreen();
   }
 
   // ── Outdoor Scene ───────────────────────────────────────────────────
@@ -1101,10 +1193,10 @@ class CabinScene {
     const laptopCodeTex = this._createCodeScreenTexture();
     const laptopScreenMat = new THREE.MeshStandardMaterial({
       map: laptopCodeTex,
-      roughness: 0.2,
-      metalness: 0.1,
-      emissive: 0xffffff,
-      emissiveIntensity: 0.3,
+      roughness: 0.15,
+      metalness: 0.05,
+      emissive: 0xaaaacc,
+      emissiveIntensity: 0.5,
       emissiveMap: laptopCodeTex,
     });
     // Laptop base
@@ -1883,6 +1975,101 @@ class CabinScene {
     const stringGlow = new THREE.PointLight(0xffaa44, 0.3, 5, 2);
     stringGlow.position.set(0, cb.height - 0.6, -2);
     this.scene.add(stringGlow);
+
+    // ── Hanging pendant lamp over desk ──────────────────────────────────
+    const pendantCordMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
+    const cordGeo = new THREE.CylinderGeometry(0.008, 0.008, 1.2, 6);
+    const cord = new THREE.Mesh(cordGeo, pendantCordMat);
+    cord.position.set(cb.minX + 1.7, cb.height - 0.6, cb.minZ + 0.8);
+    this.scene.add(cord);
+
+    const shadeMat = new THREE.MeshStandardMaterial({
+      color: 0xd4a55a,
+      emissive: 0xffcc88,
+      emissiveIntensity: 0.4,
+      roughness: 0.6,
+      transparent: true,
+      opacity: 0.85,
+      side: THREE.DoubleSide,
+    });
+    const shadeGeo = new THREE.CylinderGeometry(0.18, 0.12, 0.14, 12, 1, true);
+    const shade = new THREE.Mesh(shadeGeo, shadeMat);
+    shade.position.set(cb.minX + 1.7, cb.height - 1.25, cb.minZ + 0.8);
+    this.scene.add(shade);
+
+    const pendantBulbMat = new THREE.MeshStandardMaterial({
+      color: 0xffeedd,
+      emissive: 0xffcc88,
+      emissiveIntensity: 1.0,
+    });
+    const pendantBulbGeo = new THREE.SphereGeometry(0.04, 8, 8);
+    const pendantBulb = new THREE.Mesh(pendantBulbGeo, pendantBulbMat);
+    pendantBulb.position.set(cb.minX + 1.7, cb.height - 1.3, cb.minZ + 0.8);
+    this.scene.add(pendantBulb);
+
+    const pendantLight = new THREE.PointLight(0xffcc88, 0.9, 5, 1.8);
+    pendantLight.position.set(cb.minX + 1.7, cb.height - 1.35, cb.minZ + 0.8);
+    this.scene.add(pendantLight);
+
+    // ── Small desk candle ───────────────────────────────────────────────
+    const candleMat = new THREE.MeshStandardMaterial({ color: 0xf5e6cc, roughness: 0.8 });
+    const candleGeo = new THREE.CylinderGeometry(0.02, 0.025, 0.1, 8);
+    const candle = new THREE.Mesh(candleGeo, candleMat);
+    candle.position.set(cb.minX + 2.4, 1.1, cb.minZ + 0.4);
+    this.scene.add(candle);
+
+    const flameMat = new THREE.MeshStandardMaterial({
+      color: 0xffaa33,
+      emissive: 0xff8800,
+      emissiveIntensity: 1.5,
+      transparent: true,
+      opacity: 0.9,
+    });
+    const flameGeo = new THREE.SphereGeometry(0.015, 6, 6);
+    flameGeo.scale(1, 1.8, 1);
+    const flame = new THREE.Mesh(flameGeo, flameMat);
+    flame.position.set(cb.minX + 2.4, 1.18, cb.minZ + 0.4);
+    this.scene.add(flame);
+    this._candleFlame = flame;
+
+    const candleLight = new THREE.PointLight(0xff9944, 0.4, 3, 2);
+    candleLight.position.set(cb.minX + 2.4, 1.2, cb.minZ + 0.4);
+    this.scene.add(candleLight);
+    this._candleLight = candleLight;
+
+    // ── Floor lamp in the corner ────────────────────────────────────────
+    const floorLampPoleMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.6, metalness: 0.4 });
+    const poleGeo = new THREE.CylinderGeometry(0.015, 0.02, 1.6, 8);
+    const pole = new THREE.Mesh(poleGeo, floorLampPoleMat);
+    pole.position.set(cb.maxX - 0.6, 0.8, cb.minZ + 0.5);
+    this.scene.add(pole);
+
+    const floorShadeMat = new THREE.MeshStandardMaterial({
+      color: 0xe8ddd0,
+      emissive: 0xffddaa,
+      emissiveIntensity: 0.3,
+      transparent: true,
+      opacity: 0.8,
+      side: THREE.DoubleSide,
+    });
+    const floorShadeGeo = new THREE.CylinderGeometry(0.15, 0.2, 0.25, 12, 1, true);
+    const floorShade = new THREE.Mesh(floorShadeGeo, floorShadeMat);
+    floorShade.position.set(cb.maxX - 0.6, 1.65, cb.minZ + 0.5);
+    this.scene.add(floorShade);
+
+    const floorLampLight = new THREE.PointLight(0xffddaa, 0.6, 4, 2);
+    floorLampLight.position.set(cb.maxX - 0.6, 1.6, cb.minZ + 0.5);
+    this.scene.add(floorLampLight);
+
+    // ── Shelf accent light (warm glow on bookshelf) ─────────────────────
+    const shelfLight = new THREE.PointLight(0xffcc88, 0.25, 2.5, 2);
+    shelfLight.position.set(cb.minX + 3.2, 2.0, cb.minZ + 0.5);
+    this.scene.add(shelfLight);
+
+    // ── Warm bounce from ceiling ────────────────────────────────────────
+    const ceilingBounce = new THREE.PointLight(0xffddbb, 0.15, 8, 2);
+    ceilingBounce.position.set(0, cb.height - 0.3, -3);
+    this.scene.add(ceilingBounce);
   }
 
   // ── Fireflies ───────────────────────────────────────────────────────
@@ -2297,6 +2484,20 @@ class CabinScene {
       Math.sin(elapsed * 23.1) * 0.01;
 
     this.lampLight.intensity = this.lampFlickerBase + flicker;
+
+    // Candle flicker — more organic
+    if (this._candleLight) {
+      const cFlicker =
+        Math.sin(elapsed * 11) * 0.12 +
+        Math.sin(elapsed * 19.3) * 0.08 +
+        Math.sin(elapsed * 31.7) * 0.05;
+      this._candleLight.intensity = 0.4 + cFlicker;
+    }
+    if (this._candleFlame) {
+      const sway = Math.sin(elapsed * 7.5) * 0.003;
+      this._candleFlame.position.x = this._candleFlame.position.x + sway * 0.1;
+      this._candleFlame.scale.y = 1.6 + Math.sin(elapsed * 14) * 0.3;
+    }
   }
 
   // ── Public API ──────────────────────────────────────────────────────
