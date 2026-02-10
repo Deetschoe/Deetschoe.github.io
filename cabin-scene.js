@@ -74,6 +74,7 @@ class CabinScene {
     this._createLighting();
     this._createFireflies();
     this._createDustParticles();
+    // ASCII post-process removed
     this._bindEvents();
     this._animate();
   }
@@ -91,14 +92,17 @@ class CabinScene {
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // Cap pixel ratio at 1.5 for performance — still looks sharp but saves GPU
     const maxPixelRatio = (this._perfSettings && this._perfSettings.pixelRatio)
-      ? this._perfSettings.pixelRatio
-      : Math.min(window.devicePixelRatio, 2);
+      ? Math.min(this._perfSettings.pixelRatio, 1.5)
+      : Math.min(window.devicePixelRatio, 1.5);
     this.renderer.setPixelRatio(maxPixelRatio);
 
     const enableShadows = this.performanceTier === 'high';
     this.renderer.shadowMap.enabled = enableShadows;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if (enableShadows) {
+      this.renderer.shadowMap.type = THREE.PCFShadowMap; // cheaper than PCFSoft
+    }
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.7;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
@@ -328,21 +332,21 @@ class CabinScene {
     this._screenCursorVisible = true;
     this._screenCursorTimer = null;
 
-    // The editable text lines
+    // The editable text lines (terminal style)
     this._screenLines = [
-      '- finish PCB design',
-      '- order new filament',
-      '- read kahneman ch.7',
-      '- test new firmware',
-      '- brain sim v0.3 bugs',
-      '- upload youtube vid',
+      '> whoami',
+      'dieter - builder, filmer',
       '',
-      'say hi:',
-      'dieter@serenidad.app',
-      'twitter  @dieterzsh',
-      'github   Deetschoe',
+      '> ls projects/',
+      'kodan/  serenidad/  minimalmaru/',
+      'laser-speaker/  vr-games/',
       '',
+      '> cat contact.txt',
+      'email: dieter@serenidad.app',
+      'twitter: @dieterzsh',
+      'github: Deetschoe',
       '',
+      '> _',
     ];
     this._screenCursorLine = this._screenLines.length - 1;
     this._screenCursorCol = 0;
@@ -368,7 +372,7 @@ class CabinScene {
     ctx.fillStyle = '#27c93f'; ctx.fillRect(40, 8, 10, 10);
     ctx.fillStyle = '#666';
     ctx.font = '10px monospace';
-    ctx.fillText('notes.txt', 190, 18);
+    ctx.fillText("dieter's terminal", 175, 18);
 
     // Content area
     ctx.font = '12px monospace';
@@ -382,18 +386,18 @@ class CabinScene {
 
       if (y > size - 10) break;
 
-      // Color coding
-      if (line.startsWith('say hi:')) {
-        ctx.fillStyle = '#c49a6c';
-        ctx.font = 'bold 12px monospace';
-      } else if (line.startsWith('dieter@')) {
+      // Color coding (terminal style)
+      if (line.startsWith('>')) {
+        ctx.fillStyle = '#7a9a78';
+        ctx.font = '12px monospace';
+      } else if (line.startsWith('email:') || line.startsWith('twitter:') || line.startsWith('github:')) {
+        ctx.fillStyle = '#ffdb4e';
+        ctx.font = '12px monospace';
+      } else if (line.includes('/')) {
         ctx.fillStyle = '#6a9fd8';
         ctx.font = '12px monospace';
-      } else if (line.startsWith('-')) {
-        ctx.fillStyle = '#8a9a8a';
-        ctx.font = '12px monospace';
       } else {
-        ctx.fillStyle = '#888';
+        ctx.fillStyle = '#aaa';
         ctx.font = '12px monospace';
       }
 
@@ -769,7 +773,7 @@ class CabinScene {
     const rockPositions = [
       { x: -4, z: 7, sx: 1.2, sy: 0.4, sz: 1.0, mossy: true },
       { x: 6, z: 5, sx: 0.8, sy: 0.35, sz: 0.9, mossy: false },
-      { x: -3, z: -4, sx: 1.5, sy: 0.5, sz: 1.3, mossy: true },
+      { x: -8, z: 12, sx: 1.5, sy: 0.5, sz: 1.3, mossy: true },
       { x: 10, z: 16, sx: 1.0, sy: 0.3, sz: 0.7, mossy: false },
       { x: -7, z: 20, sx: 0.9, sy: 0.4, sz: 1.1, mossy: true },
     ];
@@ -1204,6 +1208,59 @@ class CabinScene {
     const laptopBase = new THREE.Mesh(laptopBaseGeo, laptopMat);
     laptopBase.position.set(cb.minX + 1.7, 1.05, cb.minZ + 0.55);
     this.scene.add(laptopBase);
+
+    // Laptop keyboard
+    const keyMat = new THREE.MeshStandardMaterial({
+      color: 0x1a1a1a,
+      roughness: 0.6,
+      metalness: 0.2,
+    });
+    const keyboardBaseMat = new THREE.MeshStandardMaterial({
+      color: 0x2a2a2a,
+      roughness: 0.5,
+      metalness: 0.3,
+    });
+    // Keyboard area (darker rectangle on base)
+    const kbAreaGeo = new THREE.BoxGeometry(0.34, 0.003, 0.18);
+    const kbArea = new THREE.Mesh(kbAreaGeo, keyboardBaseMat);
+    kbArea.position.set(cb.minX + 1.7, 1.062, cb.minX + 0.55 + 0.03);
+    this.scene.add(kbArea);
+    // Individual key rows
+    const keyW = 0.022, keyH = 0.018, keyD = 0.002;
+    const keyGap = 0.004;
+    const startX = cb.minX + 1.7 - 0.15;
+    const startZ = cb.minZ + 0.55 + 0.07;
+    const keyRows = [12, 12, 11, 10]; // keys per row
+    for (let row = 0; row < keyRows.length; row++) {
+      const numKeys = keyRows[row];
+      const rowOffset = row === 2 ? 0.01 : row === 3 ? 0.02 : 0;
+      for (let k = 0; k < numKeys; k++) {
+        const keyGeo = new THREE.BoxGeometry(keyW, keyD, keyH);
+        const key = new THREE.Mesh(keyGeo, keyMat);
+        key.position.set(
+          startX + rowOffset + k * (keyW + keyGap),
+          1.065,
+          startZ - row * (keyH + keyGap)
+        );
+        this.scene.add(key);
+      }
+    }
+    // Spacebar
+    const spaceGeo = new THREE.BoxGeometry(0.12, keyD, keyH);
+    const spaceKey = new THREE.Mesh(spaceGeo, keyMat);
+    spaceKey.position.set(cb.minX + 1.7, 1.065, startZ - 4 * (keyH + keyGap));
+    this.scene.add(spaceKey);
+    // Trackpad
+    const trackpadMat = new THREE.MeshStandardMaterial({
+      color: 0x3a3a3a,
+      roughness: 0.3,
+      metalness: 0.4,
+    });
+    const trackpadGeo = new THREE.BoxGeometry(0.1, 0.002, 0.07);
+    const trackpad = new THREE.Mesh(trackpadGeo, trackpadMat);
+    trackpad.position.set(cb.minX + 1.7, 1.062, cb.minZ + 0.55 + 0.12);
+    this.scene.add(trackpad);
+
     // Laptop screen (angled ~110 degrees from base)
     const laptopScreenGeo = new THREE.BoxGeometry(0.38, 0.26, 0.01);
     const laptopScreen = new THREE.Mesh(laptopScreenGeo, laptopScreenMat);
@@ -1410,48 +1467,7 @@ class CabinScene {
     extruder.position.set(printerX + 0.05, 0.7, printerZ);
     this.scene.add(extruder);
 
-    // ── Soldering station on a side table ─────────────────────────────
-    const solderX = cb.minX + 0.7;
-    const solderZ = -3.0;
-
-    // Small side table
-    const sideTableMat = new THREE.MeshStandardMaterial({
-      color: 0x5a3d28,
-      roughness: 0.85,
-      metalness: 0.05,
-    });
-    const sideTableTopGeo = new THREE.BoxGeometry(0.7, 0.05, 0.5);
-    const sideTableTop = new THREE.Mesh(sideTableTopGeo, sideTableMat);
-    sideTableTop.position.set(solderX, 0.75, solderZ);
-    sideTableTop.castShadow = true;
-    this.scene.add(sideTableTop);
-    // Side table legs
-    const sideTableLegGeo = new THREE.BoxGeometry(0.05, 0.75, 0.05);
-    [[-0.3, -0.2], [-0.3, 0.2], [0.3, -0.2], [0.3, 0.2]].forEach(([dx, dz]) => {
-      const tleg = new THREE.Mesh(sideTableLegGeo, sideTableMat);
-      tleg.position.set(solderX + dx, 0.375, solderZ + dz);
-      this.scene.add(tleg);
-    });
-
-    // Soldering iron holder (thin cylinder standing up with cone tip)
-    const ironHolderMat = new THREE.MeshStandardMaterial({
-      color: 0x666666,
-      roughness: 0.4,
-      metalness: 0.5,
-    });
-    const ironHolderGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.2, 6);
-    const ironHolder = new THREE.Mesh(ironHolderGeo, ironHolderMat);
-    ironHolder.position.set(solderX + 0.15, 0.88, solderZ);
-    this.scene.add(ironHolder);
-    const ironTipGeo = new THREE.ConeGeometry(0.01, 0.04, 6);
-    const ironTipMat = new THREE.MeshStandardMaterial({
-      color: 0xcc8833,
-      roughness: 0.3,
-      metalness: 0.6,
-    });
-    const ironTip = new THREE.Mesh(ironTipGeo, ironTipMat);
-    ironTip.position.set(solderX + 0.15, 0.99, solderZ);
-    this.scene.add(ironTip);
+    // (Soldering station removed)
 
     // ── Wall posters with image textures ────────────────────────────────
     const frameMat = new THREE.MeshStandardMaterial({
@@ -1597,10 +1613,10 @@ class CabinScene {
       opacity: 0.6,
     });
 
-    // Test tube rack on soldering table area
-    const rackX = solderX - 0.25;
-    const rackZ = solderZ + 0.15;
-    const rackY = 0.78;
+    // Test tube rack on desk
+    const rackX = cb.minX + 0.5;
+    const rackZ = cb.minZ + 0.5;
+    const rackY = 1.04;
 
     // Rack base
     const rackBaseGeo = new THREE.BoxGeometry(0.2, 0.015, 0.06);
@@ -1639,9 +1655,9 @@ class CabinScene {
     beakerLiq.position.set(beakerX, beakerY + 0.025, beakerZ);
     this.scene.add(beakerLiq);
 
-    // Erlenmeyer flask near bookshelf
-    const flaskX = cb.minX + 3.0;
-    const flaskZ = cb.minZ + 0.8;
+    // Erlenmeyer flask on desk
+    const flaskX = cb.minX + 0.8;
+    const flaskZ = cb.minZ + 0.4;
     const flaskY = 1.04;
     // Wide bottom
     const flaskBottomGeo = new THREE.CylinderGeometry(0.02, 0.04, 0.05, 8);
@@ -1892,42 +1908,7 @@ class CabinScene {
     const interiorAmbient = new THREE.AmbientLight(0x1a1510, 0.2);
     this.scene.add(interiorAmbient);
 
-    // ── Blanket on floor near chair ──────────────────────────────────
-    const blanketMat = new THREE.MeshStandardMaterial({
-      color: 0x6b4a3a,
-      roughness: 0.95,
-      metalness: 0.0,
-      side: THREE.DoubleSide,
-    });
-    const blanketGeo = new THREE.BoxGeometry(1.0, 0.02, 0.8);
-    const blanket = new THREE.Mesh(blanketGeo, blanketMat);
-    blanket.position.set(cb.minX + 1.5, 0.01, cb.minZ + 2.8);
-    blanket.rotation.y = 0.15;
-    this.scene.add(blanket);
-    // Blanket wrinkle folds (thin raised strips)
-    const foldMat = new THREE.MeshStandardMaterial({
-      color: 0x5a3a2a,
-      roughness: 0.95,
-    });
-    const foldGeo = new THREE.BoxGeometry(0.8, 0.015, 0.06);
-    [-0.15, 0.1, 0.25].forEach(dz => {
-      const fold = new THREE.Mesh(foldGeo, foldMat);
-      fold.position.set(cb.minX + 1.5, 0.025, cb.minZ + 2.8 + dz);
-      fold.rotation.y = 0.15 + (Math.random() - 0.5) * 0.1;
-      this.scene.add(fold);
-    });
-
-    // ── Pillow on blanket ────────────────────────────────────────────
-    const pillowMat = new THREE.MeshStandardMaterial({
-      color: 0x8b7a6a,
-      roughness: 0.9,
-      metalness: 0.0,
-    });
-    const pillowGeo = new THREE.BoxGeometry(0.35, 0.1, 0.25);
-    const pillow = new THREE.Mesh(pillowGeo, pillowMat);
-    pillow.position.set(cb.minX + 1.2, 0.07, cb.minZ + 2.6);
-    pillow.rotation.y = 0.3;
-    this.scene.add(pillow);
+    // (Blanket and pillow removed per user request)
 
     // ── Light switches on wall near door ──────────────────────────────
     const switchPlateMat = new THREE.MeshStandardMaterial({
@@ -2294,11 +2275,19 @@ class CabinScene {
     });
   }
 
+
   // ── Animation ───────────────────────────────────────────────────────
 
   _animate() {
     if (this.disposed) return;
     requestAnimationFrame(() => this._animate());
+
+    // Frame rate limiter: target ~30fps for smoother feel and lower GPU load
+    const now = performance.now();
+    if (!this._lastFrameTime) this._lastFrameTime = 0;
+    const frameDelta = now - this._lastFrameTime;
+    if (frameDelta < 30) return; // ~33ms = ~30fps cap
+    this._lastFrameTime = now;
 
     const delta = this.clock.getDelta();
     const elapsed = this.clock.getElapsedTime();

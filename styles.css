@@ -27,9 +27,9 @@
   --color-text-muted:     #6a645a;
 
   /* Accents */
-  --color-accent-warm:  #c49a6c;
+  --color-accent-warm:  #ffdb4e;
   --color-accent-green: #7a9a78;
-  --color-accent-soft:  #d4c4a8;
+  --color-accent-soft:  #ffe682;
 
   /* Borders */
   --color-border: rgba(196, 154, 108, 0.12);
@@ -177,7 +177,9 @@ code, pre, .mono {
   outline: none;
   filter: blur(var(--scene-blur, 6px));
   transition: filter 0.5s ease;
+  will-change: contents;
 }
+
 
 /* Subtle glitch outside the cabin */
 @keyframes glitch-shift {
@@ -273,7 +275,7 @@ body:not(.inside-cabin) .glitch-layer {
   font-size: clamp(0.85rem, 2.2vw, 1.1rem);
   font-weight: 500;
   letter-spacing: 0.08em;
-  background: linear-gradient(135deg, #d4a54a 0%, #f0d27a 40%, #c49a3c 70%, #e8c45a 100%);
+  background: linear-gradient(135deg, #ffdb4e 0%, #ffe682 40%, #f5c842 70%, #ffeb80 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -385,6 +387,13 @@ body:not(.inside-cabin) .glitch-layer {
   width: 100%;
 }
 
+/* ---- Nav Actions (mode toggle + hamburger) ---- */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 /* ---- Hamburger ---- */
 .hamburger,
 #hamburger-btn {
@@ -472,6 +481,37 @@ body:not(.inside-cabin) .glitch-layer {
 .mobile-nav-link:hover {
   color: var(--color-accent-warm);
   text-decoration: none;
+}
+
+.mobile-menu-socials {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.mobile-social-link {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  padding: 0.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: color var(--transition-fast);
+}
+
+.mobile-social-link:hover {
+  color: var(--color-accent-warm);
+  text-decoration: none;
+}
+
+.mobile-social-sep {
+  color: var(--color-text-muted);
+  opacity: 0.4;
 }
 
 /* ============================================================
@@ -631,19 +671,33 @@ body:not(.inside-cabin) .glitch-layer {
 }
 
 /* "currently building..." line */
-.hero-building {
+.hero-building,
+.hero-currently {
   font-family: var(--font-mono);
   font-size: clamp(0.75rem, 1.8vw, 0.85rem);
   color: var(--color-text-muted);
   margin-bottom: 2rem;
 }
 
-.hero-building a {
+.hero-building a,
+.hero-currently a {
   color: var(--color-accent-warm);
   text-decoration: none;
 }
 
-.hero-building a:hover {
+.hero-building a:hover,
+.hero-currently a:hover {
+  text-decoration: underline;
+}
+
+.inline-link {
+  color: var(--color-accent-warm);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.inline-link:hover {
+  color: var(--color-accent-soft);
   text-decoration: underline;
 }
 
@@ -887,6 +941,74 @@ body:not(.inside-cabin) .glitch-layer {
   border-radius: 2px;
   color: var(--color-accent-green);
   letter-spacing: 0.03em;
+}
+
+/* ---- Expandable project rows ---- */
+.project-row--expandable {
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+
+.expand-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  margin-left: 0.3rem;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+  display: inline-block;
+}
+
+.project-row--expandable.expanded .expand-hint {
+  transform: rotate(45deg);
+  opacity: 1;
+  color: var(--color-accent-warm);
+}
+
+.project-expand-content {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.project-row--expandable.expanded .project-expand-content {
+  max-height: 600px;
+  opacity: 1;
+}
+
+.project-video-list {
+  list-style: none;
+  padding: 0.75rem 0 0.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.project-video-list li {
+  padding-left: 1rem;
+  position: relative;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.project-video-list li::before {
+  content: '\25B8';
+  position: absolute;
+  left: 0;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+}
+
+.project-video-list a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.project-video-list a:hover {
+  color: var(--color-accent-warm);
 }
 
 .project-links {
@@ -1144,6 +1266,36 @@ body:not(.inside-cabin) .glitch-layer {
   pointer-events: auto;
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-link {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-accent-warm);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  padding: 0.5rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footer-link:hover {
+  color: var(--color-accent-soft);
+  text-decoration: none;
+}
+
+.footer-separator {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
 .footer-text {
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -1380,6 +1532,22 @@ body:not(.inside-cabin) .glitch-layer {
     display: inline-flex;
     align-items: center;
   }
+
+  .project-video-list li {
+    padding: 0.3rem 0 0.3rem 1rem;
+  }
+
+  .project-video-list a {
+    display: inline-block;
+    padding: 0.25rem 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .footer-link {
+    padding: 0.5rem 0.75rem;
+  }
 }
 
 /* ============================================================
@@ -1462,11 +1630,16 @@ body.laptop-zoom .site-footer {
   transition: opacity 0.4s ease;
 }
 
-/* Contact spacer — just keeps scroll height, no visible content */
-.contact-spacer {
+/* Contact section — spacer in 3D mode, visible in flat mode */
+.section--contact {
   min-height: 60vh;
-  background: none !important;
+  pointer-events: none;
 }
+
+.section--contact .section-inner {
+  display: none;
+}
+
 
 /* ============================================================
    LAPTOP SCREEN OVERLAY — positioned over the 3D laptop mesh
@@ -1542,7 +1715,13 @@ body.laptop-zoom .site-footer {
 
 .laptop-screen-output .cmd-line { color: #7a9a78; }
 .laptop-screen-output .info-line { color: #888; }
-.laptop-screen-output .accent-line { color: #c49a6c; }
+.laptop-screen-output .accent-line { color: #ffdb4e; }
+.laptop-screen-output .h1-line {
+  color: #ffdb4e;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 0.5em 0 0.3em 0;
+}
 .laptop-screen-output .link-line {
   color: #6a9fd8;
   text-decoration: underline;
@@ -1834,11 +2013,18 @@ pre.ascii-castle,
 }
 
 .terminal-output .info-line {
-  color: #c49a6c;
+  color: #ffdb4e;
 }
 
 .terminal-output .accent-line {
-  color: #c49a6c;
+  color: #ffdb4e;
+}
+
+.terminal-output .h1-line {
+  color: #ffdb4e;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 0.5em 0 0.3em 0;
 }
 
 .terminal-output .link-line {
@@ -1887,4 +2073,103 @@ pre.ascii-castle,
   z-index: 100;
   white-space: nowrap;
   border: 1px solid rgba(196, 154, 108, 0.2);
+}
+
+/* ============================================================
+   MODE TOGGLE BUTTON
+   ============================================================ */
+.mode-toggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  margin-right: 0.5rem;
+  letter-spacing: 0;
+}
+
+.mode-toggle:hover {
+  color: var(--color-accent-warm);
+  border-color: rgba(196, 154, 108, 0.3);
+}
+
+/* ============================================================
+   FLAT MODE — disables 3D scene, clean dark background
+   ============================================================ */
+
+/* Hide 3D canvas and visual overlays */
+body.flat-mode #cabin-canvas {
+  display: none !important;
+}
+
+body.flat-mode .intro-grey-overlay {
+  display: none !important;
+}
+
+body.flat-mode .glitch-layer {
+  display: none !important;
+}
+
+body.flat-mode #ascii-matrix-canvas,
+body.flat-mode #ascii-weather-canvas {
+  display: none !important;
+}
+
+/* Remove vignette and cursor glow (no 3D to frame) */
+body.flat-mode::before {
+  display: none;
+}
+
+body.flat-mode::after {
+  display: none;
+}
+
+/* Nav gets fully opaque since there's no 3D behind it */
+body.flat-mode .site-header {
+  background: var(--color-bg-deep);
+}
+
+body.flat-mode .site-header.scrolled {
+  background: var(--color-bg-deep);
+}
+
+/* Section panels — opaque, no blur needed */
+body.flat-mode .section-inner {
+  background: var(--color-bg-dark);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Hide laptop screen overlay (no 3D laptop to attach to) */
+body.flat-mode .laptop-screen-overlay {
+  display: none !important;
+}
+
+/* Contact section doesn't need scroll-spacer for laptop zoom */
+body.flat-mode .section--contact {
+  min-height: auto;
+}
+
+/* Prevent laptop-zoom from hiding content in flat mode */
+body.flat-mode.laptop-zoom .overlay-content,
+body.flat-mode.laptop-zoom .site-footer {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.flat-mode.laptop-zoom #main-header,
+body.flat-mode.laptop-zoom .site-header {
+  transform: none !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }

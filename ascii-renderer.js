@@ -604,7 +604,7 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    var columns = Math.floor(canvas.width / 18);
+    var columns = Math.min(Math.floor(canvas.width / 18), 60); // cap columns for perf
     this._matrixDrops = [];
     for (var i = 0; i < columns; i++) {
       this._matrixDrops.push({
@@ -621,7 +621,12 @@
     var canvas = this._matrixCanvas;
     if (!ctx || !canvas) return;
 
-    ctx.fillStyle = 'rgba(10, 10, 18, 0.15)';
+    // Skip every other frame for performance
+    if (!this._matrixFrameSkip) this._matrixFrameSkip = 0;
+    this._matrixFrameSkip++;
+    if (this._matrixFrameSkip % 2 !== 0) return;
+
+    ctx.fillStyle = 'rgba(10, 10, 18, 0.18)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.font = '14px "Courier New", monospace';
@@ -633,8 +638,8 @@
       var drop = this._matrixDrops[i];
       var x = i * colWidth;
 
-      // Draw trail
-      for (var j = 0; j < drop.len; j++) {
+      // Only draw the head and a couple trail chars (not all) for perf
+      for (var j = 0; j < Math.min(drop.len, 5); j++) {
         var yPos = (drop.y - j) * 18;
         if (yPos < 0 || yPos > canvas.height) continue;
 

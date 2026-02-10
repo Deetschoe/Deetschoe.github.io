@@ -52,10 +52,6 @@
     asciiOverlay: null,
     mobileHandler: null,
     brainActive: false,
-    soundMuted: false,
-    audioCtx: null,
-    ambientNode: null,
-    ambientGain: null,
     idleTimer: null,
     idle: false,
     scrollIndicatorClicks: 0,
@@ -68,7 +64,7 @@
     bottomTimer: null,
 
     // Typing state
-    typingPhrases: ['hardware hacker', 'brain grower', 'entrepreneur'],
+    typingPhrases: ['brain grower', 'entrepreneur', 'builder'],
     brainPhrases: ['neurons', 'synapses', 'cortex', 'consciousness'],
     typingIndex: 0,
     typingCharIndex: 0,
@@ -111,10 +107,10 @@
       this.initFunFacts();
       this.initContact();
       this.initEasterEggs();
-      this.initSound();
       this.initIdleDetection();
       this.initInteractiveObjects();
       this.initTerminal();
+      this.initModeToggle();
     },
 
     // -------------------------------------------------------------------
@@ -200,11 +196,11 @@
       this.laptopTerminalOpen = true;
       el.classList.add('active');
 
-      // Welcome message
+      // Welcome message and run help on first open
       if (output && output.children.length === 0) {
-        this._laptopPrint('  dieter@cabin — terminal', 'accent-line');
-        this._laptopPrint('  type "help" for commands', 'info-line');
+        this._laptopPrint("# dieter's terminal", '');
         this._laptopPrint('', '');
+        this.processCommand('help');
       }
 
       // Start tracking position
@@ -225,6 +221,16 @@
             }
           }
           e.stopPropagation();
+        });
+      }
+
+      // Mobile: tap anywhere on overlay to focus input
+      if (!el._touchBound) {
+        el._touchBound = true;
+        el.addEventListener('click', (e) => {
+          if (input && e.target !== input) {
+            input.focus();
+          }
         });
       }
     },
@@ -290,8 +296,13 @@
         try {
           this.asciiOverlay = new window.AsciiOverlay();
           this.asciiOverlay.init();
-          const tick = () => {
-            this.asciiOverlay.update();
+          let lastAsciiFrame = 0;
+          const tick = (now) => {
+            // Throttle ASCII overlay to ~20fps for smoother overall performance
+            if (now - lastAsciiFrame >= 50) {
+              this.asciiOverlay.update();
+              lastAsciiFrame = now;
+            }
             requestAnimationFrame(tick);
           };
           requestAnimationFrame(tick);
@@ -390,9 +401,9 @@
         this._updateAsciiVisibility();
       }
 
-      // Track laptop zoom state (scroll > 0.75 = zooming into laptop)
+      // Track laptop zoom state (scroll > 0.85 = zooming into laptop)
       const wasLaptopZoom = this.isLaptopZoom;
-      this.isLaptopZoom = progress > 0.75;
+      this.isLaptopZoom = progress > 0.85;
       if (wasLaptopZoom !== this.isLaptopZoom) {
         document.body.classList.toggle('laptop-zoom', this.isLaptopZoom);
         // Close laptop terminal when scrolling away
@@ -404,7 +415,7 @@
       // Enable editable laptop screen when zoomed in
       if (progress > 0.85 && this.cabinScene && !this.cabinScene._screenEditing) {
         this.cabinScene.enableScreenEditing();
-      } else if (progress <= 0.75 && this.cabinScene && this.cabinScene._screenEditing) {
+      } else if (progress <= 0.85 && this.cabinScene && this.cabinScene._screenEditing) {
         this.cabinScene.disableScreenEditing();
       }
 
@@ -415,13 +426,17 @@
       this.updateActiveNav();
 
       // Depth blur + grey fog effect
-      // Initial blur that clears as you scroll in
-      const introBlur = progress < 0.3 ? (1 - progress / 0.3) * 6 : 0;
+      // Start clear, slowly blur as you scroll deeper
+      const introBlur = progress < 0.3 ? (progress / 0.3) * 4 : 4;
 
       // Depth-of-field: blur the 3D scene when text sections are in view
       // Peaks when about/projects sections are centered on screen
+      // But reduce blur when inside cabin (progress > 0.4)
+      // And remove blur completely when zoomed into laptop (progress > 0.85)
       let dofBlur = 0;
       const textSections = document.querySelectorAll('#about, #projects');
+      const insideCabinMultiplier = this.isInsideCabin ? 0.4 : 1.0; // Less blur inside cabin
+      const laptopZoomMultiplier = this.isLaptopZoom ? 0 : 1.0; // No blur when zoomed into laptop
       textSections.forEach((sec) => {
         const rect = sec.getBoundingClientRect();
         const center = rect.top + rect.height / 2;
@@ -429,12 +444,12 @@
         const dist = Math.abs(center - screenCenter) / window.innerHeight;
         // Stronger blur when section is centered (dist < 0.4)
         if (dist < 0.5) {
-          const strength = (1 - dist / 0.5) * 3.5;
+          const strength = (1 - dist / 0.5) * 2.5 * insideCabinMultiplier * laptopZoomMultiplier;
           dofBlur = Math.max(dofBlur, strength);
         }
       });
 
-      const blurAmount = Math.max(introBlur, dofBlur);
+      const blurAmount = Math.max(introBlur * insideCabinMultiplier * laptopZoomMultiplier, dofBlur);
       document.documentElement.style.setProperty('--scene-blur', blurAmount.toFixed(2) + 'px');
 
       // Grey overlay that fades out as you scroll
@@ -607,7 +622,7 @@
           const el = document.getElementById(target);
           if (el) {
             el.scrollIntoView({ behavior: 'smooth' });
-            this.playClickSound();
+    
           }
         });
       });
@@ -629,7 +644,7 @@
             const target = link.dataset.section;
             const el = document.getElementById(target);
             if (el) el.scrollIntoView({ behavior: 'smooth' });
-            this.playClickSound();
+    
             // Keep menu open so user can tap multiple links
           });
         });
@@ -683,9 +698,19 @@
       const isMobile = 'ontouchstart' in window;
 
       $$('.project-row').forEach((item) => {
+        // Expandable rows (like Hack Club videos)
+        if (item.hasAttribute('data-expandable')) {
+          item.addEventListener('click', (e) => {
+            // Don't toggle if user clicked a link inside the expand content
+            if (e.target.closest('.project-expand-content a')) return;
+            e.preventDefault();
+            item.classList.toggle('expanded');
+          });
+          return;
+        }
+
         if (isMobile) {
           item.addEventListener('click', () => {
-            // Toggle expand on mobile
             const wasExpanded = item.classList.contains('expanded');
             $$('.project-row.expanded').forEach((el) => el.classList.remove('expanded'));
             if (!wasExpanded) item.classList.add('expanded');
@@ -897,135 +922,6 @@
       }, 3000);
     },
 
-    // -------------------------------------------------------------------
-    // 11. Sound
-    // -------------------------------------------------------------------
-
-    initSound() {
-      if (prefersReducedMotion()) return;
-
-      // Create mute toggle
-      this.createMuteButton();
-
-      // Start ambient on first interaction
-      const startAudio = () => {
-        if (this.hasInteracted) return;
-        this.hasInteracted = true;
-        this.initAudioContext();
-        window.removeEventListener('click', startAudio);
-        window.removeEventListener('keydown', startAudio);
-        window.removeEventListener('touchstart', startAudio);
-      };
-      window.addEventListener('click', startAudio, { once: false });
-      window.addEventListener('keydown', startAudio, { once: false });
-      window.addEventListener('touchstart', startAudio, { once: false });
-    },
-
-    createMuteButton() {
-      // Only create if one doesn't already exist in the HTML
-      if ($('#sound-toggle')) {
-        $('#sound-toggle').addEventListener('click', () => this.toggleMute());
-        return;
-      }
-
-      const btn = document.createElement('button');
-      btn.id = 'sound-toggle';
-      btn.setAttribute('aria-label', 'Toggle sound');
-      btn.textContent = '\u266a';
-      Object.assign(btn.style, {
-        position: 'fixed',
-        bottom: '1rem',
-        right: '1rem',
-        width: '2rem',
-        height: '2rem',
-        border: 'none',
-        background: 'transparent',
-        color: 'var(--color-text-muted, #888)',
-        fontSize: '1rem',
-        cursor: 'pointer',
-        opacity: '0.5',
-        transition: 'opacity 0.3s',
-        zIndex: '50',
-        fontFamily: 'inherit',
-      });
-      btn.addEventListener('mouseenter', () => { btn.style.opacity = '0.9'; });
-      btn.addEventListener('mouseleave', () => { btn.style.opacity = '0.5'; });
-      btn.addEventListener('click', () => this.toggleMute());
-      document.body.appendChild(btn);
-    },
-
-    toggleMute() {
-      this.soundMuted = !this.soundMuted;
-      const btn = $('#sound-toggle');
-      if (btn) btn.style.opacity = this.soundMuted ? '0.2' : '0.5';
-      if (this.ambientGain) {
-        this.ambientGain.gain.setTargetAtTime(
-          this.soundMuted ? 0 : 0.015,
-          this.audioCtx.currentTime,
-          0.3
-        );
-      }
-    },
-
-    initAudioContext() {
-      try {
-        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        this.startAmbient();
-      } catch (e) {
-        console.warn('AudioContext unavailable:', e);
-      }
-    },
-
-    startAmbient() {
-      if (!this.audioCtx || this.soundMuted) return;
-
-      // Ambient wind/forest: filtered noise
-      const bufferSize = this.audioCtx.sampleRate * 4;
-      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = (Math.random() * 2 - 1) * 0.5;
-      }
-
-      const noise = this.audioCtx.createBufferSource();
-      noise.buffer = buffer;
-      noise.loop = true;
-
-      const filter = this.audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.value = 300;
-      filter.Q.value = 0.5;
-
-      this.ambientGain = this.audioCtx.createGain();
-      this.ambientGain.gain.value = 0;
-
-      noise.connect(filter);
-      filter.connect(this.ambientGain);
-      this.ambientGain.connect(this.audioCtx.destination);
-      noise.start();
-
-      // Fade in gently
-      this.ambientGain.gain.setTargetAtTime(0.015, this.audioCtx.currentTime, 1.0);
-      this.ambientNode = noise;
-    },
-
-    playClickSound() {
-      if (!this.audioCtx || this.soundMuted) return;
-      try {
-        const osc = this.audioCtx.createOscillator();
-        const gain = this.audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = 800;
-        gain.gain.value = 0.02;
-        osc.connect(gain);
-        gain.connect(this.audioCtx.destination);
-        osc.start();
-        gain.gain.setTargetAtTime(0, this.audioCtx.currentTime + 0.03, 0.01);
-        osc.stop(this.audioCtx.currentTime + 0.05);
-      } catch (e) {
-        // Silently fail
-      }
-    },
 
     // -------------------------------------------------------------------
     // 13. Idle detection
@@ -1082,7 +978,7 @@
         // When fully zoomed, clicks focus the editable screen
         if (this.isLaptopZoom && this.cabinScene && this.cabinScene._screenEditing) {
           this.cabinScene.focusScreenInput();
-          this.playClickSound();
+  
           return;
         }
 
@@ -1090,12 +986,12 @@
 
         if (hit === 'tv') {
           window.open('https://serenityux.github.io/kodan-desktop-site/', '_blank');
-          this.playClickSound();
+  
         } else if (hit === 'laptop') {
           if (this.cabinScene && this.cabinScene._screenEditing) {
             this.cabinScene.focusScreenInput();
           }
-          this.playClickSound();
+  
         }
       });
     },
@@ -1207,11 +1103,20 @@
     },
 
     // Route print to whichever terminal is active
+    // Supports markdown-style h1 (# heading) - auto-formats as h1-line
     _print(text, className) {
+      // Check for markdown h1 syntax
+      let finalText = text;
+      let finalClass = className;
+      if (text && text.trim().startsWith('# ')) {
+        finalText = text.trim().substring(2); // Remove "# " prefix
+        finalClass = 'h1-line';
+      }
+
       if (this.laptopTerminalOpen) {
-        this._laptopPrint(text, className);
+        this._laptopPrint(finalText, finalClass);
       } else {
-        this.terminalPrint(text, className);
+        this.terminalPrint(finalText, finalClass);
       }
     },
 
@@ -1261,21 +1166,19 @@
           this._print('', '');
           this._print('  i build things, film things, and', '');
           this._print('  occasionally break things.', '');
-          this._print('  building in stealth. interested in software + science.', '');
-          this._print('  dieter@serenidad.app', '');
+          this._print('  working with iPSC and building serenidad.', '');
+          this._printHTML('  <span class="link-line" onclick="window.open(\'mailto:dieter@serenidad.app\')">dieter@serenidad.app</span>');
           this._print('', '');
           break;
 
         case 'projects':
           this._print('', '');
           this._print('  things i\'ve built:', 'info-line');
-          this._print('  ├── kodan         — ai anime platform', '');
-          this._print('  ├── serendiad     — podcast + community (170+ eps)', '');
-          this._print('  ├── minimalmaru   — anime clothing (7 figures)', '');
-          this._print('  ├── laser speaker — audio through lasers', '');
-          this._print('  ├── giant microwave — exactly what it sounds like', '');
-          this._print('  ├── life of chai  — VR puzzle game', '');
-          this._print('  └── japan build   — 2 months in rural japan', '');
+          this._print('  ├── kodan              — ai anime platform', '');
+          this._print('  ├── minimalmaru/darukiyu — anime brand + content ($1.3M)', '');
+          this._print('  ├── laser speaker      — audio through lasers', '');
+          this._print('  ├── hack club          — grew socials to 100K+', '');
+          this._print('  └── vr games           — built a bunch in 2 months', '');
           this._print('', '');
           this._print('  type a project name for more info', 'info-line');
           this._print('', '');
@@ -1293,8 +1196,8 @@
         case 'socials':
           this._print('', '');
           this._print('  find me:', 'info-line');
+          this._printHTML('  <span class="link-line" onclick="window.open(\'mailto:dieter@serenidad.app\')">email    dieter@serenidad.app</span>');
           this._printHTML('  <span class="link-line" onclick="window.open(\'https://twitter.com/dieterzsh\',\'_blank\')">twitter  @dieterzsh</span>');
-          this._printHTML('  <span class="link-line" onclick="window.open(\'https://youtube.com/@dieterschoe\',\'_blank\')">youtube  @dieterschoe</span>');
           this._printHTML('  <span class="link-line" onclick="window.open(\'https://github.com/deetschoe\',\'_blank\')">github   deetschoe</span>');
           this._print('', '');
           break;
@@ -1312,7 +1215,7 @@
           this._print('  · ran a 7-figure clothing brand in high school', '');
           this._print('  · 170+ podcast episodes with my friend thomas', '');
           this._print('  · spent 2 months in rural japan building software', '');
-          this._print('  · currently trying to build a human brain', '');
+          this._print('  · working with iPSC, growing organoids', '');
           this._print('', '');
           break;
 
@@ -1326,7 +1229,7 @@
         case 'cat':
           if (args[1] === 'readme.md' || args[1] === 'readme') {
             this._print('', '');
-            this._print('  # dieter', 'accent-line');
+            this._print('# dieter', '');
             this._print('  builder of weird things.', '');
             this._print('  filmmaker. creative. 20.', '');
             this._print('  currently in japan.', '');
@@ -1379,6 +1282,46 @@
           this._print('  type "help" for available commands', 'info-line');
           break;
       }
+    },
+
+    // -------------------------------------------------------------------
+    // 17. Flat mode toggle — disables 3D scene
+    // -------------------------------------------------------------------
+
+    flatMode: false,
+
+    initModeToggle() {
+      const btn = $('#mode-toggle');
+      const icon = $('#mode-toggle-icon');
+      if (!btn) return;
+
+      // Restore from localStorage, or auto-detect slow connection
+      const saved = localStorage.getItem('dieter-flat-mode');
+      if (saved === 'true') {
+        this.flatMode = true;
+      } else if (saved === null) {
+        // No preference saved — auto-detect slow connection
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (conn) {
+          const slow = conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.effectiveType === '3g' || conn.saveData;
+          if (slow) this.flatMode = true;
+        }
+      }
+
+      if (this.flatMode) {
+        document.body.classList.add('flat-mode');
+        if (icon) icon.textContent = '3D';
+      }
+
+      btn.addEventListener('click', () => {
+        this.flatMode = !this.flatMode;
+        document.body.classList.toggle('flat-mode', this.flatMode);
+        localStorage.setItem('dieter-flat-mode', this.flatMode);
+
+        if (icon) {
+          icon.textContent = this.flatMode ? '3D' : '2D';
+        }
+      });
     },
 
   };
