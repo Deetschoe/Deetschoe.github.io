@@ -1524,7 +1524,9 @@ body:not(.inside-cabin) .glitch-layer {
   }
 
   .mode-toggle {
-    display: none;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 0.72rem;
   }
 
   .section-inner {

@@ -64,7 +64,7 @@
     bottomTimer: null,
 
     // Typing state
-    typingPhrases: ['brain grower', 'entrepreneur', 'builder'],
+    typingPhrases: ['culturer of ispc', 'entrepreneur', 'ex filmer'],
     brainPhrases: ['neurons', 'synapses', 'cortex', 'consciousness'],
     typingIndex: 0,
     typingCharIndex: 0,
@@ -96,7 +96,6 @@
       this.initAgeDisplay();
       this.initLoading();
       this.initScene();
-      this.initAsciiOverlay();
       this.initMobileHandler();
       this.initTypingEffect();
       this.initScroll();
@@ -171,17 +170,7 @@
     },
 
     _updateAsciiVisibility() {
-      // Hide matrix rain and weather when inside the cabin
-      const matrixCanvas = document.getElementById('ascii-matrix-canvas');
-      const weatherCanvas = document.getElementById('ascii-weather-canvas');
-      if (matrixCanvas) {
-        matrixCanvas.style.opacity = this.isInsideCabin ? '0' : '0.07';
-        matrixCanvas.style.transition = 'opacity 1s ease';
-      }
-      if (weatherCanvas) {
-        weatherCanvas.style.opacity = this.isInsideCabin ? '0' : '0.04';
-        weatherCanvas.style.transition = 'opacity 1s ease';
-      }
+      // No-op: ASCII overlay removed
     },
 
     laptopTerminalOpen: false,
@@ -292,24 +281,7 @@
     },
 
     initAsciiOverlay() {
-      if (typeof window.AsciiOverlay === 'function') {
-        try {
-          this.asciiOverlay = new window.AsciiOverlay();
-          this.asciiOverlay.init();
-          let lastAsciiFrame = 0;
-          const tick = (now) => {
-            // Throttle ASCII overlay to ~20fps for smoother overall performance
-            if (now - lastAsciiFrame >= 50) {
-              this.asciiOverlay.update();
-              lastAsciiFrame = now;
-            }
-            requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        } catch (e) {
-          console.warn('AsciiOverlay failed:', e);
-        }
-      }
+      // ASCII overlay removed
     },
 
     initMobileHandler() {
@@ -962,9 +934,9 @@
         if (!this.cabinScene) return;
         const hit = this.cabinScene.getInteractiveAt(e.clientX, e.clientY);
 
-        if (hit) {
+        if (hit === 'tv') {
           canvas.style.cursor = 'pointer';
-          this._showHoverHint(e.clientX, e.clientY, hit === 'tv' ? 'watch kodan' : 'open terminal');
+          this._showHoverHint(e.clientX, e.clientY, 'watch kodan');
         } else {
           canvas.style.cursor = '';
           this._hideHoverHint();
@@ -1311,6 +1283,10 @@
       if (this.flatMode) {
         document.body.classList.add('flat-mode');
         if (icon) icon.textContent = '3D';
+        // Pause the 3D scene if starting in flat mode
+        if (this.cabinScene) {
+          this.cabinScene.disposed = true;
+        }
       }
 
       btn.addEventListener('click', () => {
@@ -1320,6 +1296,16 @@
 
         if (icon) {
           icon.textContent = this.flatMode ? '3D' : '2D';
+        }
+
+        // Pause/resume the 3D scene to save resources
+        if (this.cabinScene) {
+          if (this.flatMode) {
+            this.cabinScene.disposed = true;
+          } else {
+            this.cabinScene.disposed = false;
+            this.cabinScene._animate();
+          }
         }
       });
     },

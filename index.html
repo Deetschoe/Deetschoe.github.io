@@ -54,6 +54,11 @@
         <button class="mode-toggle" id="mode-toggle" aria-label="Toggle 3D scene" title="toggle 3D">
           <span class="mode-toggle-icon" id="mode-toggle-icon">2D</span>
         </button>
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
     </nav>
   </header>
@@ -88,7 +93,7 @@
         <h1>dieter</h1>
         <p class="hero-subtitle"><span id="age-display">20</span> &middot; <span id="typed-text"></span><span class="typed-cursor">|</span></p>
         <p class="hero-currently">
-          growing iPSC @stealth & building <a href="https://www.serenidad.app/" class="inline-link" target="_blank" rel="noopener noreferrer">Serenidad</a>.
+          Building in stealth in bio
           
         </p>
       </div>
@@ -101,7 +106,7 @@
         <div class="about-content">
 
           <ul class="fun-facts">
-            <li class="fun-fact">I grew up on the east coast obsessed with making content. At 9 years old I started learning Photoshop and Premiere, and by 12 I was doing freelance work in Blender for some of the biggest Fortnite YouTubers. Invested that money into my own clothing brand at 14 which I scaled past $1M in revenue by 16. Started a coding club and hosted a hackathon in my local town with my best friend and after high school I joined Hack Club, growing their Instagram to  100K followers. At 19 I moved to rural Japan for 3 months building an anime storyboarding tool for studios and after moved to San Francisco full time working in the bio/tech space growing brains in a lab</li>
+            <li class="fun-fact">I grew up on the east coast obsessed with making content. At 9 years old I started learning Photoshop and Premiere, and by 12 I was doing freelance work in Blender for some of the biggest Fortnite YouTubers. Invested that money into my own clothing brand at 14 which I scaled past $1M in revenue by 16. At 17 i started a coding club with my best friend and we've been documenting the journey on <a href="https://www.serenidad.app/" class="inline-link" target="_blank" rel="noopener noreferrer">Serenidad</a> After highschool I joined <a href="#hackclub-project" class="inline-link" onclick="event.preventDefault(); var el = document.getElementById('hackclub-project'); el.classList.add('expanded'); el.scrollIntoView({behavior:'smooth', block:'center'});">Hack Club</a>, growing their Instagram to  100K followers. At 19 I moved to rural Japan for 2 months building an anime storyboarding tool for studios. After I got into 3D printing and CAD eventually joining <a href="https://nautilus.quest/" class="inline-link" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3 month residency in San Francisco where I built a drone and walked from SF to Palo Alto in a day. At this point my friends and coolest people i know moved here so I fell in love with being here and eventually dipped out of marketing/software getting deep in bio doing research in neuro and so at the start of 2026 i joined a stealth company doing ispc related research and now its off to learning more!</li>
           </ul>
 
           <p class="about-aside">
@@ -153,7 +158,7 @@
             </div>
           </article>
 
-          <article class="project-row project-row--expandable" data-project="4" data-expandable>
+          <article id="hackclub-project" class="project-row project-row--expandable" data-project="4" data-expandable>
             <div class="project-info">
               <h3 class="project-title"><a href="https://www.instagram.com/starthackclub" target="_blank" rel="noopener noreferrer">Grew Hack Club to 100K</a> <span class="expand-hint">+</span></h3>
               <p class="project-desc">graduated early, took a gap year to produce videos and grow socials for <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a>.</p>
@@ -244,7 +249,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="mobile-handler.js"></script>
   <script src="cabin-scene.js"></script>
-  <script src="ascii-renderer.js"></script>
   <script src="ui-controller.js"></script>
 
 </body>
