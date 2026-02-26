@@ -424,9 +424,7 @@
       const blurAmount = Math.max(introBlur * insideCabinMultiplier * laptopZoomMultiplier, dofBlur);
       document.documentElement.style.setProperty('--scene-blur', blurAmount.toFixed(2) + 'px');
 
-      // Grey overlay that fades out as you scroll
-      const greyOpacity = progress < 0.25 ? (1 - progress / 0.25) * 0.55 : 0;
-      document.documentElement.style.setProperty('--intro-grey', greyOpacity.toFixed(3));
+      // Grey overlay disabled — 3D scene fully visible on load
 
       // CSS variable for parallax
       $$('.section').forEach((sec) => {
@@ -616,8 +614,11 @@
             const target = link.dataset.section;
             const el = document.getElementById(target);
             if (el) el.scrollIntoView({ behavior: 'smooth' });
-    
-            // Keep menu open so user can tap multiple links
+
+            // Close menu after tapping a link
+            mobileMenu.classList.remove('open');
+            hamburger.classList.remove('open');
+            document.body.classList.remove('menu-open');
           });
         });
       }
@@ -950,7 +951,6 @@
         // When fully zoomed, clicks focus the editable screen
         if (this.isLaptopZoom && this.cabinScene && this.cabinScene._screenEditing) {
           this.cabinScene.focusScreenInput();
-  
           return;
         }
 
@@ -958,12 +958,10 @@
 
         if (hit === 'tv') {
           window.open('https://serenityux.github.io/kodan-desktop-site/', '_blank');
-  
         } else if (hit === 'laptop') {
           if (this.cabinScene && this.cabinScene._screenEditing) {
             this.cabinScene.focusScreenInput();
           }
-  
         }
       });
     },
@@ -1265,14 +1263,14 @@
     initModeToggle() {
       const btn = $('#mode-toggle');
       const icon = $('#mode-toggle-icon');
-      if (!btn) return;
+      const mobileBtn = $('#mode-toggle-mobile');
+      const mobileIcon = $('#mode-toggle-icon-mobile');
 
       // Restore from localStorage, or auto-detect slow connection
       const saved = localStorage.getItem('dieter-flat-mode');
       if (saved === 'true') {
         this.flatMode = true;
       } else if (saved === null) {
-        // No preference saved — auto-detect slow connection
         const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         if (conn) {
           const slow = conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.effectiveType === '3g' || conn.saveData;
@@ -1280,25 +1278,26 @@
         }
       }
 
+      const updateIcons = () => {
+        const text = this.flatMode ? '3D' : '2D';
+        if (icon) icon.textContent = text;
+        if (mobileIcon) mobileIcon.textContent = text;
+      };
+
       if (this.flatMode) {
         document.body.classList.add('flat-mode');
-        if (icon) icon.textContent = '3D';
-        // Pause the 3D scene if starting in flat mode
+        updateIcons();
         if (this.cabinScene) {
           this.cabinScene.disposed = true;
         }
       }
 
-      btn.addEventListener('click', () => {
+      const toggleMode = () => {
         this.flatMode = !this.flatMode;
         document.body.classList.toggle('flat-mode', this.flatMode);
         localStorage.setItem('dieter-flat-mode', this.flatMode);
+        updateIcons();
 
-        if (icon) {
-          icon.textContent = this.flatMode ? '3D' : '2D';
-        }
-
-        // Pause/resume the 3D scene to save resources
         if (this.cabinScene) {
           if (this.flatMode) {
             this.cabinScene.disposed = true;
@@ -1307,7 +1306,10 @@
             this.cabinScene._animate();
           }
         }
-      });
+      };
+
+      if (btn) btn.addEventListener('click', toggleMode);
+      if (mobileBtn) mobileBtn.addEventListener('click', toggleMode);
     },
 
   };

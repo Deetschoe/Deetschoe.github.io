@@ -42,7 +42,7 @@
   <!-- ============================================ -->
   <header id="main-header" class="site-header">
     <nav class="nav-container">
-      <a href="#hero" class="nav-logo">dieter</a>
+      <!-- <a href="#hero" class="nav-logo">dieter</a> -->
 
       <ul class="nav-links" id="nav-links">
         <li><a href="#about" class="nav-link" data-section="about">hwgh</a></li>
@@ -54,33 +54,16 @@
         <button class="mode-toggle" id="mode-toggle" aria-label="Toggle 3D scene" title="toggle 3D">
           <span class="mode-toggle-icon" id="mode-toggle-icon">2D</span>
         </button>
-        <button class="hamburger" id="hamburger-btn" aria-label="Menu" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
       </div>
     </nav>
   </header>
 
-  <!-- ============================================ -->
-  <!-- MOBILE MENU OVERLAY                          -->
-  <!-- ============================================ -->
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay">
-    <ul class="mobile-nav-links">
-      <li><a href="#hero" class="mobile-nav-link" data-section="hero">home</a></li>
-      <li><a href="#about" class="mobile-nav-link" data-section="about">hwgh</a></li>
-      <li><a href="#projects" class="mobile-nav-link" data-section="projects">projects</a></li>
-      <li><a href="#contact" class="mobile-nav-link" data-section="contact">contact</a></li>
-    </ul>
-    <div class="mobile-menu-socials">
-      <a href="mailto:dieter@serenidad.app" class="mobile-social-link">email</a>
-      <span class="mobile-social-sep">&middot;</span>
-      <a href="https://twitter.com/dieterzsh" target="_blank" rel="noopener noreferrer" class="mobile-social-link">twitter</a>
-      <span class="mobile-social-sep">&middot;</span>
-      <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" class="mobile-social-link">github</a>
-    </div>
-  </div>
+  <!-- Mobile menu removed -->
+
+  <!-- Standalone 2D/3D toggle for mobile (nav bar is hidden) -->
+  <button class="mode-toggle-mobile" id="mode-toggle-mobile" aria-label="Toggle 3D scene" title="toggle 3D">
+    <span class="mode-toggle-icon" id="mode-toggle-icon-mobile">2D</span>
+  </button>
 
   <!-- ============================================ -->
   <!-- MAIN CONTENT                                 -->
@@ -90,12 +73,8 @@
     <!-- HERO -->
     <section id="hero" class="section section--hero">
       <div class="section-inner">
-        <h1>dieter</h1>
-        <p class="hero-subtitle"><span id="age-display">20</span> &middot; <span id="typed-text"></span><span class="typed-cursor">|</span></p>
-        <p class="hero-currently">
-          solving hard brain problems in stealth
-          
-        </p>
+        <h1 class="hero-name">Dieter Schoening</h1>
+        <p class="hero-subtitle"><span id="age-display">20</span> · solving problems in neurosci</p>
       </div>
     </section>
 

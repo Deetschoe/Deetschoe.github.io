@@ -74,6 +74,9 @@ class CabinScene {
     this._createLighting();
     this._createFireflies();
     this._createDustParticles();
+    this._createStars();
+    this._createShootingStars();
+    this._createMoon();
     // ASCII post-process removed
     this._bindEvents();
     this._animate();
@@ -110,8 +113,8 @@ class CabinScene {
 
   _createScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0a1a12);
-    this.scene.fog = new THREE.FogExp2(0x0e1e16, 0.018);
+    this.scene.background = new THREE.Color(0x020408);
+    this.scene.fog = new THREE.FogExp2(0x050810, 0.016);
   }
 
   _createCamera() {
@@ -524,7 +527,7 @@ class CabinScene {
       map: grassTex,
       roughness: 0.95,
       metalness: 0.0,
-      color: 0x556644,
+      color: 0x1a2a1e,
     });
     const groundGeo = new THREE.PlaneGeometry(80, 80);
     const ground = new THREE.Mesh(groundGeo, groundMat);
@@ -539,7 +542,7 @@ class CabinScene {
       map: pathTex,
       roughness: 0.9,
       metalness: 0.0,
-      color: 0x8a7a6a,
+      color: 0x3a3228,
     });
     const pathGeo = new THREE.PlaneGeometry(1.8, 22);
     const path = new THREE.Mesh(pathGeo, pathMat);
@@ -547,6 +550,9 @@ class CabinScene {
     path.position.set(0, 0.01, 13);
     path.receiveShadow = true;
     this.scene.add(path);
+
+    // Rolling hills in the background
+    this._createHills();
 
     // Outdoor bamboo clusters flanking the path
     this._createOutdoorBamboo();
@@ -557,10 +563,10 @@ class CabinScene {
 
   _createOutdoorBamboo() {
     const bambooMat = new THREE.MeshStandardMaterial({
-      color: 0x4a7a3a, roughness: 0.7, metalness: 0.1,
+      color: 0x1a3a1a, roughness: 0.7, metalness: 0.1,
     });
     const bambooNodeMat = new THREE.MeshStandardMaterial({
-      color: 0x3a6a2a, roughness: 0.6, metalness: 0.1,
+      color: 0x153015, roughness: 0.6, metalness: 0.1,
     });
 
     // Just a couple small clusters for accent, not a forest
@@ -602,17 +608,17 @@ class CabinScene {
       : this.performanceTier === 'mid' ? 14
       : 20;
 
-    // Trunk material - dark bark
+    // Trunk material - very dark bark for night
     const trunkMat = new THREE.MeshStandardMaterial({
-      color: 0x2a1a0e,
+      color: 0x150e06,
       roughness: 0.95,
       metalness: 0.0,
     });
 
-    // Japanese forest canopy colors - darker greens with blue tint
+    // Japanese forest canopy colors - very dark with blue-green tint for night
     const canopyColors = [
-      0x0f2e1a, 0x122b1e, 0x0d2916, 0x15332a, 0x0b2418,
-      0x1a3d2e, 0x102e22, 0x0e2a1c,
+      0x081a10, 0x0a1810, 0x07150e, 0x0c1e18, 0x06140f,
+      0x0e2418, 0x091c14, 0x08180e,
     ];
 
     // Tree positions - scattered around clearing, cabin area kept free
@@ -760,12 +766,12 @@ class CabinScene {
     // ── Ground Rocks ─────────────────────────────────────────────────────
 
     const rockMat = new THREE.MeshStandardMaterial({
-      color: 0x3a3a36,
+      color: 0x1a1a18,
       roughness: 0.95,
       metalness: 0.0,
     });
     const mossyRockMat = new THREE.MeshStandardMaterial({
-      color: 0x3a4a38,
+      color: 0x1a2418,
       roughness: 0.95,
       metalness: 0.0,
     });
@@ -796,12 +802,12 @@ class CabinScene {
     // ── Small Bushes Near Cabin ──────────────────────────────────────────
 
     const bushMat = new THREE.MeshStandardMaterial({
-      color: 0x1a3322,
+      color: 0x0e1a14,
       roughness: 0.9,
       metalness: 0.0,
     });
     const bushMatLight = new THREE.MeshStandardMaterial({
-      color: 0x264a2e,
+      color: 0x142818,
       roughness: 0.88,
       metalness: 0.0,
     });
@@ -853,7 +859,7 @@ class CabinScene {
       map: wallTex,
       roughness: 0.9,
       metalness: 0.05,
-      color: 0x8b6b4a,
+      color: 0x4a3825,
     });
 
     // Cabin dimensions
@@ -1011,7 +1017,7 @@ class CabinScene {
 
   _buildRoof(cx, wallH, cz, cabinW, cabinD) {
     const roofMat = new THREE.MeshStandardMaterial({
-      color: 0x3a2515,
+      color: 0x1a1008,
       roughness: 0.95,
       metalness: 0.0,
     });
@@ -1063,10 +1069,10 @@ class CabinScene {
     ridge.position.set(cx, roofPeakY, cz);
     this.scene.add(ridge);
 
-    // Front and back gable triangles
+    // Front and back gable triangles - darker to blend with night sky
     const gableMat = new THREE.MeshStandardMaterial({
-      color: 0x6b4b2a,
-      roughness: 0.9,
+      color: 0x2a1c10,
+      roughness: 0.95,
       side: THREE.DoubleSide,
     });
 
@@ -1184,7 +1190,7 @@ class CabinScene {
     });
     const mugGeo = new THREE.CylinderGeometry(0.05, 0.04, 0.1, 8);
     const mug = new THREE.Mesh(mugGeo, mugMat);
-    mug.position.set(cb.minX + 2.1, 1.09, cb.minZ + 0.6);
+    mug.position.set(cb.minX + 2.1, 1.07, cb.minZ + 0.7);
     this.scene.add(mug);
 
     // ── Laptop on desk (next to mug) ──────────────────────────────────
@@ -1223,14 +1229,14 @@ class CabinScene {
     // Keyboard area (darker rectangle on base)
     const kbAreaGeo = new THREE.BoxGeometry(0.34, 0.003, 0.18);
     const kbArea = new THREE.Mesh(kbAreaGeo, keyboardBaseMat);
-    kbArea.position.set(cb.minX + 1.7, 1.062, cb.minX + 0.55 + 0.03);
+    kbArea.position.set(cb.minX + 1.7, 1.062, cb.minZ + 0.48);
     this.scene.add(kbArea);
-    // Individual key rows
+    // Individual key rows (top row near screen, bottom row near trackpad)
     const keyW = 0.022, keyH = 0.018, keyD = 0.002;
     const keyGap = 0.004;
     const startX = cb.minX + 1.7 - 0.15;
-    const startZ = cb.minZ + 0.55 + 0.07;
-    const keyRows = [12, 12, 11, 10]; // keys per row
+    const startZ = cb.minZ + 0.42;
+    const keyRows = [12, 12, 11, 10]; // keys per row (top to bottom)
     for (let row = 0; row < keyRows.length; row++) {
       const numKeys = keyRows[row];
       const rowOffset = row === 2 ? 0.01 : row === 3 ? 0.02 : 0;
@@ -1240,7 +1246,7 @@ class CabinScene {
         key.position.set(
           startX + rowOffset + k * (keyW + keyGap),
           1.065,
-          startZ - row * (keyH + keyGap)
+          startZ + row * (keyH + keyGap)
         );
         this.scene.add(key);
       }
@@ -1248,7 +1254,7 @@ class CabinScene {
     // Spacebar
     const spaceGeo = new THREE.BoxGeometry(0.12, keyD, keyH);
     const spaceKey = new THREE.Mesh(spaceGeo, keyMat);
-    spaceKey.position.set(cb.minX + 1.7, 1.065, startZ - 4 * (keyH + keyGap));
+    spaceKey.position.set(cb.minX + 1.7, 1.065, startZ + 4 * (keyH + keyGap));
     this.scene.add(spaceKey);
     // Trackpad
     const trackpadMat = new THREE.MeshStandardMaterial({
@@ -1258,7 +1264,7 @@ class CabinScene {
     });
     const trackpadGeo = new THREE.BoxGeometry(0.1, 0.002, 0.07);
     const trackpad = new THREE.Mesh(trackpadGeo, trackpadMat);
-    trackpad.position.set(cb.minX + 1.7, 1.062, cb.minZ + 0.55 + 0.12);
+    trackpad.position.set(cb.minX + 1.7, 1.062, cb.minZ + 0.62);
     this.scene.add(trackpad);
 
     // Laptop screen (angled ~110 degrees from base)
@@ -1409,65 +1415,7 @@ class CabinScene {
     this.scene.add(tvLight);
     this.tvLight = tvLight;
 
-    // ── 3D Printer on right side ──────────────────────────────────────
-    const printerX = 2.8;
-    const printerZ = -2.5;
-    const printerMat = new THREE.MeshStandardMaterial({
-      color: 0x444444,
-      roughness: 0.5,
-      metalness: 0.4,
-    });
-    const printerAccentMat = new THREE.MeshStandardMaterial({
-      color: 0xdd6622,
-      roughness: 0.6,
-      metalness: 0.2,
-    });
-
-    // Four vertical corner rods
-    const printerRodGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.7, 6);
-    const printerCorners = [
-      [-0.2, -0.15], [-0.2, 0.15], [0.2, -0.15], [0.2, 0.15],
-    ];
-    printerCorners.forEach(([dx, dz]) => {
-      const rod = new THREE.Mesh(printerRodGeo, printerMat);
-      rod.position.set(printerX + dx, 0.38, printerZ + dz);
-      this.scene.add(rod);
-    });
-
-    // Top horizontal bars (connecting corners)
-    const printerHBarXGeo = new THREE.BoxGeometry(0.4, 0.02, 0.02);
-    const printerHBarZGeo = new THREE.BoxGeometry(0.02, 0.02, 0.3);
-    const barFront = new THREE.Mesh(printerHBarXGeo, printerMat);
-    barFront.position.set(printerX, 0.73, printerZ + 0.15);
-    this.scene.add(barFront);
-    const barBack = new THREE.Mesh(printerHBarXGeo, printerMat);
-    barBack.position.set(printerX, 0.73, printerZ - 0.15);
-    this.scene.add(barBack);
-    const barLeft = new THREE.Mesh(printerHBarZGeo, printerMat);
-    barLeft.position.set(printerX - 0.2, 0.73, printerZ);
-    this.scene.add(barLeft);
-    const barRight = new THREE.Mesh(printerHBarZGeo, printerMat);
-    barRight.position.set(printerX + 0.2, 0.73, printerZ);
-    this.scene.add(barRight);
-
-    // Build plate
-    const buildPlateGeo = new THREE.BoxGeometry(0.35, 0.02, 0.25);
-    const buildPlateMat = new THREE.MeshStandardMaterial({
-      color: 0x222222,
-      roughness: 0.4,
-      metalness: 0.3,
-    });
-    const buildPlate = new THREE.Mesh(buildPlateGeo, buildPlateMat);
-    buildPlate.position.set(printerX, 0.05, printerZ);
-    this.scene.add(buildPlate);
-
-    // Extruder head (small box hanging from top bars)
-    const extruderGeo = new THREE.BoxGeometry(0.06, 0.04, 0.06);
-    const extruder = new THREE.Mesh(extruderGeo, printerAccentMat);
-    extruder.position.set(printerX + 0.05, 0.7, printerZ);
-    this.scene.add(extruder);
-
-    // (Soldering station removed)
+    // (3D Printer removed)
 
     // ── Wall posters with image textures ────────────────────────────────
     const frameMat = new THREE.MeshStandardMaterial({
@@ -1802,16 +1750,219 @@ class CabinScene {
     }
   }
 
+  // ── Hills ──────────────────────────────────────────────────────────
+
+  _createHills() {
+    const hillMat = new THREE.MeshStandardMaterial({
+      color: 0x0e1a12,
+      roughness: 0.95,
+      metalness: 0.0,
+    });
+
+    const hills = [
+      { x: -18, z: -12, rx: 8, rz: 14, h: 3.5 },
+      { x: 22, z: -8, rx: 12, rz: 10, h: 4.0 },
+      { x: -25, z: 10, rx: 10, rz: 15, h: 2.8 },
+      { x: 28, z: 15, rx: 14, rz: 10, h: 3.2 },
+      { x: 0, z: -22, rx: 20, rz: 8, h: 2.5 },
+      { x: -12, z: 28, rx: 12, rz: 10, h: 2.0 },
+      { x: 15, z: 30, rx: 15, rz: 12, h: 3.0 },
+    ];
+
+    for (const h of hills) {
+      const hillGeo = new THREE.SphereGeometry(1, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+      const hill = new THREE.Mesh(hillGeo, hillMat);
+      hill.scale.set(h.rx, h.h, h.rz);
+      hill.position.set(h.x, 0, h.z);
+      hill.receiveShadow = true;
+      this.scene.add(hill);
+    }
+  }
+
+  // ── Stars ─────────────────────────────────────────────────────────
+
+  _createStars() {
+    const starCount = this.performanceTier === 'low' ? 400 : 1500;
+    const positions = new Float32Array(starCount * 3);
+    const sizes = new Float32Array(starCount);
+
+    for (let i = 0; i < starCount; i++) {
+      // Distribute stars on a large dome
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI * 0.45; // upper hemisphere only
+      const r = 60 + Math.random() * 20;
+
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi) + 5; // push above horizon
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+      sizes[i] = 0.3 + Math.random() * 0.7;
+    }
+
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    starGeo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+    const starMat = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.18,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.9,
+    });
+
+    const stars = new THREE.Points(starGeo, starMat);
+    this.scene.add(stars);
+    this._starsMesh = stars;
+    this._starsMat = starMat;
+    this._starsBaseOpacities = new Float32Array(starCount);
+    this._starsPhases = new Float32Array(starCount);
+    this._starsSpeeds = new Float32Array(starCount);
+    for (let i = 0; i < starCount; i++) {
+      this._starsBaseOpacities[i] = 0.4 + Math.random() * 0.6;
+      this._starsPhases[i] = Math.random() * Math.PI * 2;
+      this._starsSpeeds[i] = 0.5 + Math.random() * 2.5;
+    }
+  }
+
+  // ── Moon ──────────────────────────────────────────────────────────
+
+  _createMoon() {
+    const moonGeo = new THREE.SphereGeometry(2.5, 24, 24);
+    const moonMat = new THREE.MeshStandardMaterial({
+      color: 0xddeeff,
+      emissive: 0x8899bb,
+      emissiveIntensity: 0.4,
+      roughness: 0.8,
+      metalness: 0.0,
+    });
+    const moon = new THREE.Mesh(moonGeo, moonMat);
+    moon.position.set(20, 40, -15);
+    this.scene.add(moon);
+
+    // Moon glow halo
+    const glowGeo = new THREE.SphereGeometry(4, 16, 16);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0x4466aa,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide,
+    });
+    const glow = new THREE.Mesh(glowGeo, glowMat);
+    glow.position.copy(moon.position);
+    this.scene.add(glow);
+  }
+
+  // ── Shooting Stars ────────────────────────────────────────────────
+
+  _createShootingStars() {
+    this.shootingStars = [];
+    this._shootingStarTimer = 0;
+    this._shootingStarInterval = 0.8 + Math.random() * 1.5; // 0.8-2.3 seconds between
+
+    const maxActive = this.performanceTier === 'low' ? 2 : 5;
+    this._maxShootingStars = maxActive;
+  }
+
+  _spawnShootingStar() {
+    // Random start position high in the sky
+    const startX = (Math.random() - 0.5) * 60;
+    const startY = 25 + Math.random() * 20;
+    const startZ = -20 + (Math.random() - 0.5) * 40;
+
+    // Direction: angled downward across the sky
+    const dirX = (Math.random() - 0.5) * 2;
+    const dirY = -(0.5 + Math.random() * 0.5);
+    const dirZ = (Math.random() - 0.5) * 2;
+    const len = Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+
+    const speed = 15 + Math.random() * 10;
+    const trailLen = 2.5 + Math.random() * 2;
+
+    // Trail line
+    const endX = startX + (dirX / len) * trailLen;
+    const endY = startY + (dirY / len) * trailLen;
+    const endZ = startZ + (dirZ / len) * trailLen;
+
+    const geo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(-trailLen, 0, 0),
+    ]);
+    const mat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 1.0,
+    });
+    const line = new THREE.Line(geo, mat);
+    line.position.set(startX, startY, startZ);
+
+    // Orient line along direction
+    const dir = new THREE.Vector3(dirX / len, dirY / len, dirZ / len);
+    const up = new THREE.Vector3(0, 1, 0);
+    const quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir);
+    line.quaternion.copy(quat);
+
+    this.scene.add(line);
+
+    this.shootingStars.push({
+      mesh: line,
+      material: mat,
+      dir: dir,
+      speed: speed,
+      life: 0,
+      maxLife: 0.8 + Math.random() * 0.6,
+    });
+  }
+
+  _updateShootingStars(delta, elapsed) {
+    // Twinkle stars
+    if (this._starsMat) {
+      const twinkle = 0.7 + Math.sin(elapsed * 1.5) * 0.15 + Math.sin(elapsed * 3.7) * 0.1;
+      this._starsMat.opacity = Math.min(1.0, twinkle);
+      this._starsMat.size = 0.15 + Math.sin(elapsed * 2.0) * 0.04;
+    }
+
+    if (!this.shootingStars) return;
+
+    this._shootingStarTimer += delta;
+    if (this._shootingStarTimer >= this._shootingStarInterval && this.shootingStars.length < this._maxShootingStars) {
+      this._spawnShootingStar();
+      this._shootingStarTimer = 0;
+      this._shootingStarInterval = 0.8 + Math.random() * 1.5;
+    }
+
+    for (let i = this.shootingStars.length - 1; i >= 0; i--) {
+      const s = this.shootingStars[i];
+      s.life += delta;
+
+      // Move along direction
+      s.mesh.position.x += s.dir.x * s.speed * delta;
+      s.mesh.position.y += s.dir.y * s.speed * delta;
+      s.mesh.position.z += s.dir.z * s.speed * delta;
+
+      // Fade out
+      const progress = s.life / s.maxLife;
+      s.material.opacity = 1.0 - progress;
+
+      if (s.life >= s.maxLife) {
+        this.scene.remove(s.mesh);
+        s.mesh.geometry.dispose();
+        s.material.dispose();
+        this.shootingStars.splice(i, 1);
+      }
+    }
+  }
+
   // ── Lighting ────────────────────────────────────────────────────────
 
   _createLighting() {
-    // Dim ambient (cool forest)
-    const ambient = new THREE.AmbientLight(0x0e1a14, 0.35);
+    // Dim ambient (cool night blue)
+    const ambient = new THREE.AmbientLight(0x0a0e1a, 0.3);
     this.scene.add(ambient);
 
-    // Moonlight - subtle blue directional from above
-    const moonlight = new THREE.DirectionalLight(0x3344aa, 0.25);
-    moonlight.position.set(5, 20, 10);
+    // Moonlight - blue-white directional shining down
+    const moonlight = new THREE.DirectionalLight(0x6688cc, 0.45);
+    moonlight.position.set(8, 30, 5);
     moonlight.castShadow = this.performanceTier === 'high';
     if (moonlight.castShadow) {
       moonlight.shadow.mapSize.width = 1024;
@@ -1826,8 +1977,8 @@ class CabinScene {
     }
     this.scene.add(moonlight);
 
-    // Hemisphere for subtle fill
-    const hemi = new THREE.HemisphereLight(0x112233, 0x050a05, 0.15);
+    // Hemisphere for subtle fill (sky blue, ground dark)
+    const hemi = new THREE.HemisphereLight(0x1a2244, 0x040608, 0.2);
     this.scene.add(hemi);
 
     // Warm window glow visible from outside
@@ -1996,7 +2147,7 @@ class CabinScene {
     const candleMat = new THREE.MeshStandardMaterial({ color: 0xf5e6cc, roughness: 0.8 });
     const candleGeo = new THREE.CylinderGeometry(0.02, 0.025, 0.1, 8);
     const candle = new THREE.Mesh(candleGeo, candleMat);
-    candle.position.set(cb.minX + 2.4, 1.1, cb.minZ + 0.4);
+    candle.position.set(cb.minX + 2.5, 1.07, cb.minZ + 0.8);
     this.scene.add(candle);
 
     const flameMat = new THREE.MeshStandardMaterial({
@@ -2009,12 +2160,12 @@ class CabinScene {
     const flameGeo = new THREE.SphereGeometry(0.015, 6, 6);
     flameGeo.scale(1, 1.8, 1);
     const flame = new THREE.Mesh(flameGeo, flameMat);
-    flame.position.set(cb.minX + 2.4, 1.18, cb.minZ + 0.4);
+    flame.position.set(cb.minX + 2.5, 1.15, cb.minZ + 0.8);
     this.scene.add(flame);
     this._candleFlame = flame;
 
     const candleLight = new THREE.PointLight(0xff9944, 0.4, 3, 2);
-    candleLight.position.set(cb.minX + 2.4, 1.2, cb.minZ + 0.4);
+    candleLight.position.set(cb.minX + 2.5, 1.17, cb.minZ + 0.8);
     this.scene.add(candleLight);
     this._candleLight = candleLight;
 
@@ -2299,6 +2450,7 @@ class CabinScene {
     this._updateLampFlicker(elapsed);
     this._updateBrain(elapsed, delta);
     this._updateTV(elapsed);
+    this._updateShootingStars(delta, elapsed);
 
     if (this.renderer) {
       this.renderer.render(this.scene, this.camera);
@@ -2382,7 +2534,7 @@ class CabinScene {
     // Adjust fog based on indoor/outdoor
     if (this.scene.fog) {
       const indoorFactor = THREE.MathUtils.smoothstep(t, 0.3, 0.5);
-      this.scene.fog.density = 0.018 - indoorFactor * 0.008;
+      this.scene.fog.density = 0.016 - indoorFactor * 0.006;
     }
 
     // Slide cabin door open as approaching

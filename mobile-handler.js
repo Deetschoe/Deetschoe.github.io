@@ -446,6 +446,10 @@ class MobileHandler {
   _setupDoubleTapPrevention() {
     var lastTap = 0;
     this._bound.preventDoubleTapZoom = function (e) {
+      // Don't block clicks on the canvas or interactive elements
+      if (e.target && (e.target.tagName === 'CANVAS' || e.target.closest('a, button, input, [role="button"]'))) {
+        return;
+      }
       var now = Date.now();
       var delta = now - lastTap;
       if (delta < 300 && delta > 0 && e.touches && e.touches.length === 0) {
