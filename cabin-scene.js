@@ -337,12 +337,12 @@ class CabinScene {
 
     // The editable text lines (terminal style)
     this._screenLines = [
-      '> whoami',
-      'dieter - builder, filmer',
+      '> ',
+      'If you don’t take risks, you can’t create a future -luffy',
       '',
       '> ls projects/',
-      'kodan/  serenidad/  minimalmaru/',
-      'laser-speaker/  vr-games/',
+      'protocols/ kodan/  serenidad/  anime/',
+      'lasers/',
       '',
       '> cat contact.txt',
       'email: dieter@serenidad.app',
