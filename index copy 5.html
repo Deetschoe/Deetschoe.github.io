@@ -42,35 +42,28 @@
   <!-- ============================================ -->
   <header id="main-header" class="site-header">
     <nav class="nav-container">
-      <a href="#hero" class="nav-logo">dieter</a>
+      <!-- <a href="#hero" class="nav-logo">dieter</a> -->
 
       <ul class="nav-links" id="nav-links">
-        <li><a href="#about" class="nav-link" data-section="about">about</a></li>
+        <li><a href="#about" class="nav-link" data-section="about">hwgh</a></li>
         <li><a href="#projects" class="nav-link" data-section="projects">projects</a></li>
         <li><a href="#contact" class="nav-link" data-section="contact">contact</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button class="hamburger" id="hamburger-btn" aria-label="Toggle navigation" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
+        <button class="mode-toggle" id="mode-toggle" aria-label="Toggle 3D scene" title="toggle 3D">
+          <span class="mode-toggle-icon" id="mode-toggle-icon">2D</span>
         </button>
       </div>
     </nav>
   </header>
 
-  <!-- ============================================ -->
-  <!-- MOBILE MENU OVERLAY                          -->
-  <!-- ============================================ -->
-  <div class="mobile-menu-overlay" id="mobile-menu-overlay">
-    <ul class="mobile-nav-links">
-      <li><a href="#hero" class="mobile-nav-link" data-section="hero">home</a></li>
-      <li><a href="#about" class="mobile-nav-link" data-section="about">about</a></li>
-      <li><a href="#projects" class="mobile-nav-link" data-section="projects">projects</a></li>
-      <li><a href="#contact" class="mobile-nav-link" data-section="contact">contact</a></li>
-    </ul>
-  </div>
+  <!-- Mobile menu removed -->
+
+  <!-- Standalone 2D/3D toggle for mobile (nav bar is hidden) -->
+  <button class="mode-toggle-mobile" id="mode-toggle-mobile" aria-label="Toggle 3D scene" title="toggle 3D">
+    <span class="mode-toggle-icon" id="mode-toggle-icon-mobile">2D</span>
+  </button>
 
   <!-- ============================================ -->
   <!-- MAIN CONTENT                                 -->
@@ -80,30 +73,24 @@
     <!-- HERO -->
     <section id="hero" class="section section--hero">
       <div class="section-inner">
-        <h1>dieter</h1>
-        <p class="hero-subtitle"><span id="age-display">20</span> &middot; <span id="typed-text"></span><span class="typed-cursor">|</span></p>
-        <p class="hero-currently">
-          building in neuro!
-          <a href="mailto:dieter@serenidad.app" class="inline-link">email me</a>
-          or
-          <a href="https://x.com/dieterzsh" class="inline-link" target="_blank" rel="noopener noreferrer">hmu on twitter</a>
-        </p>
+        <h1 class="hero-name">Dieter Schoening</h1>
+        <p class="hero-subtitle"><span id="age-display">20</span> · solving problems in neurosci</p>
       </div>
     </section>
 
     <!-- ABOUT -->
     <section id="about" class="section section--about">
       <div class="section-inner">
-        <h2 class="section-heading">about</h2>
+        <h2 class="section-heading">how we got here</h2>
         <div class="about-content">
 
-          <ul class="fun-facts">
-            <li class="fun-fact">started an online brand at 14, scale to 7 figures in 2 yrs</li>
-            <li class="fun-fact">took a gap year to work at Hack Club growing socials to 80,000+ followers</li>
-            <li class="fun-fact">spent 2 months in rural Japan building software</li>
-            <li class="fun-fact"></li>
-          </ul>
-
+          <p class="fun-fact">I grew up with early access to a computer becoming obsessed with making content I learned photoshop by the time i was 9 and by 13 getting deep in blender for 3D design doing thumbnails for some of the biggest Fortnite YouTubers. Eventually i got into ecomerce starting my own clothing brand Minimaru at 14 which scaled past $1M in revenue within a year and a half through viral marketing. By 17 I was burnt out with my business and began learning to code starting a club at my school with my best friend documenting the journey on <a href="https://www.serenidad.app/" class="inline-link" target="_blank" rel="noopener noreferrer">Serenidad</a></p>
+<br>
+          <p class="fun-fact">then took a gap year moving to Vermont working at <a href="#hackclub-project" class="inline-link" onclick="event.preventDefault(); var el = document.getElementById('hackclub-project'); el.classList.add('expanded'); el.scrollIntoView({behavior:'smooth', block:'center'});">Hack Club</a>, growing their Instagram to  100K followers and building software every weekend. Then after moved to rural Japan for 2 months coding an anime storyboarding tool eventually pivoting to learning hardware building a drone apart of <a href="https://nautilus.quest/" class="inline-link" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3 month residency in San Francisco</p>
+<br></p>
+<br>
+          <p class="fun-fact">After 2025 I left marketing and software behind to go deep into biology/neuroscience joining a stealth biotech start up working with brain ipsc to help map the human brain</p>
+<br>
           <p class="about-aside">
           </p>
         </div>
@@ -131,29 +118,17 @@
 
           <article class="project-row" data-project="2">
             <div class="project-info">
-              <h3 class="project-title"><a href="https://www.youtube.com/@buildingserenidad" target="_blank" rel="noopener noreferrer">Serenidad</a></h3>
-              <p class="project-desc">a podcast called serenidad. i built a project with my friend thomas every weekend and we have 180 episodes.</p>
+              <h3 class="project-title"><a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer">Minimalmaru</a> / <a href="https://www.tiktok.com/@darukiyu?lang=en" target="_blank" rel="noopener noreferrer">Darukiyu</a></h3>
+              <p class="project-desc">started an anime brand and made influencer content when i was 14. scaled to $1.3M, shipped 34,000+ orders worldwide.</p>
               <div class="project-tags">
-                
-                <span class="tag">podcast</span>
-                <span class="tag">building</span>
+                <span class="tag">ecommerce</span>
+                <span class="tag">anime</span>
+                <span class="tag">content</span>
               </div>
             </div>
           </article>
 
           <article class="project-row" data-project="3">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer">Minimalmaru</a></h3>
-              <p class="project-desc">anime clothing. ran it in high school. 7 figures.</p>
-              <div class="project-tags">
-                <span class="tag">ecommerce</span>
-                <span class="tag">anime</span>
-                <span class="tag">brand</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="4">
             <div class="project-info">
               <h3 class="project-title"><a href="https://www.youtube.com/watch?v=9U-3mQOsGNo" target="_blank" rel="noopener noreferrer">Audio Laser Speaker</a></h3>
               <p class="project-desc">built a speaker that shoots audio through lasers.</p>
@@ -165,46 +140,48 @@
             </div>
           </article>
 
+          <article id="hackclub-project" class="project-row project-row--expandable" data-project="4" data-expandable>
+            <div class="project-info">
+              <h3 class="project-title"><a href="https://www.instagram.com/starthackclub" target="_blank" rel="noopener noreferrer">Grew Hack Club to 100K</a> <span class="expand-hint">+</span></h3>
+              <p class="project-desc">graduated early, took a gap year to produce videos and grow socials for <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a>.</p>
+              <div class="project-tags">
+                <span class="tag">film</span>
+                <span class="tag">marketing</span>
+                <span class="tag">hack club</span>
+              </div>
+            </div>
+            <div class="project-expand-content" id="hackclub-videos">
+              <ul class="project-video-list">
+                <li><a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/ufMUJ9D1fi8/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">The World's First Hikeathon: 30 Teen Hackers on the Pacific Crest Trail</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=HB-dtnXu_a8" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/HB-dtnXu_a8/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">This Car Should Not Be Legal</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=UZEm5lONg7g" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/UZEm5lONg7g/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Hack Club Leaders Summit 2024</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=xXIxwV7bQTw" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/xXIxwV7bQTw/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Inside a High School Coding Club</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=XTUaXv9hVXE" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/XTUaXv9hVXE/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">We Built a Human Sized Microwave</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=hLCCbJw6Osg" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/hLCCbJw6Osg/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Why There Aren't More Women in Tech (Days of Service)</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=X1EVT0vUxAg" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/X1EVT0vUxAg/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">What Do Teenagers Build at the Wackiest Hackathon?</span></a></li>
+                <li><a href="https://www.youtube.com/watch?v=3J1Rz-3N1WQ" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/3J1Rz-3N1WQ/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Driving a Thousand Miles to Build a Video Game in 24 Hours</span></a></li>
+              </ul>
+            </div>
+          </article>
+
           <article class="project-row" data-project="5">
             <div class="project-info">
-              <h3 class="project-title"><a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank" rel="noopener noreferrer">Hack Club Hikeathon</a></h3>
-              <p class="project-desc">filmed the world's first Hikeathon—30 teen hackers on the Pacific Crest Trail.</p>
+              <h3 class="project-title"><a href="https://serenidad-download.vercel.app/" target="_blank" rel="noopener noreferrer">Built VR Games</a></h3>
+              <p class="project-desc">built a bunch of VR games in the span of two months.</p>
               <div class="project-tags">
-                <span class="tag">adventure</span>
-                <span class="tag">hack club</span>
+                <span class="tag">vr</span>
+                <span class="tag">game dev</span>
               </div>
             </div>
           </article>
 
           <article class="project-row" data-project="6">
             <div class="project-info">
-              <h3 class="project-title"><a href="#" target="_blank" rel="noopener noreferrer">Hack Club Giant Microwave</a></h3>
-              <p class="project-desc">wanted to cook giant things. so I built a giant microwave.</p>
+              <h3 class="project-title"><a href="https://projectionmappingtool.vercel.app/" target="_blank" rel="noopener noreferrer">Projection Mapping Tool</a></h3>
+              <p class="project-desc">building projection mapping software.</p>
               <div class="project-tags">
-                <span class="tag">hardware</span>
-                <span class="tag">hack club</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="7">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.tiktok.com/@darukiyu" target="_blank" rel="noopener noreferrer">Darukiyu TikTok</a></h3>
-              <p class="project-desc">grew a TikTok account to 300K followers making anime content.</p>
-              <div class="project-tags">
-                <span class="tag">content</span>
-                <span class="tag">anime</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="8">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.youtube.com/watch?v=PoBu86bxJxU" target="_blank" rel="noopener noreferrer">Life of Chai</a></h3>
-              <p class="project-desc">VR puzzle game published on SideQuest.</p>
-              <div class="project-tags">
-                <span class="tag">vr</span>
-                <span class="tag">game</span>
+                <span class="tag">software</span>
+                <span class="tag">projection mapping</span>
               </div>
             </div>
           </article>
@@ -213,7 +190,7 @@
       </div>
     </section>
 
-    <!-- CONTACT (spacer to allow scroll to reach laptop zoom - no visible box) -->
+    <!-- CONTACT (scroll spacer for 3D laptop zoom) -->
     <section id="contact" class="section section--contact">
     </section>
 
@@ -230,13 +207,8 @@
       <span class="footer-separator">·</span>
       <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" class="footer-link">github</a>
     </div>
-    <p class="footer-text">&copy; 2026</p>
   </footer>
 
-
-  <!-- ============================================ -->
-  <!-- LAPTOP SCREEN OVERLAY (tracks 3D laptop mesh) -->
-  <!-- ============================================ -->
   <div id="laptop-screen-overlay" class="laptop-screen-overlay">
     <div class="laptop-screen-bar">
       <span class="lso-dot red"></span>
@@ -259,7 +231,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="mobile-handler.js"></script>
   <script src="cabin-scene.js"></script>
-  <script src="ascii-renderer.js"></script>
   <script src="ui-controller.js"></script>
 
 </body>

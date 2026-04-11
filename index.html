@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Dieter - entrepreneur, constructor, biohacker">
-  <meta name="theme-color" content="#1a1a1a">
-  <title>dieter</title>
+  <meta name="description" content="Dieter Schoening — neuroscience, hardware, software, and everything in between.">
+  <meta name="theme-color" content="#ffffff">
+  <title>Dieter Schoening</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -14,224 +14,615 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --bg-elevated: rgba(0, 0, 0, 0.03);
+      --glass: rgba(0, 0, 0, 0.03);
+      --glass-border: rgba(0, 0, 0, 0.06);
+      --glass-hover: rgba(0, 0, 0, 0.06);
+      --text: #1a1a1a;
+      --text-secondary: #555;
+      --text-muted: #999;
+      --accent: #22863a;
+      --accent-hover: #1a6b2e;
+      --nav-bg: rgba(255, 255, 255, 0.75);
+      --max-w: 640px;
+      --font: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* — Cursor-following gradient orbs — */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.38;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+    .orb-green  { width: 550px; height: 550px; background: radial-gradient(circle, rgba(34,197,94,0.75), transparent 70%); }
+    .orb-blue   { width: 650px; height: 650px; background: radial-gradient(circle, rgba(59,130,246,0.65), transparent 70%); }
+    .orb-purple { width: 500px; height: 500px; background: radial-gradient(circle, rgba(168,85,247,0.65), transparent 70%); }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover { color: var(--accent-hover); }
+
+    /* — Layout — */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* — Hero — */
+    .hero {
+      padding: 5rem 0 0.75rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6.5vw, 3.75rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+    .char {
+      display: inline-block;
+    }
+    .hero .tagline {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* — Sections — */
+    section {
+      padding: 2.75rem 0;
+    }
+    /* Hero flows directly into About — no divider */
+    .hero + section {
+      padding-top: 1.75rem;
+      border-top: none;
+    }
+    section + section {
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 1.1rem;
+    }
+
+    /* — About — */
+    .about p {
+      color: var(--text-secondary);
+      margin-bottom: 0.9rem;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .about p:last-of-type { margin-bottom: 0; }
+
+    /* — Projects — */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .project {
+      padding: 1.1rem 1.4rem;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .project:hover {
+      background: var(--glass-hover);
+      border-color: rgba(0, 0, 0, 0.14);
+      transform: translateY(-2px);
+    }
+    .project-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+    .project h3 {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .project h3 a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .project h3 a:hover { color: var(--accent); }
+    .project-tags {
+      display: flex;
+      gap: 0.4rem;
+    }
+    .tag {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 100px;
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .project p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* — Dropdown project group — */
+    .project-dropdown {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .project-dropdown-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.4rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .project-dropdown-toggle:hover {
+      background: var(--glass-hover);
+    }
+    .project-dropdown-toggle .dropdown-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .project-dropdown-toggle .dropdown-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .dropdown-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.3s;
+    }
+    .project-dropdown.open .dropdown-chevron {
+      transform: rotate(180deg);
+    }
+    .project-dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .project-dropdown.open .project-dropdown-content {
+      max-height: 600px;
+    }
+    .project-dropdown-content .dropdown-item {
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid var(--glass-border);
+      transition: background 0.2s;
+    }
+    .project-dropdown-content .dropdown-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .dropdown-item h4 {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 0.15rem;
+    }
+    .dropdown-item h4 a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .dropdown-item h4 a:hover { color: var(--accent); }
+    .dropdown-item p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* — Hack Club dropdown — */
+    .hackclub-dropdown .project-dropdown-content {
+      max-height: 0;
+    }
+    .hackclub-dropdown.open .project-dropdown-content {
+      max-height: 1200px;
+    }
+
+    /* — Hack Club videos — */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .video-card {
+      display: block;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--glass-border);
+      transition: transform 0.25s, border-color 0.25s;
+    }
+    .video-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+    .video-card img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+    .video-card span {
+      display: block;
+      font-size: 0.72rem;
+      padding: 0.5rem 0.65rem;
+      color: var(--text-secondary);
+      line-height: 1.35;
+    }
+
+    /* — Tagline social icons — */
+    .tagline-links {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .tagline-links a {
+      color: #bbb;
+      display: inline-flex;
+      align-items: center;
+      transition: color 0.2s;
+      text-decoration: none;
+    }
+    .tagline-links a:hover { color: #1a1a1a; }
+    .tagline-links svg { width: 14px; height: 14px; }
+
+    /* — Hero description line — */
+    .hero-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 0.55rem;
+      line-height: 1.5;
+    }
+
+    /* — Clickable project card — */
+    a.project {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+    a.project h3 { color: var(--text); }
+    a.project:hover { color: inherit; }
+    a.project:hover h3 { color: var(--accent); }
+
+    /* — Responsive / Mobile — */
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 0 0.4rem; }
+      .hero h1 { font-size: clamp(1.9rem, 8.5vw, 2.5rem); margin-bottom: 0.25rem; }
+      .hero .tagline { font-size: 0.9rem; }
+      .hero + section { padding-top: 0.85rem; }
+      section { padding: 1.25rem 0; }
+      .section-title { margin-bottom: 0.65rem; }
+      .about p { font-size: 0.82rem; margin-bottom: 0.45rem; line-height: 1.5; }
+      .projects-list { gap: 0.5rem; }
+      .project { padding: 0.75rem 1rem; }
+      .project-dropdown-toggle { padding: 0.65rem 1rem; }
+      .project-header { flex-direction: column; gap: 0.25rem; }
+      .video-grid { grid-template-columns: 1fr 1fr; }
+      .project, .project-dropdown { border-radius: 10px; }
+.container { padding: 0 1.1rem; }
+    }
+    /* Tap-friendly touch targets */
+    .project-dropdown-toggle { min-height: 44px; }
+
+    /* — Scroll reveal — */
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal:nth-child(2) { transition-delay: 0.06s; }
+      .reveal:nth-child(3) { transition-delay: 0.12s; }
+      .reveal:nth-child(4) { transition-delay: 0.18s; }
+      .reveal:nth-child(5) { transition-delay: 0.24s; }
+      .reveal:nth-child(6) { transition-delay: 0.30s; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- ============================================ -->
-  <!-- LOADING SCREEN                               -->
-  <!-- ============================================ -->
-  <div id="loading-screen" class="loading-screen">
-    <div class="loading-content">
-      <img src="loop.gif" alt="loading" class="loading-gif" id="loading-gif">
-      <p class="loading-welcome">loading cabin</p>
-    </div>
+  <!-- Cursor-following gradient orbs -->
+  <div class="orb orb-green" id="orb1"></div>
+  <div class="orb orb-blue" id="orb2"></div>
+  <div class="orb orb-purple" id="orb3"></div>
+
+  <div class="container">
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 id="hero-title" class="reveal">Dieter Schoening</h1>
+      <p class="tagline reveal"><span id="age-display">20</span> · San Francisco<span class="tagline-links">
+        <a href="https://twitter.com/dieterzsh" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+        <a href="mailto:dieter@serenidad.app" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+      </span></p>
+      <p class="hero-desc reveal">Interested in capturing consciousness from the inside out.</p>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+      <h2 class="section-title reveal">About</h2>
+
+      <p class="reveal">I grew up with early access to a computer learning Photoshop by 9 and then discovered Blender (3d design software) that led to me working with content creators in the millions of subscribers.</p>
+
+      <p class="reveal">At 14 I started my own anime clothing brand, <a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer">Minimaru</a>, which scaled past $1.3M in revenue within a year and a half through viral marketing. By 17 I was burnt out and started learning to code, eventually building <a href="https://www.serenidad.app/" target="_blank" rel="noopener noreferrer">Serenidad</a> with my best friend.</p>
+
+      <p class="reveal">I took a gap year, moved to Vermont to work at <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a> where I grew their Instagram to 100K followers and produced videos. Then spent 2 months in rural Japan building an anime storyboarding tool, before pivoting to hardware and building a drone as part of <a href="https://nautilus.quest/" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3-month residency in San Francisco.</p>
+
+      <p class="reveal">Now I've left marketing and software behind to go deep into biology and neuroscience — working with brain iPSC at a stealth biotech startup to help map the human brain.</p>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects">
+      <h2 class="section-title reveal">Past Projects</h2>
+      <div class="projects-list">
+
+        <a href="https://kodan-beta.vercel.app/" target="_blank" rel="noopener noreferrer" class="project reveal">
+          <div class="project-header">
+            <h3>Kodan</h3>
+            <div class="project-tags"><span class="tag">ai</span><span class="tag">anime</span></div>
+          </div>
+          <p>AI anime storyboarding platform. Built over 2 months in rural Japan.</p>
+        </a>
+
+        <a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer" class="project reveal">
+          <div class="project-header">
+            <h3>Minimaru</h3>
+            <div class="project-tags"><span class="tag">ecommerce</span><span class="tag">content</span></div>
+          </div>
+          <p>Anime clothing brand. Started at 14, scaled to $1.3M and 34,000+ orders worldwide.</p>
+        </a>
+
+        <!-- Hack Club dropdown -->
+        <div class="project-dropdown hackclub-dropdown reveal">
+          <button class="project-dropdown-toggle" onclick="this.parentElement.classList.toggle('open')">
+            <div class="dropdown-label">
+              Hack Club — 100K Followers
+              <span class="dropdown-count">6 videos</span>
+            </div>
+            <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="project-dropdown-content">
+            <div class="dropdown-item">
+              <p>Graduated early, took a gap year to produce videos and grow socials for <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a>.</p>
+              <div class="video-grid">
+                <a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/ufMUJ9D1fi8/mqdefault.jpg" alt="" loading="lazy">
+                  <span>The World's First Hikeathon</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=HB-dtnXu_a8" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/HB-dtnXu_a8/mqdefault.jpg" alt="" loading="lazy">
+                  <span>This Car Should Not Be Legal</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=UZEm5lONg7g" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/UZEm5lONg7g/mqdefault.jpg" alt="" loading="lazy">
+                  <span>Leaders Summit 2024</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=xXIxwV7bQTw" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/xXIxwV7bQTw/mqdefault.jpg" alt="" loading="lazy">
+                  <span>Inside a High School Coding Club</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=XTUaXv9hVXE" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/XTUaXv9hVXE/mqdefault.jpg" alt="" loading="lazy">
+                  <span>We Built a Human Sized Microwave</span>
+                </a>
+                <a href="https://www.youtube.com/watch?v=hLCCbJw6Osg" target="_blank" rel="noopener noreferrer" class="video-card">
+                  <img src="https://img.youtube.com/vi/hLCCbJw6Osg/mqdefault.jpg" alt="" loading="lazy">
+                  <span>Why There Aren't More Women in Tech</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hardware & Games dropdown -->
+        <div class="project-dropdown reveal">
+          <button class="project-dropdown-toggle" onclick="this.parentElement.classList.toggle('open')">
+            <div class="dropdown-label">
+              Hardware & Games
+              <span class="dropdown-count">3 projects</span>
+            </div>
+            <svg class="dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="project-dropdown-content">
+            <div class="dropdown-item">
+              <h4><a href="https://www.youtube.com/watch?v=9U-3mQOsGNo" target="_blank" rel="noopener noreferrer">Audio Laser Speaker</a></h4>
+              <p>Built a speaker that transmits audio through lasers.</p>
+            </div>
+            <div class="dropdown-item">
+              <h4><a href="https://serenidad-download.vercel.app/" target="_blank" rel="noopener noreferrer">VR Games</a></h4>
+              <p>Built a bunch of VR games in the span of two months.</p>
+            </div>
+            <div class="dropdown-item">
+              <h4><a href="https://projectionmappingtool.vercel.app/" target="_blank" rel="noopener noreferrer">Projection Mapping Tool</a></h4>
+              <p>Projection mapping software for spatial computing.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </div>
 
-  <!-- ============================================ -->
-  <!-- THREE.JS CANVAS                              -->
-  <!-- ============================================ -->
-  <canvas id="cabin-canvas" style="width:100%;height:100vh;display:block;position:fixed;top:0;left:0;z-index:0;"></canvas>
-  <div class="intro-grey-overlay" id="intro-grey-overlay"></div>
-  <div class="glitch-layer" id="glitch-layer"></div>
+  <script type="module">
+    import { prepareWithSegments, layoutWithLines } from 'https://esm.sh/@chenglou/pretext@0.0.5';
 
-  <!-- ============================================ -->
-  <!-- NAVIGATION                                   -->
-  <!-- ============================================ -->
-  <header id="main-header" class="site-header">
-    <nav class="nav-container">
-      <!-- <a href="#hero" class="nav-logo">dieter</a> -->
+    // Age
+    const birthday = new Date(2005, 5, 15);
+    document.getElementById('age-display').textContent = Math.floor((Date.now() - birthday) / 31557600000);
 
-      <ul class="nav-links" id="nav-links">
-        <li><a href="#about" class="nav-link" data-section="about">hwgh</a></li>
-        <li><a href="#projects" class="nav-link" data-section="projects">projects</a></li>
-        <li><a href="#contact" class="nav-link" data-section="contact">contact</a></li>
-      </ul>
+    // Gradient orb animation
+    const orb1 = document.getElementById('orb1');
+    const orb2 = document.getElementById('orb2');
+    const orb3 = document.getElementById('orb3');
+    let mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
+    let pos1 = { x: 0.15, y: 0.25 };
+    let pos2 = { x: 0.75, y: 0.15 };
+    let pos3 = { x: 0.5, y: 0.75 };
+    // Track pointer position (mouse + touch)
+    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+    document.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      mouse.x = t.clientX; mouse.y = t.clientY;
+    }, { passive: true });
+    // On mobile with no touch, drift orbs gently with time
+    let driftT = 0;
+    const isTouchOnly = window.matchMedia('(hover: none)').matches;
+    function driftMouse() {
+      if (isTouchOnly) {
+        driftT += 0.004;
+        mouse.x = window.innerWidth  * (0.5 + 0.35 * Math.sin(driftT));
+        mouse.y = window.innerHeight * (0.5 + 0.3  * Math.cos(driftT * 0.7));
+      }
+    }
 
-      <div class="nav-actions">
-        <button class="mode-toggle" id="mode-toggle" aria-label="Toggle 3D scene" title="toggle 3D">
-          <span class="mode-toggle-icon" id="mode-toggle-icon">2D</span>
-        </button>
-      </div>
-    </nav>
-  </header>
+    function lerp(a, b, t) { return a + (b - a) * t; }
 
-  <!-- Mobile menu removed -->
+    function animOrbs() {
+      driftMouse();
+      const nx = mouse.x / window.innerWidth;
+      const ny = mouse.y / window.innerHeight;
+      pos1.x = lerp(pos1.x, nx * 0.85 + 0.05, 0.032);
+      pos1.y = lerp(pos1.y, ny * 0.85 + 0.05, 0.032);
+      pos2.x = lerp(pos2.x, (1 - nx) * 0.75 + 0.15, 0.018);
+      pos2.y = lerp(pos2.y, ny * 0.75 + 0.1, 0.018);
+      pos3.x = lerp(pos3.x, nx * 0.55 + 0.25, 0.055);
+      pos3.y = lerp(pos3.y, (1 - ny) * 0.75 + 0.1, 0.055);
+      const W = window.innerWidth, H = window.innerHeight;
+      orb1.style.transform = `translate(${pos1.x * W - 275}px, ${pos1.y * H - 275}px)`;
+      orb2.style.transform = `translate(${pos2.x * W - 325}px, ${pos2.y * H - 325}px)`;
+      orb3.style.transform = `translate(${pos3.x * W - 250}px, ${pos3.y * H - 250}px)`;
+      requestAnimationFrame(animOrbs);
+    }
+    animOrbs();
 
-  <!-- Standalone 2D/3D toggle for mobile (nav bar is hidden) -->
-  <button class="mode-toggle-mobile" id="mode-toggle-mobile" aria-label="Toggle 3D scene" title="toggle 3D">
-    <span class="mode-toggle-icon" id="mode-toggle-icon-mobile">2D</span>
-  </button>
+    // Pretext: measure & animate hero title characters
+    await document.fonts.ready;
+    const titleEl = document.getElementById('hero-title');
+    const heroText = 'Dieter Schoening';
 
-  <!-- ============================================ -->
-  <!-- MAIN CONTENT                                 -->
-  <!-- ============================================ -->
-  <main id="main-content" class="overlay-content">
+    try {
+      const prepared = prepareWithSegments(heroText, '700 48px Syne');
+      const { lines } = layoutWithLines(prepared, 640, 58);
+      // lines[0].width = actual measured pixel width from pretext
+    } catch(e) { /* graceful fallback */ }
 
-    <!-- HERO -->
-    <section id="hero" class="section section--hero">
-      <div class="section-inner">
-        <h1 class="hero-name">Dieter Schoening</h1>
-        <p class="hero-subtitle"><span id="age-display">20</span> · solving problems in neurosci</p>
-      </div>
-    </section>
+    // Split hero title into char spans
+    titleEl.innerHTML = '';
+    for (const c of heroText) {
+      if (c === ' ') { titleEl.appendChild(document.createTextNode('\u00a0')); }
+      else {
+        const s = document.createElement('span');
+        s.className = 'char';
+        s.textContent = c;
+        titleEl.appendChild(s);
+      }
+    }
 
-    <!-- ABOUT -->
-    <section id="about" class="section section--about">
-      <div class="section-inner">
-        <h2 class="section-heading">how we got here</h2>
-        <div class="about-content">
+    // Spring animation — only on pointer devices (not touch-only mobile)
+    if (!isTouchOnly) {
+      const chars = [...titleEl.querySelectorAll('.char')];
+      const springs = chars.map(() => ({ vx: 0, vy: 0, ox: 0, oy: 0 }));
+      const STIFFNESS = 0.14, DAMPING = 0.72, REPEL_RADIUS = 130, REPEL_STRENGTH = 20;
 
-          <p class="fun-fact">I grew up with early access to a computer becoming obsessed with making content I learned photoshop by the time i was 9 and by 13 getting deep in blender for 3D design doing thumbnails for some of the biggest Fortnite YouTubers. Eventually i got into ecomerce starting my own clothing brand Minimaru at 14 which scaled past $1M in revenue within a year and a half through viral marketing. By 17 I was burnt out with my business and began learning to code starting a club at my school with my best friend documenting the journey on <a href="https://www.serenidad.app/" class="inline-link" target="_blank" rel="noopener noreferrer">Serenidad</a></p>
-<br>
-          <p class="fun-fact">then took a gap year moving to Vermont working at <a href="#hackclub-project" class="inline-link" onclick="event.preventDefault(); var el = document.getElementById('hackclub-project'); el.classList.add('expanded'); el.scrollIntoView({behavior:'smooth', block:'center'});">Hack Club</a>, growing their Instagram to  100K followers and building software every weekend. Then after moved to rural Japan for 2 months coding an anime storyboarding tool eventually pivoting to learning hardware building a drone apart of <a href="https://nautilus.quest/" class="inline-link" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3 month residency in San Francisco</p>
-<br></p>
-<br>
-          <p class="fun-fact">After 2025 I left marketing and software behind to go deep into biology/neuroscience joining a stealth biotech start up working with brain ipsc to help map the human brain</p>
-<br>
-          <p class="about-aside">
-          </p>
-        </div>
-      </div>
-    </section>
+      function animChars() {
+        chars.forEach((char, i) => {
+          const rect = char.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const dx = mouse.x - (cx + springs[i].ox);
+          const dy = mouse.y - (cy + springs[i].oy);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          let fx = 0, fy = 0;
+          if (dist < REPEL_RADIUS && dist > 0) {
+            const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
+            fx = -(dx / dist) * force;
+            fy = -(dy / dist) * force;
+          }
+          fx -= springs[i].ox * STIFFNESS;
+          fy -= springs[i].oy * STIFFNESS;
+          springs[i].vx = (springs[i].vx + fx) * DAMPING;
+          springs[i].vy = (springs[i].vy + fy) * DAMPING;
+          springs[i].ox += springs[i].vx;
+          springs[i].oy += springs[i].vy;
+          char.style.transform = `translate(${springs[i].ox.toFixed(2)}px, ${springs[i].oy.toFixed(2)}px)`;
+        });
+        requestAnimationFrame(animChars);
+      }
+      animChars();
+    }
 
-    <!-- PROJECTS -->
-    <section id="projects" class="section section--projects">
-      <div class="section-inner">
-        <h2 class="section-heading">projects</h2>
 
-        <div class="projects-feed">
-
-          <article class="project-row" data-project="1">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://kodan-beta.vercel.app/" target="_blank" rel="noopener noreferrer">Kodan</a></h3>
-              <p class="project-desc">AI anime platform. built over 2 months in rural Japan.</p>
-              <div class="project-tags">
-                <span class="tag">ai</span>
-                <span class="tag">anime</span>
-                <span class="tag">platform</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="2">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer">Minimalmaru</a> / <a href="https://www.tiktok.com/@darukiyu?lang=en" target="_blank" rel="noopener noreferrer">Darukiyu</a></h3>
-              <p class="project-desc">started an anime brand and made influencer content when i was 14. scaled to $1.3M, shipped 34,000+ orders worldwide.</p>
-              <div class="project-tags">
-                <span class="tag">ecommerce</span>
-                <span class="tag">anime</span>
-                <span class="tag">content</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="3">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.youtube.com/watch?v=9U-3mQOsGNo" target="_blank" rel="noopener noreferrer">Audio Laser Speaker</a></h3>
-              <p class="project-desc">built a speaker that shoots audio through lasers.</p>
-              <div class="project-tags">
-                <span class="tag">hardware</span>
-                <span class="tag">audio</span>
-                <span class="tag">lasers</span>
-              </div>
-            </div>
-          </article>
-
-          <article id="hackclub-project" class="project-row project-row--expandable" data-project="4" data-expandable>
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://www.instagram.com/starthackclub" target="_blank" rel="noopener noreferrer">Grew Hack Club to 100K</a> <span class="expand-hint">+</span></h3>
-              <p class="project-desc">graduated early, took a gap year to produce videos and grow socials for <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a>.</p>
-              <div class="project-tags">
-                <span class="tag">film</span>
-                <span class="tag">marketing</span>
-                <span class="tag">hack club</span>
-              </div>
-            </div>
-            <div class="project-expand-content" id="hackclub-videos">
-              <ul class="project-video-list">
-                <li><a href="https://www.youtube.com/watch?v=ufMUJ9D1fi8" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/ufMUJ9D1fi8/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">The World's First Hikeathon: 30 Teen Hackers on the Pacific Crest Trail</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=HB-dtnXu_a8" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/HB-dtnXu_a8/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">This Car Should Not Be Legal</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=UZEm5lONg7g" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/UZEm5lONg7g/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Hack Club Leaders Summit 2024</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=xXIxwV7bQTw" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/xXIxwV7bQTw/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Inside a High School Coding Club</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=XTUaXv9hVXE" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/XTUaXv9hVXE/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">We Built a Human Sized Microwave</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=hLCCbJw6Osg" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/hLCCbJw6Osg/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Why There Aren't More Women in Tech (Days of Service)</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=X1EVT0vUxAg" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/X1EVT0vUxAg/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">What Do Teenagers Build at the Wackiest Hackathon?</span></a></li>
-                <li><a href="https://www.youtube.com/watch?v=3J1Rz-3N1WQ" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/3J1Rz-3N1WQ/mqdefault.jpg" alt="" class="video-thumb"><span class="video-title">Driving a Thousand Miles to Build a Video Game in 24 Hours</span></a></li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="5">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://serenidad-download.vercel.app/" target="_blank" rel="noopener noreferrer">Built VR Games</a></h3>
-              <p class="project-desc">built a bunch of VR games in the span of two months.</p>
-              <div class="project-tags">
-                <span class="tag">vr</span>
-                <span class="tag">game dev</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="project-row" data-project="6">
-            <div class="project-info">
-              <h3 class="project-title"><a href="https://projectionmappingtool.vercel.app/" target="_blank" rel="noopener noreferrer">Projection Mapping Tool</a></h3>
-              <p class="project-desc">building projection mapping software.</p>
-              <div class="project-tags">
-                <span class="tag">software</span>
-                <span class="tag">projection mapping</span>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT (scroll spacer for 3D laptop zoom) -->
-    <section id="contact" class="section section--contact">
-    </section>
-
-  </main>
-
-  <!-- ============================================ -->
-  <!-- FOOTER                                       -->
-  <!-- ============================================ -->
-  <footer class="site-footer">
-    <div class="footer-links">
-      <a href="mailto:dieter@serenidad.app" class="footer-link">email</a>
-      <span class="footer-separator">·</span>
-      <a href="https://twitter.com/dieterzsh" target="_blank" rel="noopener noreferrer" class="footer-link">twitter</a>
-      <span class="footer-separator">·</span>
-      <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" class="footer-link">github</a>
-    </div>
-  </footer>
-
-  <div id="laptop-screen-overlay" class="laptop-screen-overlay">
-    <div class="laptop-screen-bar">
-      <span class="lso-dot red"></span>
-      <span class="lso-dot yellow"></span>
-      <span class="lso-dot green"></span>
-      <span class="lso-title">dieter's terminal</span>
-    </div>
-    <div class="laptop-screen-content" id="laptop-screen-content">
-      <div class="laptop-screen-output" id="laptop-screen-output"></div>
-      <div class="laptop-screen-input-line">
-        <span class="lso-prompt">&gt;</span>
-        <input type="text" id="laptop-screen-input" class="laptop-screen-input" autocomplete="off" spellcheck="false" placeholder="type help...">
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================ -->
-  <!-- SCRIPTS                                      -->
-  <!-- ============================================ -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="mobile-handler.js"></script>
-  <script src="cabin-scene.js"></script>
-  <script src="ui-controller.js"></script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+  </script>
 
 </body>
 </html>
