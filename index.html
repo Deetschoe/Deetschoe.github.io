@@ -356,9 +356,29 @@
       .project-dropdown-toggle { padding: 0.65rem 1rem; }
       .project-header { flex-direction: column; gap: 0.25rem; }
       .video-grid { grid-template-columns: 1fr 1fr; }
-      .project, .project-dropdown { border-radius: 10px; }
+      .project, .project-dropdown { border-radius: 10px; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .container { padding: 0 1.1rem; }
     }
+    /* — Mobile orbs: CSS animation instead of JS rAF — */
+    @media (hover: none) {
+      .orb { filter: blur(60px); opacity: 0.28; }
+      .orb-green  { animation: mOrbA 14s ease-in-out infinite; }
+      .orb-blue   { animation: mOrbB 18s ease-in-out infinite; }
+      .orb-purple { animation: mOrbC 11s ease-in-out infinite; }
+    }
+    @keyframes mOrbA {
+      0%, 100% { transform: translate(5vw, 8vh); }
+      50%      { transform: translate(55vw, 38vh); }
+    }
+    @keyframes mOrbB {
+      0%, 100% { transform: translate(65vw, 5vh); }
+      50%      { transform: translate(15vw, 52vh); }
+    }
+    @keyframes mOrbC {
+      0%, 100% { transform: translate(38vw, 58vh); }
+      50%      { transform: translate(8vw, 18vh); }
+    }
+
     /* Tap-friendly touch targets */
     .project-dropdown-toggle { min-height: 44px; }
 
@@ -507,114 +527,90 @@
 
   </div>
 
-  <script type="module">
-    import { prepareWithSegments, layoutWithLines } from 'https://esm.sh/@chenglou/pretext@0.0.5';
-
+  <script>
     // Age
     const birthday = new Date(2005, 5, 15);
     document.getElementById('age-display').textContent = Math.floor((Date.now() - birthday) / 31557600000);
 
-    // Gradient orb animation
-    const orb1 = document.getElementById('orb1');
-    const orb2 = document.getElementById('orb2');
-    const orb3 = document.getElementById('orb3');
-    let mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
-    let pos1 = { x: 0.15, y: 0.25 };
-    let pos2 = { x: 0.75, y: 0.15 };
-    let pos3 = { x: 0.5, y: 0.75 };
-    // Track pointer position (mouse + touch)
-    document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    document.addEventListener('touchmove', e => {
-      const t = e.touches[0];
-      mouse.x = t.clientX; mouse.y = t.clientY;
-    }, { passive: true });
-    // On mobile with no touch, drift orbs gently with time
-    let driftT = 0;
+    // Desktop-only: cursor-following orbs + magnetic title
     const isTouchOnly = window.matchMedia('(hover: none)').matches;
-    function driftMouse() {
-      if (isTouchOnly) {
-        driftT += 0.004;
-        mouse.x = window.innerWidth  * (0.5 + 0.35 * Math.sin(driftT));
-        mouse.y = window.innerHeight * (0.5 + 0.3  * Math.cos(driftT * 0.7));
-      }
-    }
 
-    function lerp(a, b, t) { return a + (b - a) * t; }
-
-    function animOrbs() {
-      driftMouse();
-      const nx = mouse.x / window.innerWidth;
-      const ny = mouse.y / window.innerHeight;
-      pos1.x = lerp(pos1.x, nx * 0.85 + 0.05, 0.032);
-      pos1.y = lerp(pos1.y, ny * 0.85 + 0.05, 0.032);
-      pos2.x = lerp(pos2.x, (1 - nx) * 0.75 + 0.15, 0.018);
-      pos2.y = lerp(pos2.y, ny * 0.75 + 0.1, 0.018);
-      pos3.x = lerp(pos3.x, nx * 0.55 + 0.25, 0.055);
-      pos3.y = lerp(pos3.y, (1 - ny) * 0.75 + 0.1, 0.055);
-      const W = window.innerWidth, H = window.innerHeight;
-      orb1.style.transform = `translate(${pos1.x * W - 275}px, ${pos1.y * H - 275}px)`;
-      orb2.style.transform = `translate(${pos2.x * W - 325}px, ${pos2.y * H - 325}px)`;
-      orb3.style.transform = `translate(${pos3.x * W - 250}px, ${pos3.y * H - 250}px)`;
-      requestAnimationFrame(animOrbs);
-    }
-    animOrbs();
-
-    // Pretext: measure & animate hero title characters
-    await document.fonts.ready;
-    const titleEl = document.getElementById('hero-title');
-    const heroText = 'Dieter Schoening';
-
-    try {
-      const prepared = prepareWithSegments(heroText, '700 48px Syne');
-      const { lines } = layoutWithLines(prepared, 640, 58);
-      // lines[0].width = actual measured pixel width from pretext
-    } catch(e) { /* graceful fallback */ }
-
-    // Split hero title into char spans
-    titleEl.innerHTML = '';
-    for (const c of heroText) {
-      if (c === ' ') { titleEl.appendChild(document.createTextNode('\u00a0')); }
-      else {
-        const s = document.createElement('span');
-        s.className = 'char';
-        s.textContent = c;
-        titleEl.appendChild(s);
-      }
-    }
-
-    // Spring animation — only on pointer devices (not touch-only mobile)
     if (!isTouchOnly) {
-      const chars = [...titleEl.querySelectorAll('.char')];
-      const springs = chars.map(() => ({ vx: 0, vy: 0, ox: 0, oy: 0 }));
-      const STIFFNESS = 0.14, DAMPING = 0.72, REPEL_RADIUS = 130, REPEL_STRENGTH = 20;
+      const orb1 = document.getElementById('orb1');
+      const orb2 = document.getElementById('orb2');
+      const orb3 = document.getElementById('orb3');
+      let mouse = { x: window.innerWidth * 0.5, y: window.innerHeight * 0.5 };
+      let pos1 = { x: 0.15, y: 0.25 };
+      let pos2 = { x: 0.75, y: 0.15 };
+      let pos3 = { x: 0.5,  y: 0.75 };
 
-      function animChars() {
-        chars.forEach((char, i) => {
-          const rect = char.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const dx = mouse.x - (cx + springs[i].ox);
-          const dy = mouse.y - (cy + springs[i].oy);
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          let fx = 0, fy = 0;
-          if (dist < REPEL_RADIUS && dist > 0) {
-            const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
-            fx = -(dx / dist) * force;
-            fy = -(dy / dist) * force;
-          }
-          fx -= springs[i].ox * STIFFNESS;
-          fy -= springs[i].oy * STIFFNESS;
-          springs[i].vx = (springs[i].vx + fx) * DAMPING;
-          springs[i].vy = (springs[i].vy + fy) * DAMPING;
-          springs[i].ox += springs[i].vx;
-          springs[i].oy += springs[i].vy;
-          char.style.transform = `translate(${springs[i].ox.toFixed(2)}px, ${springs[i].oy.toFixed(2)}px)`;
-        });
-        requestAnimationFrame(animChars);
+      document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      function animOrbs() {
+        const nx = mouse.x / window.innerWidth;
+        const ny = mouse.y / window.innerHeight;
+        pos1.x = lerp(pos1.x, nx * 0.85 + 0.05, 0.032);
+        pos1.y = lerp(pos1.y, ny * 0.85 + 0.05, 0.032);
+        pos2.x = lerp(pos2.x, (1 - nx) * 0.75 + 0.15, 0.018);
+        pos2.y = lerp(pos2.y, ny * 0.75 + 0.1,  0.018);
+        pos3.x = lerp(pos3.x, nx * 0.55 + 0.25, 0.055);
+        pos3.y = lerp(pos3.y, (1 - ny) * 0.75 + 0.1, 0.055);
+        const W = window.innerWidth, H = window.innerHeight;
+        orb1.style.transform = `translate(${pos1.x * W - 275}px, ${pos1.y * H - 275}px)`;
+        orb2.style.transform = `translate(${pos2.x * W - 325}px, ${pos2.y * H - 325}px)`;
+        orb3.style.transform = `translate(${pos3.x * W - 250}px, ${pos3.y * H - 250}px)`;
+        requestAnimationFrame(animOrbs);
       }
-      animChars();
-    }
+      animOrbs();
 
+      // Magnetic title — split chars after fonts are ready
+      document.fonts.ready.then(() => {
+        const titleEl = document.getElementById('hero-title');
+        const heroText = 'Dieter Schoening';
+        titleEl.innerHTML = '';
+        for (const c of heroText) {
+          if (c === ' ') { titleEl.appendChild(document.createTextNode('\u00a0')); }
+          else {
+            const s = document.createElement('span');
+            s.className = 'char';
+            s.textContent = c;
+            titleEl.appendChild(s);
+          }
+        }
+
+        const chars = [...titleEl.querySelectorAll('.char')];
+        const springs = chars.map(() => ({ vx: 0, vy: 0, ox: 0, oy: 0 }));
+        const STIFFNESS = 0.14, DAMPING = 0.72, REPEL_RADIUS = 130, REPEL_STRENGTH = 20;
+
+        function animChars() {
+          chars.forEach((char, i) => {
+            const rect = char.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = mouse.x - (cx + springs[i].ox);
+            const dy = mouse.y - (cy + springs[i].oy);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            let fx = 0, fy = 0;
+            if (dist < REPEL_RADIUS && dist > 0) {
+              const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
+              fx = -(dx / dist) * force;
+              fy = -(dy / dist) * force;
+            }
+            fx -= springs[i].ox * STIFFNESS;
+            fy -= springs[i].oy * STIFFNESS;
+            springs[i].vx = (springs[i].vx + fx) * DAMPING;
+            springs[i].vy = (springs[i].vy + fy) * DAMPING;
+            springs[i].ox += springs[i].vx;
+            springs[i].oy += springs[i].vy;
+            char.style.transform = `translate(${springs[i].ox.toFixed(2)}px, ${springs[i].oy.toFixed(2)}px)`;
+          });
+          requestAnimationFrame(animChars);
+        }
+        animChars();
+      });
+    }
 
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
