@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Dieter Schoening — neuroscience, hardware, software, and everything in between.">
   <meta name="theme-color" content="#ffffff">
-  <title>Dieter. S</title>
+  <title>Dieter Schoening</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -28,25 +28,14 @@
       --text: #1a1a1a;
       --text-secondary: #555;
       --text-muted: #999;
-      --accent: #1b5f8a;
-      --accent-hover: #0d3e5f;
-      --neuron-blue: rgba(39, 125, 255, 0.2);
-      --neuron-green: rgba(44, 188, 132, 0.16);
-      --neuron-line: rgba(40, 125, 255, 0.1);
-      --neuron-node: rgba(31, 132, 211, 0.18);
-      --neuron-pulse: rgba(36, 188, 132, 0.18);
-      --field-blend: multiply;
+      --accent: #22863a;
+      --accent-hover: #1a6b2e;
       --nav-bg: rgba(255, 255, 255, 0.75);
       --max-w: 640px;
       --font: 'Syne', sans-serif;
     }
 
-    html {
-      height: 100%;
-      overflow: hidden;
-      overscroll-behavior: none;
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font);
@@ -56,66 +45,10 @@
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
       position: relative;
-      height: 100%;
-      min-height: 100dvh;
-      overflow: hidden;
-      overscroll-behavior: none;
-      touch-action: none;
-      transition: background 0.45s ease, color 0.45s ease;
-    }
-    body[data-theme="inverted"] {
-      --bg: #111111;
-      --glass: rgba(255, 255, 255, 0.07);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --glass-hover: rgba(255, 255, 255, 0.12);
-      --text: #f6f2ea;
-      --text-secondary: #c6c0b8;
-      --text-muted: #817a70;
-      --accent: #f4eee2;
-      --accent-hover: #ffffff;
-      --neuron-blue: rgba(88, 154, 255, 0.18);
-      --neuron-green: rgba(85, 220, 161, 0.12);
-      --neuron-line: rgba(116, 175, 255, 0.12);
-      --neuron-node: rgba(108, 204, 255, 0.16);
-      --neuron-pulse: rgba(95, 235, 177, 0.16);
-      --field-blend: screen;
-    }
-    body[data-theme="cold"] {
-      --bg: #eef5f7;
-      --glass: rgba(15, 38, 55, 0.04);
-      --glass-border: rgba(15, 38, 55, 0.09);
-      --glass-hover: rgba(15, 38, 55, 0.08);
-      --text: #101820;
-      --text-secondary: #46515a;
-      --text-muted: #7c8790;
-      --accent: #1b5f8a;
-      --accent-hover: #0d3e5f;
-      --neuron-blue: rgba(31, 124, 211, 0.2);
-      --neuron-green: rgba(44, 173, 151, 0.16);
-      --neuron-line: rgba(20, 105, 180, 0.12);
-      --neuron-node: rgba(28, 122, 190, 0.16);
-      --neuron-pulse: rgba(29, 180, 145, 0.16);
-      --field-blend: multiply;
-    }
-    body[data-theme="signal"] {
-      --bg: #fbf7ef;
-      --glass: rgba(54, 42, 30, 0.04);
-      --glass-border: rgba(54, 42, 30, 0.1);
-      --glass-hover: rgba(54, 42, 30, 0.08);
-      --text: #201a17;
-      --text-secondary: #5f5149;
-      --text-muted: #9a8c80;
-      --accent: #9d3d24;
-      --accent-hover: #6c2514;
-      --neuron-blue: rgba(29, 103, 186, 0.14);
-      --neuron-green: rgba(36, 164, 106, 0.14);
-      --neuron-line: rgba(31, 104, 169, 0.1);
-      --neuron-node: rgba(33, 107, 171, 0.14);
-      --neuron-pulse: rgba(157, 61, 36, 0.12);
-      --field-blend: multiply;
+      overflow-x: hidden;
     }
 
-    /* — Cursor-following gradient fields — */
+    /* — Cursor-following gradient orbs — */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -125,33 +58,9 @@
       z-index: 0;
       will-change: transform;
     }
-    .orb-brutal { width: 550px; height: 550px; background: radial-gradient(circle, rgba(31,95,138,0.56), transparent 70%); }
+    .orb-green  { width: 550px; height: 550px; background: radial-gradient(circle, rgba(34,197,94,0.75), transparent 70%); }
     .orb-blue   { width: 650px; height: 650px; background: radial-gradient(circle, rgba(59,130,246,0.65), transparent 70%); }
-    .orb-neural { width: 540px; height: 540px; background: radial-gradient(circle, var(--neuron-blue), var(--neuron-green) 42%, transparent 72%); opacity: 0.3; }
-    .neural-field {
-      position: fixed;
-      inset: -12%;
-      z-index: 0;
-      pointer-events: none;
-      opacity: var(--neuron-opacity, 0.12);
-      mix-blend-mode: multiply;
-      background:
-        radial-gradient(circle at var(--neuron-x, 50%) var(--neuron-y, 50%), var(--neuron-blue), transparent 23%),
-        radial-gradient(circle at calc(var(--neuron-x, 50%) + 9%) calc(var(--neuron-y, 50%) - 7%), var(--neuron-green), transparent 19%);
-      transition: opacity 0.35s ease;
-    }
-    .neural-field::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(circle, rgba(36, 164, 106, 0.28) 0 1px, transparent 1.8px),
-        linear-gradient(35deg, transparent 0 46%, rgba(39, 125, 255, 0.08) 47% 48%, transparent 49% 100%);
-      background-size: 46px 46px, 92px 92px;
-      mask-image: radial-gradient(circle at var(--neuron-x, 50%) var(--neuron-y, 50%), #000 0 22%, transparent 55%);
-      -webkit-mask-image: radial-gradient(circle at var(--neuron-x, 50%) var(--neuron-y, 50%), #000 0 22%, transparent 55%);
-      transform: translate3d(var(--neuron-drift-x, 0px), var(--neuron-drift-y, 0px), 0);
-    }
+    .orb-purple { width: 500px; height: 500px; background: radial-gradient(circle, rgba(168,85,247,0.65), transparent 70%); }
 
     a {
       color: var(--accent);
@@ -167,67 +76,22 @@
       padding: 0 1.5rem;
       position: relative;
       z-index: 1;
-      height: 100dvh;
-      overflow: hidden;
     }
 
     /* — Hero — */
     .hero {
       padding: 5rem 0 0.75rem;
     }
-    .title-row {
-      display: flex;
-      align-items: center;
-      gap: 0.72rem;
-      width: fit-content;
-      margin-bottom: 0.35rem;
-    }
     .hero h1 {
       font-size: clamp(2.4rem, 6.5vw, 3.75rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      margin-bottom: 0;
+      margin-bottom: 0.35rem;
       color: var(--text);
-      transition: color 0.45s ease, text-shadow 0.45s ease;
-    }
-    .hero h1[role="button"] {
-      cursor: pointer;
-      user-select: none;
-    }
-    .hero h1[role="button"]:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 4px;
-      border-radius: 4px;
     }
     .char {
       display: inline-block;
-      will-change: transform;
-    }
-    @keyframes speedGlitch {
-      0%, 100% {
-        filter: none;
-        text-shadow: none;
-      }
-      18% {
-        filter: contrast(1.08);
-        text-shadow: 1px 0 rgba(0,132,255,0.36), -1px 0 rgba(44,188,132,0.3);
-      }
-      42% {
-        text-shadow: -1px 0 rgba(0,132,255,0.28), 1px 0 rgba(44,188,132,0.24);
-      }
-      64% {
-        filter: contrast(1.04);
-        text-shadow: 0.5px 0 rgba(17,17,17,0.28), -1px 0 var(--accent);
-      }
-    }
-    body.text-glitching .char,
-    body.text-glitching .tagline,
-    body.text-glitching .hero-desc,
-    body.text-glitching .section-title,
-    body.text-glitching .about p,
-    body.text-glitching .tagline-links {
-      animation: speedGlitch 300ms steps(3, end) both;
     }
     .hero .tagline {
       font-size: 1rem;
@@ -446,22 +310,19 @@
     .tagline-links {
       display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-top: 0.35rem;
+      gap: 0.45rem;
+      margin-left: 0.4rem;
       vertical-align: middle;
     }
     .tagline-links a {
-      color: var(--text-muted);
+      color: #bbb;
       display: inline-flex;
       align-items: center;
-      transition: color 0.2s, transform 0.2s;
+      transition: color 0.2s;
       text-decoration: none;
     }
-    .tagline-links a:hover {
-      color: var(--text);
-      transform: translateY(-1px);
-    }
-    .tagline-links svg { width: 15px; height: 15px; }
+    .tagline-links a:hover { color: #1a1a1a; }
+    .tagline-links svg { width: 14px; height: 14px; }
 
     /* — Hero description line — */
     .hero-desc {
@@ -481,14 +342,10 @@
     a.project:hover { color: inherit; }
     a.project:hover h3 { color: var(--accent); }
 
-    #projects {
-      display: none;
-    }
-
     /* — Responsive / Mobile — */
     @media (max-width: 600px) {
       .hero { padding: 2rem 0 0.4rem; }
-    .hero h1 { font-size: clamp(1.9rem, 8.5vw, 2.5rem); margin-bottom: 0.25rem; }
+      .hero h1 { font-size: clamp(1.9rem, 8.5vw, 2.5rem); margin-bottom: 0.25rem; }
       .hero .tagline { font-size: 0.9rem; }
       .hero + section { padding-top: 0.85rem; }
       section { padding: 1.25rem 0; }
@@ -500,16 +357,14 @@
       .project-header { flex-direction: column; gap: 0.25rem; }
       .video-grid { grid-template-columns: 1fr 1fr; }
       .project, .project-dropdown { border-radius: 10px; backdrop-filter: none; -webkit-backdrop-filter: none; }
-      .container { padding: 0 1.1rem; }
-      .tagline-links { gap: 0.6rem; }
+.container { padding: 0 1.1rem; }
     }
     /* — Mobile orbs: CSS animation instead of JS rAF — */
     @media (hover: none) {
       .orb { filter: blur(60px); opacity: 0.28; }
-      .orb-brutal { animation: mOrbA 14s ease-in-out infinite; }
+      .orb-green  { animation: mOrbA 14s ease-in-out infinite; }
       .orb-blue   { animation: mOrbB 18s ease-in-out infinite; }
-      .orb-neural { animation: mOrbC 11s ease-in-out infinite; }
-      .neural-field { opacity: 0.1; }
+      .orb-purple { animation: mOrbC 11s ease-in-out infinite; }
     }
     @keyframes mOrbA {
       0%, 100% { transform: translate(5vw, 8vh); }
@@ -548,42 +403,39 @@
 </head>
 <body>
 
-  <!-- Cursor-following gradient fields -->
-  <div class="orb orb-brutal" id="orb1"></div>
+  <!-- Cursor-following gradient orbs -->
+  <div class="orb orb-green" id="orb1"></div>
   <div class="orb orb-blue" id="orb2"></div>
-  <div class="orb orb-neural" id="orb3"></div>
-  <div class="neural-field" id="neural-field" aria-hidden="true"></div>
+  <div class="orb orb-purple" id="orb3"></div>
 
   <div class="container">
 
     <!-- Hero -->
     <section class="hero">
-      <div class="title-row reveal">
-        <h1 id="hero-title" role="button" tabindex="0" aria-label="Change theme colors">Dieter Schoening</h1>
-      </div>
-      <p class="tagline reveal"><span id="age-display">20</span> · San Francisco</p>
-      <!-- <p class="hero-desc reveal">Interested in capturing consciousness from the inside out.</p> -->
+      <h1 id="hero-title" class="reveal">Dieter Schoening</h1>
+      <p class="tagline reveal"><span id="age-display">20</span> · San Francisco<span class="tagline-links">
+        <a href="https://twitter.com/dieterzsh" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+        <a href="mailto:dieter@serenidad.app" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+      </span></p>
+      <p class="hero-desc reveal">Interested in capturing consciousness from the inside out.</p>
     </section>
 
     <!-- About -->
     <section id="about" class="about">
-      <h2 class="section-title reveal">tldr</h2>
+      <h2 class="section-title reveal">About</h2>
 
       <p class="reveal">I grew up with early access to a computer learning Photoshop by 9 and then discovered Blender (3d design software) that led to me working with content creators in the millions of subscribers.</p>
 
       <p class="reveal">At 14 I started my own anime clothing brand, <a href="https://www.instagram.com/minimalmaru" target="_blank" rel="noopener noreferrer">Minimaru</a>, which scaled past $1.3M in revenue within a year and a half through viral marketing. By 17 I was burnt out and started learning to code, eventually building <a href="https://www.serenidad.app/" target="_blank" rel="noopener noreferrer">Serenidad</a> with my best friend.</p>
 
-      <p class="reveal">I took a gap year, moved to Vermont to work at <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a> leading socials to 100k and filming epic documentaries. Then spent 2 months in a remote cabin in Saitama, JP building ai gen story boarding tools and later moved back to San Francisco apart of <a href="https://nautilus.quest/" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3-month residency for polymaths. Now studying Neuroscience and working at stealth start up growing human brains.</p>
+      <p class="reveal">I took a gap year, moved to Vermont to work at <a href="https://hackclub.com" target="_blank" rel="noopener noreferrer">Hack Club</a> leading socials to 100k and filming epic documentaries. Then spent 2 months in a remote cabin in Saitama, JP building ai gen story boarding tools and later moved back to San Francisco apart of <a href="https://nautilus.quest/" target="_blank" rel="noopener noreferrer">Nautilus</a>, a 3-month residency for polymaths. Now studying Neuroscience and working at stealth start up growing brains.</p>
 
-      <div class="tagline-links reveal">
-        <a href="https://twitter.com/dieterzsh" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        <a href="https://github.com/Deetschoe" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
-        <a href="mailto:dieter@serenidad.app" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
-      </div>
+      <p class="reveal"></p>
     </section>
 
     <!-- Projects -->
-    <section id="projects" hidden aria-hidden="true">
+    <section id="projects">
       <h2 class="section-title reveal">Past Projects</h2>
       <div class="projects-list">
 
@@ -676,104 +528,12 @@
   </div>
 
   <script>
-    history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-
     // Age
     const birthday = new Date(2005, 5, 15);
     document.getElementById('age-display').textContent = Math.floor((Date.now() - birthday) / 31557600000);
 
     // Desktop-only: cursor-following orbs + magnetic title
     const isTouchOnly = window.matchMedia('(hover: none)').matches;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const backgroundDrift = { x: 0, y: 0, tx: 0, ty: 0 };
-    const rootStyle = document.documentElement.style;
-    const themeNames = ['', 'inverted', 'cold', 'signal'];
-    let themeIndex = 0;
-    let neuronSpark = 0;
-    let neuronSparkTarget = 0;
-
-    function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
-    function lerp(a, b, t) { return a + (b - a) * t; }
-    function pushBackground(dx, dy, strength = 0.45) {
-      backgroundDrift.tx = clamp(backgroundDrift.tx - dx * strength, -180, 180);
-      backgroundDrift.ty = clamp(backgroundDrift.ty - dy * strength, -180, 180);
-    }
-    function cycleTheme() {
-      themeIndex = (themeIndex + 1) % themeNames.length;
-      if (themeNames[themeIndex]) {
-        document.body.dataset.theme = themeNames[themeIndex];
-      } else {
-        document.body.removeAttribute('data-theme');
-      }
-    }
-
-    const themeToggle = document.getElementById('hero-title');
-    themeToggle.addEventListener('click', cycleTheme);
-    themeToggle.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        cycleTheme();
-      }
-    });
-
-    window.addEventListener('wheel', e => {
-      e.preventDefault();
-      pushBackground(e.deltaX, e.deltaY);
-    }, { passive: false });
-
-    window.addEventListener('keydown', e => {
-      if (e.target === themeToggle) return;
-      const nudges = {
-        ArrowUp: [0, -70],
-        ArrowDown: [0, 70],
-        ArrowLeft: [-70, 0],
-        ArrowRight: [70, 0],
-        PageUp: [0, -120],
-        PageDown: [0, 120],
-        Space: [0, 120],
-      };
-      const nudge = nudges[e.code] || nudges[e.key];
-      if (!nudge) return;
-      e.preventDefault();
-      pushBackground(nudge[0], nudge[1], 1);
-    });
-
-    window.addEventListener('load', () => window.scrollTo(0, 0), { once: true });
-
-    const textGlitchTargets = '#hero-title, .tagline, .hero-desc, .section-title, .about p, .about a';
-    let lastMove = null;
-    let lastGlitch = 0;
-    let glitchTimer = null;
-
-    function triggerTextGlitch() {
-      if (reducedMotion) return;
-      const now = performance.now();
-      if (now - lastGlitch < 280) return;
-      lastGlitch = now;
-      document.body.classList.add('text-glitching');
-      clearTimeout(glitchTimer);
-      glitchTimer = setTimeout(() => document.body.classList.remove('text-glitching'), 340);
-    }
-
-    document.addEventListener('mousemove', e => {
-      const now = performance.now();
-      rootStyle.setProperty('--neuron-x', `${(e.clientX / window.innerWidth * 100).toFixed(2)}%`);
-      rootStyle.setProperty('--neuron-y', `${(e.clientY / window.innerHeight * 100).toFixed(2)}%`);
-      if (lastMove) {
-        const dt = Math.max(1, now - lastMove.t);
-        const dx = e.clientX - lastMove.x;
-        const dy = e.clientY - lastMove.y;
-        const speed = Math.sqrt(dx * dx + dy * dy) / dt;
-        rootStyle.setProperty('--neuron-drift-x', `${clamp(dx * 0.25, -8, 8).toFixed(2)}px`);
-        rootStyle.setProperty('--neuron-drift-y', `${clamp(dy * 0.25, -8, 8).toFixed(2)}px`);
-        neuronSparkTarget = clamp(speed / 3.5, 0, 1);
-        if (speed > 1.45 && e.target.closest(textGlitchTargets)) {
-          triggerTextGlitch();
-        }
-      }
-      lastMove = { x: e.clientX, y: e.clientY, t: now };
-    }, { passive: true });
 
     if (!isTouchOnly) {
       const orb1 = document.getElementById('orb1');
@@ -786,17 +546,11 @@
 
       document.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
       function animOrbs() {
         const nx = mouse.x / window.innerWidth;
         const ny = mouse.y / window.innerHeight;
-        backgroundDrift.x = lerp(backgroundDrift.x, backgroundDrift.tx, 0.08);
-        backgroundDrift.y = lerp(backgroundDrift.y, backgroundDrift.ty, 0.08);
-        backgroundDrift.tx *= 0.94;
-        backgroundDrift.ty *= 0.94;
-        neuronSpark = lerp(neuronSpark, neuronSparkTarget, 0.08);
-        neuronSparkTarget *= 0.92;
-        rootStyle.setProperty('--neuron-spark', neuronSpark.toFixed(3));
-        rootStyle.setProperty('--neuron-opacity', (0.12 + neuronSpark * 0.08).toFixed(3));
         pos1.x = lerp(pos1.x, nx * 0.85 + 0.05, 0.032);
         pos1.y = lerp(pos1.y, ny * 0.85 + 0.05, 0.032);
         pos2.x = lerp(pos2.x, (1 - nx) * 0.75 + 0.15, 0.018);
@@ -804,9 +558,9 @@
         pos3.x = lerp(pos3.x, nx * 0.55 + 0.25, 0.055);
         pos3.y = lerp(pos3.y, (1 - ny) * 0.75 + 0.1, 0.055);
         const W = window.innerWidth, H = window.innerHeight;
-        orb1.style.transform = `translate(${pos1.x * W - 275 + backgroundDrift.x}px, ${pos1.y * H - 275 + backgroundDrift.y}px)`;
-        orb2.style.transform = `translate(${pos2.x * W - 325 - backgroundDrift.x * 0.72}px, ${pos2.y * H - 325 + backgroundDrift.y * 0.48}px)`;
-        orb3.style.transform = `translate(${pos3.x * W - 250 + backgroundDrift.x * 0.35}px, ${pos3.y * H - 250 - backgroundDrift.y * 0.66}px)`;
+        orb1.style.transform = `translate(${pos1.x * W - 275}px, ${pos1.y * H - 275}px)`;
+        orb2.style.transform = `translate(${pos2.x * W - 325}px, ${pos2.y * H - 325}px)`;
+        orb3.style.transform = `translate(${pos3.x * W - 250}px, ${pos3.y * H - 250}px)`;
         requestAnimationFrame(animOrbs);
       }
       animOrbs();
