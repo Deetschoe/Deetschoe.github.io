@@ -63,7 +63,7 @@
       touch-action: none;
       transition: background 0.45s ease, color 0.45s ease;
     }
-    body[data-theme="inverted"] {
+    body[data-theme="dark"] {
       --bg: #111111;
       --glass: rgba(255, 255, 255, 0.07);
       --glass-border: rgba(255, 255, 255, 0.12);
@@ -79,40 +79,6 @@
       --neuron-node: rgba(108, 204, 255, 0.16);
       --neuron-pulse: rgba(95, 235, 177, 0.16);
       --field-blend: screen;
-    }
-    body[data-theme="cold"] {
-      --bg: #eef5f7;
-      --glass: rgba(15, 38, 55, 0.04);
-      --glass-border: rgba(15, 38, 55, 0.09);
-      --glass-hover: rgba(15, 38, 55, 0.08);
-      --text: #101820;
-      --text-secondary: #46515a;
-      --text-muted: #7c8790;
-      --accent: #1b5f8a;
-      --accent-hover: #0d3e5f;
-      --neuron-blue: rgba(31, 124, 211, 0.2);
-      --neuron-green: rgba(44, 173, 151, 0.16);
-      --neuron-line: rgba(20, 105, 180, 0.12);
-      --neuron-node: rgba(28, 122, 190, 0.16);
-      --neuron-pulse: rgba(29, 180, 145, 0.16);
-      --field-blend: multiply;
-    }
-    body[data-theme="signal"] {
-      --bg: #fbf7ef;
-      --glass: rgba(54, 42, 30, 0.04);
-      --glass-border: rgba(54, 42, 30, 0.1);
-      --glass-hover: rgba(54, 42, 30, 0.08);
-      --text: #201a17;
-      --text-secondary: #5f5149;
-      --text-muted: #9a8c80;
-      --accent: #9d3d24;
-      --accent-hover: #6c2514;
-      --neuron-blue: rgba(29, 103, 186, 0.14);
-      --neuron-green: rgba(36, 164, 106, 0.14);
-      --neuron-line: rgba(31, 104, 169, 0.1);
-      --neuron-node: rgba(33, 107, 171, 0.14);
-      --neuron-pulse: rgba(157, 61, 36, 0.12);
-      --field-blend: multiply;
     }
 
     /* — Cursor-following gradient fields — */
@@ -175,19 +141,12 @@
     .hero {
       padding: 5rem 0 0.75rem;
     }
-    .title-row {
-      display: flex;
-      align-items: center;
-      gap: 0.72rem;
-      width: fit-content;
-      margin-bottom: 0.35rem;
-    }
     .hero h1 {
       font-size: clamp(2.4rem, 6.5vw, 3.75rem);
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.1;
-      margin-bottom: 0;
+      margin-bottom: 0.35rem;
       color: var(--text);
       transition: color 0.45s ease, text-shadow 0.45s ease;
     }
@@ -558,10 +517,8 @@
 
     <!-- Hero -->
     <section class="hero">
-      <div class="title-row reveal">
-        <h1 id="hero-title" role="button" tabindex="0" aria-label="Change theme colors">Dieter Schoening</h1>
-      </div>
-      <p class="tagline reveal"><span id="age-display">20</span> · San Francisco</p>
+      <h1 id="hero-title" class="reveal" role="button" tabindex="0" aria-label="Change theme colors">Dieter Schoening</h1>
+      <p class="tagline reveal"><span id="age-display">21</span> · San Francisco</p>
       <!-- <p class="hero-desc reveal">Interested in capturing consciousness from the inside out.</p> -->
     </section>
 
@@ -680,15 +637,19 @@
     window.scrollTo(0, 0);
 
     // Age
-    const birthday = new Date(2005, 5, 15);
-    document.getElementById('age-display').textContent = Math.floor((Date.now() - birthday) / 31557600000);
+    const birthday = new Date(2005, 5, 9); // June 9, 2005
+    const now = new Date();
+    let age = now.getFullYear() - birthday.getFullYear();
+    const m = now.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < birthday.getDate())) age--;
+    document.getElementById('age-display').textContent = age;
 
     // Desktop-only: cursor-following orbs + magnetic title
     const isTouchOnly = window.matchMedia('(hover: none)').matches;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const backgroundDrift = { x: 0, y: 0, tx: 0, ty: 0 };
     const rootStyle = document.documentElement.style;
-    const themeNames = ['', 'inverted', 'cold', 'signal'];
+    const themeNames = ['', 'dark'];
     let themeIndex = 0;
     let neuronSpark = 0;
     let neuronSparkTarget = 0;
